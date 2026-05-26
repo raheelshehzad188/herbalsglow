@@ -1,0 +1,8 @@
+[07-Apr-2026 14:33:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Auth\User' not found in /home3/shopping/ayan.shoppingeasy.pk/app/Models/User.php:11
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/app/Models/User.php on line 11
+[07-Apr-2026 14:34:04 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Auth\User' not found in /home3/shopping/ayan.shoppingeasy.pk/app/Models/User.php:11
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/app/Models/User.php on line 11

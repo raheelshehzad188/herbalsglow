@@ -1,0 +1,188 @@
+[27-May-2023 19:51:13 UTC] PHP Fatal error:  Cannot use [] for reading in /home2/paktele1/testing.pakteleshop.com/laravel8/app/Http/Controllers/Front/FrontController.php on line 265
+[19-Sep-2023 17:27:47 UTC] PHP Fatal error:  Cannot redeclare App\Helpers\Cart::qty() in /home2/telemas3/public_html/telemartpakistan.com.pk/app/Helpers/Cart.php on line 180
+[19-Sep-2023 17:28:00 UTC] PHP Fatal error:  Cannot redeclare App\Helpers\Cart::qty() in /home2/telemas3/public_html/telemartpakistan.com.pk/app/Helpers/Cart.php on line 180
+[19-Sep-2023 17:28:18 UTC] PHP Fatal error:  Cannot redeclare App\Helpers\Cart::qty() in /home2/telemas3/public_html/telemartpakistan.com.pk/app/Helpers/Cart.php on line 180
+[19-Sep-2023 17:29:00 UTC] PHP Fatal error:  Cannot redeclare App\Helpers\Cart::qty() in /home2/telemas3/public_html/telemartpakistan.com.pk/app/Helpers/Cart.php on line 180
+[19-Sep-2023 17:29:40 UTC] PHP Fatal error:  Cannot redeclare App\Helpers\Cart::qty() in /home2/telemas3/public_html/telemartpakistan.com.pk/app/Helpers/Cart.php on line 180
+[01-Jun-2024 19:47:03 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 19:47:03 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 19:47:04 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 19:47:04 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 21:21:05 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 21:21:05 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 21:21:05 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 21:21:05 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 22:59:05 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 22:59:05 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 22:59:10 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[01-Jun-2024 22:59:10 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 04:09:08 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 04:09:08 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 04:09:15 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 04:09:15 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 23:14:50 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 23:14:50 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 23:14:51 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jun-2024 23:14:51 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[03-Jun-2024 02:02:16 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[03-Jun-2024 02:02:16 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 02:06:08 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 02:06:08 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 02:06:11 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 02:06:11 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 07:43:05 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 07:43:05 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 07:43:13 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 07:43:13 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 19:55:56 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[04-Jun-2024 19:55:56 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 02:48:09 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 02:48:09 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 02:48:13 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 02:48:13 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 03:26:47 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 03:26:47 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 03:26:50 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 03:26:50 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 04:44:47 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 04:44:47 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 17:16:24 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 17:16:24 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 17:16:28 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[06-Jun-2024 17:16:28 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 04:42:38 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 04:42:38 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 04:42:47 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 04:42:47 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 06:28:20 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 06:28:20 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 06:28:25 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 06:28:25 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 18:57:14 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 18:57:14 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 18:57:20 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[08-Jun-2024 18:57:20 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 03:11:55 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 03:11:55 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 03:12:06 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 03:12:06 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 04:38:16 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 04:38:16 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 04:38:18 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 04:38:18 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 18:29:57 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 18:29:57 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 19:13:14 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[10-Jun-2024 19:13:14 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 03:26:52 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 03:26:52 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 03:26:55 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 03:26:55 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 09:34:04 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 09:34:04 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 09:34:09 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 09:34:09 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 18:53:02 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[12-Jun-2024 18:53:02 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 10:05:41 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 10:05:41 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 14:18:50 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 14:18:50 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 14:18:56 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 14:18:56 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 15:33:22 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 15:33:22 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 15:33:24 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 15:33:24 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 20:46:19 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[16-Jun-2024 20:46:19 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 04:26:10 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 04:26:10 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 13:10:30 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 13:10:30 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 13:41:19 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 13:41:19 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 17:54:50 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 17:54:50 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 19:49:03 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 19:49:03 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 19:49:07 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[18-Jun-2024 19:49:07 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 07:00:51 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 07:00:51 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 08:04:16 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 08:04:16 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 20:34:54 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 20:34:54 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 21:18:35 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 21:18:35 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 22:39:38 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 22:39:38 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 22:39:40 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[20-Jun-2024 22:39:40 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 04:24:48 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 04:24:48 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 05:51:57 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 05:51:57 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 16:34:23 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 16:34:23 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 16:34:27 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 16:34:27 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 19:22:46 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 19:22:46 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 21:02:11 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[22-Jun-2024 21:02:11 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jul-2024 05:50:59 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jul-2024 05:50:59 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jul-2024 10:03:18 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jul-2024 10:03:18 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jul-2024 11:09:31 UTC] PHP Warning:  require(/home/shopping/quickon.pk/Site/vendor/autoload.php): failed to open stream: No such file or directory in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Jul-2024 11:09:31 UTC] PHP Fatal error:  require(): Failed opening required '/home/shopping/quickon.pk/Site/vendor/autoload.php' (include_path='.:/opt/alt/php73/usr/share/pear') in /home/shopping/quickon.pk/Site/index.php on line 34
+[02-Feb-2025 18:10:34 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[02-Feb-2025 18:10:35 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[02-Feb-2025 18:10:35 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home3/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/Site/index.php on line 34
+[04-Feb-2025 12:24:38 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[04-Feb-2025 12:24:38 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[04-Feb-2025 12:24:38 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home3/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/Site/index.php on line 34
+[10-Feb-2025 06:51:57 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[10-Feb-2025 06:51:57 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[10-Feb-2025 06:51:57 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home3/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/Site/index.php on line 34
+[12-Feb-2025 08:01:56 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[12-Feb-2025 08:01:56 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[12-Feb-2025 08:01:56 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home3/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/Site/index.php on line 34
+[24-Feb-2025 07:06:47 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[24-Feb-2025 07:06:47 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[24-Feb-2025 07:06:47 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home3/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/Site/index.php on line 34
+[28-Feb-2025 14:24:31 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[28-Feb-2025 14:24:31 UTC] PHP Warning:  require(/home3/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home3/quicknow/public_html/Site/index.php on line 34
+[28-Feb-2025 14:24:31 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home3/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home3/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/Site/index.php on line 34
+[17-Jul-2025 16:34:52 UTC] PHP Warning:  require(/home1/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home1/quicknow/public_html/Site/index.php on line 34
+[17-Jul-2025 16:34:52 UTC] PHP Warning:  require(/home1/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home1/quicknow/public_html/Site/index.php on line 34
+[17-Jul-2025 16:34:52 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home1/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home1/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home1/quicknow/public_html/Site/index.php on line 34
+[19-Sep-2025 14:20:21 UTC] PHP Warning:  require(/home1/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home1/quicknow/public_html/Site/index.php on line 34
+[19-Sep-2025 14:20:21 UTC] PHP Warning:  require(/home1/quicknow/public_html/Site/vendor/autoload.php): Failed to open stream: No such file or directory in /home1/quicknow/public_html/Site/index.php on line 34
+[19-Sep-2025 14:20:21 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home1/quicknow/public_html/Site/vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home1/quicknow/public_html/Site/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home1/quicknow/public_html/Site/index.php on line 34

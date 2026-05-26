@@ -1,0 +1,4 @@
+[24-Dec-2023 21:15:23 UTC] PHP Fatal error:  Uncaught Error: Class 'App\Models\Admins\Setting' not found in /home2/livexmar/dev.live-x-martplace.com/resources/views/front/footer1.blade.php:4
+Stack trace:
+#0 {main}
+  thrown in /home2/livexmar/dev.live-x-martplace.com/resources/views/front/footer1.blade.php on line 4
