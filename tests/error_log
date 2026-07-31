@@ -1,0 +1,8 @@
+[06-Jun-2024 08:27:41 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Testing\TestCase' not found in /home/shopping/quickon.pk/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/shopping/quickon.pk/tests/TestCase.php on line 7
+[16-Jun-2024 05:48:36 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Testing\TestCase' not found in /home/shopping/quickon.pk/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/shopping/quickon.pk/tests/TestCase.php on line 7

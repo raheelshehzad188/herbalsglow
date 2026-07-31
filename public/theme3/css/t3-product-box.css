@@ -1,0 +1,104 @@
+/* Theme 3 product box — matches iHerb rounded-product-cells */
+.hp-module-trending .carousel-container .product-inner,
+.home-carousel-container .carousel-container .product-inner {
+    min-height: 1px;
+}
+.hp-module-trending .stars-rating-v2.full path,
+.home-carousel-container .stars-rating-v2.full path {
+    fill: #fecc2f;
+}
+.hp-module-trending .stars-rating-v2:not(.full) path,
+.home-carousel-container .stars-rating-v2:not(.full) path {
+    fill: #e0e0e0;
+}
+.hp-module-trending .rating,
+.home-carousel-container .rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 24px;
+}
+.hp-module-trending .stars-rating-v2,
+.home-carousel-container .stars-rating-v2 {
+    width: 16px;
+    height: 16px;
+}
+.hp-module-trending .rating-count,
+.home-carousel-container .rating-count {
+    font-size: 12px;
+    color: #666;
+    text-decoration: none;
+}
+.hp-module-trending .product-title,
+.home-carousel-container .product-title {
+    font-size: 14px;
+    line-height: 1.35;
+    color: #333;
+    margin-top: 8px;
+}
+.hp-module-trending .product-title-link,
+.home-carousel-container .product-title-link,
+.product .product-title-link {
+    color: inherit;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.hp-module-trending .product-title-link:hover,
+.home-carousel-container .product-title-link:hover,
+.product .product-title-link:hover {
+    color: #458500;
+}
+.hp-module-trending .product-image-link,
+.home-carousel-container .product-image-link,
+.product .product-image-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+}
+.hp-module-trending .product-price-link,
+.home-carousel-container .product-price-link,
+.product .product-price-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+.hp-module-trending .product-price,
+.home-carousel-container .product-price {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: baseline;
+}
+.hp-module-trending .product-price .price,
+.home-carousel-container .product-price .price {
+    font-weight: 700;
+    font-size: 14px;
+    color: #333;
+}
+.hp-module-trending .product-price .price.discount-red,
+.home-carousel-container .product-price .price.discount-red {
+    color: #c8232c;
+}
+.hp-module-trending .product-price .price-olp,
+.home-carousel-container .product-price .price-olp {
+    color: #888;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+.hp-module-trending .add-to-cart-wrapper,
+.home-carousel-container .add-to-cart-wrapper {
+    margin-top: 8px;
+}
+.hp-module-trending .add-to-cart-wrapper .btn-add-to-cart,
+.home-carousel-container .add-to-cart-wrapper .btn-add-to-cart {
+    width: 100%;
+    background: #458500;
+    border-color: #458500;
+    border-radius: 8px;
+    font-weight: 600;
+}

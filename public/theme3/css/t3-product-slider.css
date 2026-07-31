@@ -1,0 +1,45 @@
+/* Trending product slider — horizontal track, iHerb box design intact */
+.t3-product-carousel {
+    position: relative;
+    overflow: hidden !important;
+    width: 100%;
+}
+.t3-product-carousel .carousel-inner.product-carousels {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    transition: transform 0.35s ease;
+    will-change: transform;
+}
+.t3-product-carousel .carousel-inner.product-carousels > .product {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+    float: none !important;
+    box-sizing: border-box;
+}
+@media (min-width: 768px) {
+    .t3-product-carousel .carousel-inner.product-carousels > .product {
+        flex: 0 0 50%;
+        max-width: 50%;
+        width: 50%;
+    }
+}
+@media (min-width: 992px) {
+    .t3-product-carousel .carousel-inner.product-carousels > .product {
+        flex: 0 0 calc(100% / 6);
+        max-width: calc(100% / 6);
+        width: calc(100% / 6);
+    }
+}
+.t3-product-carousel .carousel-control {
+    z-index: 5;
+    cursor: pointer;
+}
+.t3-product-carousel .carousel-control.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}

@@ -1,0 +1,468 @@
+/* Theme 3 — Product detail page */
+.t3-pdp-page {
+    background: #f7f8f6;
+    padding-bottom: 40px;
+}
+
+.t3-pdp-page #breadCrumbs {
+    padding: 16px 0 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.t3-pdp-page #breadCrumbs a {
+    color: #458500;
+    text-decoration: none;
+}
+
+.t3-pdp-page #breadCrumbs a:hover {
+    text-decoration: underline;
+}
+
+.t3-pdp-page #breadCrumbs .last {
+    color: #333;
+}
+
+.t3-pdp-page .product-detail-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.t3-pdp-page .product-summary-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 24px;
+}
+
+.t3-pdp-page .image-fixed {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+@media (min-width: 992px) {
+    .t3-pdp-page .image-fixed {
+        flex: 0 0 42%;
+        max-width: 42%;
+    }
+
+    .t3-pdp-page .product-summary-main > div[style*="flex-grow"] {
+        flex: 1;
+        min-width: 0;
+        padding-left: 32px;
+    }
+}
+
+.t3-pdp-page .product-summary-image img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.t3-pdp-page .thumbnail-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.t3-pdp-page .thumbnail-item {
+    border: 2px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 4px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.t3-pdp-page .thumbnail-item.selected,
+.t3-pdp-page .thumbnail-item:hover {
+    border-color: #458500;
+}
+
+.t3-pdp-page .thumbnail-item img {
+    display: block;
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+.t3-pdp-page #product-summary-header h1 {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    line-height: 1.3;
+    margin: 0 0 8px;
+    color: #222;
+}
+
+.t3-pdp-page #brand {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #666;
+}
+
+.t3-pdp-page #brand a {
+    color: #458500;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.t3-pdp-page .t3-pdp-short-desc {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.t3-pdp-page .product-action-container {
+    background: #f9faf8;
+    border: 1px solid #e8ece4;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.t3-pdp-page .list-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+}
+
+.t3-pdp-page .discount-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: #c8232c;
+}
+
+.t3-pdp-page .percent-off {
+    color: #c8232c;
+    font-size: 14px;
+    margin-left: 6px;
+}
+
+.t3-pdp-page .price-olp-inline {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+.t3-pdp-page .t3-pdp-actions {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    margin-top: 16px;
+}
+
+.t3-pdp-page .t3-pdp-qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.t3-pdp-page .t3-pdp-qty button {
+    width: 40px;
+    height: 48px;
+    border: none;
+    background: #f5f5f5;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+.t3-pdp-page .t3-pdp-qty button:hover {
+    background: #e8e8e8;
+}
+
+.t3-pdp-page .t3-pdp-qty input {
+    width: 48px;
+    height: 48px;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.t3-pdp-page .t3-pdp-actions .btn-add-to-cart {
+    flex: 1;
+    background: #458500;
+    border-color: #458500;
+    border-radius: 8px;
+    font-size: 16px;
+    min-height: 48px;
+}
+
+.t3-pdp-page .t3-pdp-actions .btn-add-to-cart:hover {
+    background: #3a7000;
+    border-color: #3a7000;
+}
+
+/* Tabs */
+.t3-pdp-tabs {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-bottom: 32px;
+}
+
+.t3-pdp-tabs__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 2px solid #e8ece4;
+    background: #fafbf9;
+    padding: 0 8px;
+    overflow-x: auto;
+}
+
+.t3-pdp-tabs__btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.t3-pdp-tabs__btn:hover {
+    color: #458500;
+}
+
+.t3-pdp-tabs__btn.is-active {
+    color: #458500;
+    border-bottom-color: #458500;
+}
+
+.t3-pdp-tabs__panel {
+    display: none;
+    padding: 28px 24px;
+    animation: t3TabFade 0.25s ease;
+}
+
+.t3-pdp-tabs__panel.is-active {
+    display: block;
+}
+
+@keyframes t3TabFade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.t3-pdp-tabs__panel h3 {
+    font-size: 18px;
+    margin: 0 0 16px;
+    color: #222;
+}
+
+.t3-pdp-tabs__content {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #444;
+}
+
+.t3-pdp-tabs__content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.t3-pdp-specs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.t3-pdp-specs li {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.t3-pdp-specs li span:first-child {
+    color: #666;
+    flex-shrink: 0;
+}
+
+.t3-pdp-specs li span:last-child {
+    color: #222;
+    font-weight: 600;
+    text-align: right;
+}
+
+.t3-pdp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.t3-pdp-tag {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #eef5e8;
+    color: #458500;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.t3-pdp-tag:hover {
+    background: #458500;
+    color: #fff;
+}
+
+.t3-pdp-reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+@media (min-width: 992px) {
+    .t3-pdp-reviews-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.t3-pdp-review-card {
+    border: 1px solid #e8ece4;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    background: #fafbf9;
+}
+
+.t3-pdp-review-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.t3-pdp-review-card__name {
+    font-weight: 700;
+    color: #222;
+}
+
+.t3-pdp-review-card__stars {
+    display: flex;
+    gap: 2px;
+}
+
+.t3-pdp-review-card__stars svg {
+    width: 14px;
+    height: 14px;
+}
+
+.t3-pdp-review-card__stars .full path {
+    fill: #fecc2f;
+}
+
+.t3-pdp-review-card__stars .empty path {
+    fill: #e0e0e0;
+}
+
+.t3-pdp-review-card p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.t3-pdp-review-form .form-group {
+    margin-bottom: 16px;
+}
+
+.t3-pdp-review-form label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.t3-pdp-review-form .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.t3-pdp-review-form textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.t3-pdp-review-form .btn-submit-review {
+    background: #458500;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.t3-pdp-review-form .btn-submit-review:hover {
+    background: #3a7000;
+}
+
+.t3-pdp-empty {
+    color: #888;
+    font-size: 14px;
+    padding: 24px 0;
+    text-align: center;
+}
+
+.t3-pdp-faq-item {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 12px 0;
+}
+
+.t3-pdp-faq-item strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #222;
+}
+
+.t3-pdp-faq-item p {
+    margin: 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.t3-pdp-similar .title-container {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: #222;
+}
+
+.t3-pdp-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.t3-pdp-alert--success {
+    background: #eef5e8;
+    color: #2d5a00;
+    border: 1px solid #c5ddb0;
+}

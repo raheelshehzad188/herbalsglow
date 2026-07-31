@@ -1,0 +1,100 @@
+.t3-search-suggestions {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 1200;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 0;
+}
+
+.iherb-header-search .search-box {
+    position: relative;
+}
+
+.t3-search-suggestions__title {
+    padding: 10px 14px 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.t3-search-suggestions__list {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 8px;
+}
+
+.t3-search-suggestions__item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    text-decoration: none;
+    color: #333;
+}
+
+.t3-search-suggestions__item a:hover {
+    background: #f5f8f2;
+}
+
+.t3-search-suggestions__thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: #fafafa;
+    border-radius: 4px;
+}
+
+.t3-search-suggestions__info {
+    min-width: 0;
+    flex: 1;
+}
+
+.t3-search-suggestions__name {
+    display: block;
+    font-size: 14px;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.t3-search-suggestions__price {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #458500;
+    margin-top: 2px;
+}
+
+.t3-search-suggestions__empty,
+.t3-search-suggestions__loading {
+    padding: 16px 14px;
+    font-size: 14px;
+    color: #666;
+}
+
+.t3-search-suggestions__view-all {
+    display: block;
+    padding: 10px 14px 12px;
+    border-top: 1px solid #ececec;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #458500;
+    text-decoration: none;
+}
+
+.t3-search-suggestions__view-all:hover {
+    background: #f5f8f2;
+    color: #3a7000;
+}

@@ -1,0 +1,180 @@
+[25-May-2024 22:11:59 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/shopping/test.quickon.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/shopping/test.quickon.pk/config/database.php on line 18
+[01-Jun-2024 03:55:32 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/shopping/quickon.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/shopping/quickon.pk/config/database.php on line 18
+[01-Jun-2024 03:55:32 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/shopping/quickon.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/shopping/quickon.pk/config/database.php on line 18
+[31-Jan-2025 07:07:16 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/quicknow/public_html/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/quicknow/public_html/config/database.php on line 18
+[28-Mar-2026 14:18:52 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[28-Mar-2026 14:18:53 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[28-Mar-2026 14:18:53 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/app.php on line 16
+[28-Mar-2026 14:18:53 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/services.php on line 18
+[28-Mar-2026 14:22:01 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/cache.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/cache.php on line 18
+[01-Apr-2026 20:18:39 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/services.php on line 18
+[01-Apr-2026 20:18:39 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/app.php on line 16
+[01-Apr-2026 20:18:39 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[01-Apr-2026 20:18:40 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[02-Apr-2026 18:15:59 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/cache.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/cache.php on line 18
+[02-Apr-2026 18:20:52 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/session.php:21
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/session.php on line 21
+[02-Apr-2026 18:20:52 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function resource_path() in /home3/shopping/ayan.shoppingeasy.pk/config/view.php:17
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/view.php on line 17
+[07-Apr-2026 14:27:35 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/services.php on line 18
+[07-Apr-2026 14:27:35 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/app.php on line 16
+[07-Apr-2026 14:27:35 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[07-Apr-2026 14:27:35 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[07-Apr-2026 14:27:46 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/services.php on line 18
+[07-Apr-2026 14:27:46 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/app.php on line 16
+[07-Apr-2026 14:27:46 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[07-Apr-2026 14:27:46 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[07-Apr-2026 14:33:26 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/filesystems.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/filesystems.php on line 16
+[07-Apr-2026 14:33:26 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/queue.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/queue.php on line 16
+[07-Apr-2026 14:33:26 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/broadcasting.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/broadcasting.php on line 18
+[07-Apr-2026 14:33:26 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/logging.php:20
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/logging.php on line 20
+[07-Apr-2026 14:33:37 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/filesystems.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/filesystems.php on line 16
+[07-Apr-2026 14:33:37 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/queue.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/queue.php on line 16
+[07-Apr-2026 14:33:37 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/broadcasting.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/broadcasting.php on line 18
+[07-Apr-2026 14:33:37 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/logging.php:20
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/logging.php on line 20
+[15-Apr-2026 02:02:43 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/app.php on line 16
+[15-Apr-2026 02:02:43 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[21-Apr-2026 07:33:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[21-Apr-2026 07:33:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[22-Apr-2026 22:22:18 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/app.php on line 16
+[22-Apr-2026 22:22:18 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[22-Apr-2026 22:22:18 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[25-Apr-2026 02:57:58 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[25-Apr-2026 02:57:58 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16
+[25-Apr-2026 02:57:58 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/services.php on line 18
+[26-Apr-2026 03:49:02 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/database.php on line 18
+[26-Apr-2026 03:49:02 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/services.php:18
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/services.php on line 18
+[26-Apr-2026 03:49:02 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php:16
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/config/mail.php on line 16

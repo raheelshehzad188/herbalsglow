@@ -1,0 +1,66 @@
+.t3-cart-toast {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10050;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #1f2933;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    font-size: 14px;
+}
+
+.t3-cart-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.t3-cart-toast a {
+    color: #b8f397;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.t3-cart-toast--error {
+    background: #8b1e1e;
+}
+
+.t3-cart-toast--error a {
+    color: #ffd6d6;
+}
+
+.btn-add-to-cart.is-loading,
+.t3-add-to-cart.is-loading {
+    opacity: 0.8;
+    cursor: wait;
+}
+
+.iherb-header-cart {
+    position: relative;
+}
+
+.iherb-header-cart-quantity:not(.cart-hide) {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #458500;
+    color: #fff;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    font-size: 11px;
+    font-weight: 700;
+    position: absolute;
+    top: -4px;
+    right: -8px;
+}

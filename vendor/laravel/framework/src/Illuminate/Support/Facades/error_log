@@ -1,0 +1,8 @@
+[07-Apr-2026 14:33:49 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Support\Facades\Facade' not found in /home3/shopping/ayan.shoppingeasy.pk/vendor/laravel/framework/src/Illuminate/Support/Facades/Config.php:15
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/vendor/laravel/framework/src/Illuminate/Support/Facades/Config.php on line 15
+[07-Apr-2026 14:33:59 UTC] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Support\Facades\Facade' not found in /home3/shopping/ayan.shoppingeasy.pk/vendor/laravel/framework/src/Illuminate/Support/Facades/Config.php:15
+Stack trace:
+#0 {main}
+  thrown in /home3/shopping/ayan.shoppingeasy.pk/vendor/laravel/framework/src/Illuminate/Support/Facades/Config.php on line 15

@@ -1,0 +1,209 @@
+/* Theme3 layout overrides — fixes for Laravel integration */
+
+.t3-site-header .icon { display: inline-block; vertical-align: middle; }
+.t3-site-footer { display: block !important; }
+.iherb-responsive { display: block !important; }
+
+:root {
+    --primary-color: var(--primary-color, #458500);
+}
+
+/* iHerb bento homepage banners */
+.hp-bento-banners { display: block !important; margin: 16px auto; max-width: 1376px; padding: 0 16px; }
+.hp-bento-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(200px, 1fr);
+    gap: 12px;
+    overflow-x: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 8px;
+    scroll-snap-type: x mandatory;
+}
+.hp-bento-slot { scroll-snap-align: start; min-width: 200px; }
+.hp-bento-slot-hero { min-width: 340px; }
+.hp-bento-slot-hero .t3-bento-bg { min-height: 280px; }
+.hp-bento-slot-tile .t3-bento-bg { min-height: 200px; }
+.t3-bento-bg {
+    background-image: var(--banner-bg);
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    min-height: 200px;
+    display: flex !important;
+    align-items: flex-end;
+    padding: 16px;
+    width: 100%;
+}
+.t3-bento-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(255,255,255,0.92);
+    padding: 12px 14px;
+    border-radius: 8px;
+    max-width: 90%;
+}
+.t3-bento-title { font-size: 18px; font-weight: 700; color: #181b1f; line-height: 1.3; }
+.t3-bento-sub { font-size: 14px; color: #333; line-height: 1.4; }
+.hp-bento-banners a { text-decoration: none; }
+#iherb-homepage { background: #fff; }
+#store-landing-page { max-width: 1376px; margin: 0 auto; }
+.iherb-header-logo img { max-height: 36px; width: auto; }
+
+/* Mobile menu */
+.t3-mobile-menu {
+    position: fixed; inset: 0; z-index: 9999;
+    pointer-events: none; visibility: hidden;
+}
+.t3-mobile-menu.is-open { pointer-events: auto; visibility: visible; }
+.t3-mobile-menu__overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.45);
+    opacity: 0; transition: opacity 0.25s;
+}
+.t3-mobile-menu.is-open .t3-mobile-menu__overlay { opacity: 1; }
+.t3-mobile-menu__panel {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    width: min(320px, 85vw); background: #fff;
+    transform: translateX(-100%); transition: transform 0.25s;
+    overflow-y: auto; box-shadow: 2px 0 16px rgba(0,0,0,0.15);
+}
+.t3-mobile-menu.is-open .t3-mobile-menu__panel { transform: translateX(0); }
+.t3-mobile-menu__head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid #e8e8e8;
+    font-size: 16px;
+}
+.t3-mobile-menu__head button {
+    background: none; border: none; font-size: 28px; line-height: 1; cursor: pointer; color: #333;
+}
+.t3-mobile-menu__list { list-style: none; margin: 0; padding: 8px 0; }
+.t3-mobile-menu__list li a {
+    display: block; padding: 12px 20px; color: #181b1f;
+    text-decoration: none; font-size: 15px; border-bottom: 1px solid #f0f0f0;
+}
+.t3-mobile-menu__list li a:hover { background: #f7f8f9; color: var(--primary-color, #458500); }
+
+/* Bottom mobile bar */
+.t3-bottom-bar {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid #e8e8e8;
+    z-index: 900; padding: 6px 0 env(safe-area-inset-bottom);
+    justify-content: space-around; align-items: center;
+}
+.t3-bottom-bar__item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    background: none; border: none; color: #53575a; text-decoration: none;
+    font-size: 10px; padding: 4px 8px; cursor: pointer;
+}
+.t3-bottom-bar__item i { font-size: 18px; }
+.t3-bottom-bar__item:hover { color: var(--primary-color, #458500); }
+
+@media (max-width: 768px) {
+    .t3-bottom-bar { display: flex; }
+    body { padding-bottom: 60px; }
+    .sub-header-container-wrapper { display: none; }
+}
+
+/* Mobile search modal */
+.t3-mobile-search {
+    position: fixed; inset: 0; z-index: 10000;
+    display: none; align-items: flex-start; justify-content: center;
+    padding-top: 60px;
+}
+.t3-mobile-search.active { display: flex; }
+.t3-mobile-search .mobile-search-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+}
+.t3-mobile-search .mobile-search-content {
+    position: relative; z-index: 2; background: #fff;
+    width: min(560px, 92vw); border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2); overflow: hidden;
+}
+.t3-mobile-search .mobile-search-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid #eee;
+}
+.t3-mobile-search .mobile-search-header h3 { margin: 0; font-size: 18px; }
+.t3-mobile-search .close-mobile-search {
+    font-size: 28px; cursor: pointer; line-height: 1; color: #666;
+}
+.t3-mobile-search .mobile-search-body { padding: 16px 20px 20px; }
+.t3-mobile-search .mobile-search-wrapper {
+    display: flex; border: 2px solid var(--primary-color,#458500);
+    border-radius: 999px; overflow: hidden;
+}
+.t3-mobile-search .mobile-search-wrapper input {
+    flex: 1; border: none; padding: 12px 16px; font-size: 15px; outline: none;
+}
+.t3-mobile-search .mobile-search-wrapper button {
+    background: var(--btn-color,#458500); border: none; color: #fff;
+    padding: 0 18px; cursor: pointer;
+}
+.t3-search-list { list-style: none; margin: 12px 0 0; padding: 0; max-height: 320px; overflow-y: auto; }
+.t3-search-list li a {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 10px 4px; border-bottom: 1px solid #f0f0f0;
+    text-decoration: none; color: #181b1f; font-size: 14px;
+}
+.t3-search-list li a:hover { color: var(--primary-color,#458500); }
+.t3-search-empty { text-align: center; color: #888; padding: 16px 0; margin: 0; }
+
+/* Cart sidebar */
+.t3-cart-sidebar {
+    position: fixed; top: 0; right: -360px; width: min(360px, 90vw);
+    height: 100%; background: #fff; z-index: 10001;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+    transition: right 0.3s ease; display: flex; flex-direction: column;
+}
+.t3-cart-sidebar.open { right: 0; }
+.t3-cart-sidebar .cart-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 20px; border-bottom: 1px solid #eee;
+}
+.t3-cart-sidebar .cart-header h3 { margin: 0; font-size: 18px; }
+.t3-cart-sidebar .cart-header span { font-size: 28px; cursor: pointer; line-height: 1; }
+.t3-cart-sidebar .cart-content { padding: 20px; flex: 1; overflow-y: auto; }
+.t3-cart-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    z-index: 10000; opacity: 0; visibility: hidden; transition: 0.3s;
+}
+.t3-cart-overlay.open { opacity: 1; visibility: visible; }
+
+/* Layout wrapper */
+.t3-layout { scroll-behavior: smooth; }
+.t3-body { margin: 0; background: #fff; }
+.t3-main-content { min-height: 55vh; }
+
+@media (max-width: 768px) {
+    .t3-bottom-bar { display: flex; }
+    body.t3-body { padding-bottom: 62px; }
+    .sub-header-container-wrapper { display: none; }
+    .branded-header-end .iherb-header-search { flex: 1; }
+}
+
+/* Cart badge */
+.iherb-header-cart-quantity:not(.cart-hide) {
+    display: flex !important;
+    align-items: center; justify-content: center;
+    background: var(--btn-color, #458500);
+    color: #fff; border-radius: 50%;
+    min-width: 18px; height: 18px;
+    font-size: 11px; font-weight: 700;
+    position: absolute; top: -4px; right: -8px;
+}
+.iherb-header-cart { position: relative; }
+
+/* Main content area */
+.t3-main-content { min-height: 50vh; background: #fff; }
+
+/* Logo fallback */
+.iherb-header-logo img { max-height: 40px; width: auto; object-fit: contain; }
+
+/* Promo pills scroll on mobile */
+@media (max-width: 768px) {
+    .universal-pills { display: flex; overflow-x: auto; gap: 8px; }
+    .persistent-pill-using-only-bannertool { flex: 0 0 auto; white-space: nowrap; padding: 4px 12px; border-radius: 999px; }
+}

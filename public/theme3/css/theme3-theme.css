@@ -1,0 +1,463 @@
+/* Theme3 — iHerb-inspired wellness storefront overrides */
+
+:root {
+    --t3-green: var(--primary-color, #458500);
+    --t3-green-dark: #2d5600;
+    --t3-green-light: #e8f3dc;
+    --t3-nav: var(--navbar-color, #458500);
+    --t3-btn: var(--btn-color, #458500);
+    --t3-text: #181b1f;
+    --t3-muted: #53575a;
+    --t3-border: #e8e8e8;
+    --t3-bg: #f7f8f9;
+    --t3-radius: 12px;
+    --t3-shadow: 0 2px 12px rgba(24, 27, 31, 0.08);
+}
+
+body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--t3-text);
+    background: #fff;
+}
+
+/* Top bar */
+.nav {
+    background: var(--t3-green-dark);
+    border-bottom: none;
+}
+.nav .marquee p,
+.nav-col-right ul li a {
+    color: #fff;
+    font-size: 12px;
+}
+
+/* Header */
+.header {
+    background: #fff;
+    border-bottom: 1px solid var(--t3-border);
+    box-shadow: var(--t3-shadow);
+}
+.header-search .search-wrapper {
+    border: 2px solid var(--t3-green);
+    border-radius: 999px;
+    overflow: hidden;
+}
+.header-search input {
+    border: none;
+    padding: 10px 16px;
+}
+.header-search i {
+    color: var(--t3-green);
+    padding-right: 14px;
+    cursor: pointer;
+}
+.header-login-section ul li a {
+    color: var(--t3-text);
+    font-weight: 500;
+}
+.header-login-section .cart-count {
+    background: var(--t3-btn);
+}
+
+/* Category nav */
+.category-section-top {
+    background: var(--t3-nav);
+    border: none;
+}
+.category-button-top button {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 8px;
+}
+.cat-sec-menu ul li a {
+    color: #fff;
+    font-weight: 500;
+}
+.cat-sec-menu ul li a:hover {
+    color: #fff;
+    opacity: 0.85;
+}
+
+/* Theme3 hero slider */
+.t3-hero-slider {
+    padding: 20px 0 8px;
+    background: var(--t3-bg);
+}
+.t3-hero-slider .container {
+    max-width: 1376px;
+}
+.t3-slider-main {
+    position: relative;
+    border-radius: var(--t3-radius);
+    overflow: hidden;
+    background: #fff;
+    box-shadow: var(--t3-shadow);
+}
+.t3-slider-track {
+    display: flex;
+    transition: transform 0.45s ease;
+}
+.t3-slide {
+    min-width: 100%;
+    position: relative;
+}
+.t3-slide img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+}
+.t3-slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+    display: flex;
+    align-items: center;
+    padding: 32px 48px;
+}
+.t3-slide-content h2 {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    line-height: 1.2;
+}
+.t3-slide-content p {
+    color: rgba(255,255,255,0.92);
+    font-size: 16px;
+    margin: 0 0 20px;
+}
+.t3-slide-btn {
+    display: inline-block;
+    background: var(--t3-btn);
+    color: #fff !important;
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+}
+.t3-slide-btn:hover {
+    filter: brightness(1.08);
+    color: #fff;
+}
+.t3-slider-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.95);
+    color: var(--t3-text);
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: var(--t3-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.t3-slider-arrow.prev { left: 12px; }
+.t3-slider-arrow.next { right: 12px; }
+.t3-slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 0 4px;
+}
+.t3-slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: #ccc;
+    cursor: pointer;
+    padding: 0;
+}
+.t3-slider-dot.active {
+    background: var(--t3-green);
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* Bento promo tiles under slider */
+.t3-bento-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+}
+.t3-bento-tile {
+    border-radius: var(--t3-radius);
+    overflow: hidden;
+    position: relative;
+    min-height: 140px;
+    background: #fff;
+    box-shadow: var(--t3-shadow);
+    text-decoration: none;
+    display: block;
+}
+.t3-bento-tile img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+.t3-bento-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.65));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Section titles */
+.t3-section {
+    padding: 36px 0;
+}
+.t3-section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--t3-text);
+    margin: 0 0 20px;
+}
+.t3-section-title span {
+    color: var(--t3-green);
+}
+
+/* Category chips */
+.t3-cat-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+}
+.t3-cat-chip {
+    flex: 0 0 auto;
+    text-align: center;
+    text-decoration: none;
+    width: 100px;
+}
+.t3-cat-chip img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--t3-border);
+    background: #fff;
+}
+.t3-cat-chip span {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--t3-text);
+    font-weight: 500;
+}
+.t3-cat-chip:hover span {
+    color: var(--t3-green);
+}
+
+/* Product grid — iHerb card style */
+.t3-product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+}
+.t3-product-box {
+    height: 100%;
+    border: 1px solid var(--t3-border);
+    border-radius: var(--t3-radius);
+    padding: 12px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.t3-product-box:hover {
+    box-shadow: var(--t3-shadow);
+    border-color: var(--t3-green-light);
+}
+.t3-product-box__image {
+    display: block;
+    text-align: center;
+}
+.t3-product-box__image img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin: 0 auto;
+}
+.t3-product-box__title {
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--t3-text);
+    min-height: 38px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-decoration: none;
+}
+.t3-product-box__title:hover {
+    color: var(--t3-green);
+}
+.t3-product-box__price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: baseline;
+    font-size: 14px;
+}
+.t3-product-box__price .price {
+    font-weight: 700;
+    color: var(--t3-text);
+}
+.t3-product-box__price .price-sale {
+    font-weight: 700;
+    color: #c8232c;
+}
+.t3-product-box__price .price-old {
+    color: #888;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+.t3-product-box__badge {
+    margin-top: auto;
+    background: var(--t3-green-light);
+    color: var(--t3-green-dark);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    width: fit-content;
+}
+.t3-product-box__btn {
+    margin-top: 8px;
+    width: 100%;
+    background: var(--t3-btn);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.t3-product-box__btn:hover {
+    filter: brightness(1.06);
+}
+
+/* Feature boxes */
+.home-boxes-section {
+    background: var(--t3-green-light) !important;
+    border-top: none !important;
+}
+.home-box-icon {
+    color: var(--t3-green) !important;
+}
+
+/* Clients / testimonials */
+.t3-clients-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+.t3-client-card {
+    background: #fff;
+    border: 1px solid var(--t3-border);
+    border-radius: var(--t3-radius);
+    padding: 20px;
+    text-align: center;
+}
+.t3-client-card img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+}
+
+/* Promo photos row */
+.t3-promo-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.t3-promo-item {
+    border-radius: var(--t3-radius);
+    overflow: hidden;
+    box-shadow: var(--t3-shadow);
+}
+.t3-promo-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Footer */
+.footer {
+    background: #181b1f;
+    color: #ccc;
+}
+.footer h3 {
+    color: #fff;
+}
+.footer a {
+    color: #ccc;
+}
+.footer a:hover {
+    color: var(--t3-green-light);
+}
+.bottom-bar {
+    background: #fff;
+    border-top: 1px solid var(--t3-border);
+}
+.bottom-bar .bar-item {
+    color: var(--t3-muted);
+}
+.bottom-bar .bar-item:hover,
+.bottom-bar .bar-item.active {
+    color: var(--t3-green);
+}
+
+/* Buttons site-wide */
+button.btn-primary,
+.slide-btn,
+.t3-slide-btn {
+    background: var(--t3-btn) !important;
+    border-color: var(--t3-btn) !important;
+}
+
+@media (max-width: 992px) {
+    .t3-bento-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .t3-promo-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .t3-slide img {
+        height: 220px;
+    }
+    .t3-slide-overlay {
+        padding: 20px;
+    }
+    .t3-slide-content h2 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 576px) {
+    .t3-bento-row,
+    .t3-promo-row {
+        grid-template-columns: 1fr;
+    }
+}
