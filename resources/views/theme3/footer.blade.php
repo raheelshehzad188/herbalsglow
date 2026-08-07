@@ -316,9 +316,9 @@
             <div class="iherb-history-main">
                 <div class="iherb-logo">
                     @if(!empty($setting) && !empty($setting->wlogo))
-                        <img src="{{ img_url($setting->wlogo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
+                        <img src="{{ img_cdn_url($setting->wlogo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
                     @elseif(!empty($setting) && !empty($setting->logo))
-                        <img src="{{ img_url($setting->logo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
+                        <img src="{{ img_cdn_url($setting->logo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
 							@else
                         <img src="https://s3.images-iherb.com/cms/images/logos/logo-iHerb.svg" alt="Logo"/>
 							@endif

@@ -302,7 +302,7 @@
     });
   })();
 </script>
-<link href="{{ (!empty($setting) && !empty($setting->logo1)) ? img_url($setting->logo1) : asset('favicon.ico') }}" rel="icon" type="image/x-icon" />
+<link href="{{ (!empty($setting) && !empty($setting->logo1)) ? img_cdn_url($setting->logo1) : asset('favicon.ico') }}" rel="icon" type="image/x-icon" />
 <!-- dynamic canonical/meta via seo-head -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

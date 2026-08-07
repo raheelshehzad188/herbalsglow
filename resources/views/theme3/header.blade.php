@@ -292,7 +292,7 @@
                    data-ga-navigation-path="/"
                    aria-label="Header logo Link to Home">
                     @if(!empty($setting) && !empty($setting->logo))
-                        <img src="{{ img_url($setting->logo) }}"
+                        <img src="{{ img_cdn_url($setting->logo) }}"
                              alt="{{ $setting->site_title ?? $setting->title ?? 'Home' }}"
                              class="t3-site-logo"
                              onerror="this.onerror=null;this.style.display='none';var f=this.nextElementSibling;if(f){f.style.display='inline-block';}">

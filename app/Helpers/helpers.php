@@ -113,6 +113,38 @@ if (!function_exists('img_url')) {
     }
 }
 
+if (!function_exists('img_cdn_url')) {
+    /**
+     * Always build image URL from IMG_URL (no local fallback).
+     * Use for header/footer logos so front always loads from CDN/remote.
+     */
+    function img_cdn_url($path = ''): string {
+        $base = rtrim((string) (env('IMG_URL') ?: config('app.url')), '/');
+
+        if ($path === null || trim((string) $path) === '') {
+            return $base;
+        }
+
+        $path = trim((string) $path);
+
+        if (preg_match('#^https?://#i', $path)) {
+            if (!preg_match('#^https?://(127\.0\.0\.1|localhost)(:\d+)?/#i', $path)) {
+                $path = preg_replace('#^http://#i', 'https://', $path);
+            }
+            return $path;
+        }
+
+        $path = str_replace('\\', '/', ltrim($path, '/'));
+        $url = $base . '/' . $path;
+
+        if (!preg_match('#^https?://(127\.0\.0\.1|localhost)(:\d+)?/#i', $url)) {
+            $url = preg_replace('#^http://#i', 'https://', $url);
+        }
+
+        return $url;
+    }
+}
+
 if (!function_exists('custom_assets')) {
     function custom_assets($path = '') {
         return img_url($path);
