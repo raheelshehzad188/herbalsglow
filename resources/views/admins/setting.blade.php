@@ -139,26 +139,44 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-sm-12 control-label">Favicon:</label>
-                                            <div class="col-sm-12"><input type="file" onchange="readURL(this);" <?php echo isset($edit->id) ? null : "required"; ?> accept="image/png, image/gif, image/jpeg, image/webp" class="form-control" name="logo1">
-                                            <img src="<?php echo isset($edit->logo1) ? asset($edit->logo1) : null; ?>"  alt="" <?php echo ($edit->logo1 != null) ? 'style="width:100px;"' : 'style="display:none;width:100px;"'; ?>></div>
+                                            <div class="col-sm-12">
+                                                <input type="file" onchange="readURL(this);" accept="image/png, image/gif, image/jpeg, image/webp, image/svg+xml" class="form-control" name="logo1">
+                                                <img
+                                                    src="{{ !empty($edit->logo1) ? img_url($edit->logo1) : '' }}"
+                                                    alt="Favicon"
+                                                    class="setting-logo-preview"
+                                                    style="{{ !empty($edit->logo1) ? 'width:100px;margin-top:8px;' : 'display:none;width:100px;margin-top:8px;' }}">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-sm-12 control-label">White Logo:</label>
-                                            <div class="col-sm-12"><input type="file" onchange="readURL(this);" <?php echo isset($edit->id) ? null : "required"; ?> accept="image/png, image/gif, image/jpeg, image/webp" class="form-control" name="wlogo">
-                                            <img src="<?php echo isset($edit->logo) ? asset($edit->wlogo) : null; ?>"  alt="" <?php echo ($edit->wlogo != null) ? 'style="width:100px;"' : 'style="display:none;width:100px;"'; ?>></div>
+                                            <div class="col-sm-12">
+                                                <input type="file" onchange="readURL(this);" accept="image/png, image/gif, image/jpeg, image/webp, image/svg+xml" class="form-control" name="wlogo">
+                                                <img
+                                                    src="{{ !empty($edit->wlogo) ? img_url($edit->wlogo) : '' }}"
+                                                    alt="White Logo"
+                                                    class="setting-logo-preview"
+                                                    style="{{ !empty($edit->wlogo) ? 'width:100px;margin-top:8px;background:#333;padding:6px;' : 'display:none;width:100px;margin-top:8px;background:#333;padding:6px;' }}">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="col-sm-12 control-label">Header Logo:</label>
-                                            <div class="col-sm-12"><input type="file" onchange="readURL(this);" <?php echo isset($edit->id) ? null : "required"; ?> accept="image/png, image/gif, image/jpeg, image/webp" class="form-control" name="logo">
-                                            <img src="<?php echo isset($edit->logo) ? asset($edit->logo) : null; ?>"  alt="" <?php echo ($edit->logo != null) ? 'style="width:100px;"' : 'style="display:none;width:100px;"'; ?>></div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
+                                            <div class="col-sm-12">
+                                                <input type="file" onchange="readURL(this);" accept="image/png, image/gif, image/jpeg, image/webp, image/svg+xml" class="form-control" name="logo">
+                                                <img
+                                                    src="{{ !empty($edit->logo) ? img_url($edit->logo) : '' }}"
+                                                    alt="Header Logo"
+                                                    class="setting-logo-preview"
+                                                    style="{{ !empty($edit->logo) ? 'width:100px;margin-top:8px;border:1px solid #ddd;padding:4px;' : 'display:none;width:100px;margin-top:8px;border:1px solid #ddd;padding:4px;' }}">
+                                                <small class="text-muted" style="display:block;margin-top:4px;">Used in site header (top logo)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         
 <!-- Home Page Tab -->
         <div class="tab-pane fade" id="homepage" role="tabpanel" aria-labelledby="homepage-tab">

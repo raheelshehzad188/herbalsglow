@@ -93,6 +93,17 @@ if (!function_exists('img_url')) {
         $path = str_replace('\\', '/', $path);
         $path = ltrim($path, '/');
 
+        // Prefer local public file when it exists (admin uploads on local/dev).
+        $localRelative = $path;
+        if (strpos($localRelative, 'public/') === 0) {
+            $localRelative = substr($localRelative, 7);
+        }
+        $localAbsolute = public_path($localRelative);
+        if ($localRelative !== '' && is_file($localAbsolute)) {
+            // Root-relative so preview works on current host (not remote APP_URL/IMG_URL).
+            return '/' . ltrim($localRelative, '/') . '?v=' . @filemtime($localAbsolute);
+        }
+
         $url = $base . '/' . $path;
         if (!preg_match('#^https?://(127\.0\.0\.1|localhost)(:\d+)?/#i', $url)) {
             $url = preg_replace('#^http://#i', 'https://', $url);

@@ -880,49 +880,26 @@ $ret = $query->offset($start)->limit($length)->get();
                 
                 if ($request->hasFile('logo1')) {
                     $file = $request->file('logo1');
-                    $extension = $file->getClientOriginalExtension();
-                    $extension = 'webp';
-                    // Rename the file with a new extension
-                    $name = time() . '.' . $extension;
-                
-                    // Move the uploaded file to the desired directory
-                    $file->move(public_path('/images/'), $name);
-                
-                    $setting['logo1'] = 'public/images/'.$name;
+                    $extension = strtolower($file->getClientOriginalExtension() ?: 'webp');
+                    $name = time() . '_favicon.' . $extension;
+                    $file->move(public_path('images'), $name);
+                    $setting->logo1 = 'public/images/' . $name;
                 }
-                
-                
-                // if(isset($request->logo)){
-                //     $imageone = $request->logo;
-                //     $pimage_name = time().$imageone->getClientOriginalName();
-                //     $imageone->move(public_path('/images/'),$pimage_name);
-                //     $setting->logo = 'public/images/'.$pimage_name;
-                // }
-                
+
                if ($request->hasFile('wlogo')) {
                     $file = $request->file('wlogo');
-                    $extension = $file->getClientOriginalExtension();
-                    $extension = 'webp';
-                    // Rename the file with a new extension
-                    $name = time() . '.' . $extension;
-                
-                    // Move the uploaded file to the desired directory
-                    $file->move(public_path('/images/'), $name);
-                
-                    $setting['wlogo'] = 'public/images/'.$name;
+                    $extension = strtolower($file->getClientOriginalExtension() ?: 'webp');
+                    $name = time() . '_wlogo.' . $extension;
+                    $file->move(public_path('images'), $name);
+                    $setting->wlogo = 'public/images/' . $name;
                 }
-                
+
                if ($request->hasFile('logo')) {
                     $file = $request->file('logo');
-                    $extension = $file->getClientOriginalExtension();
-                    $extension = 'webp';
-                    // Rename the file with a new extension
-                    $name = time() . '.' . $extension;
-                
-                    // Move the uploaded file to the desired directory
-                    $file->move(public_path('/images/'), $name);
-                
-                    $setting['logo'] = 'public/images/'.$name;
+                    $extension = strtolower($file->getClientOriginalExtension() ?: 'webp');
+                    $name = time() . '_logo.' . $extension;
+                    $file->move(public_path('images'), $name);
+                    $setting->logo = 'public/images/' . $name;
                 }
                 
                 // if(isset($request->homepage_image_one)){
@@ -1073,6 +1050,11 @@ $ret = $query->offset($start)->limit($length)->get();
                 $setting->active_theme = $request->active_theme ?? 2;
                 $setting->head_scripts=$request->head_scripts;
                 $setting->save();
+
+                return redirect('/admin/setting')->with([
+                    'msg' => 'Settings updated successfully.',
+                    'msg_type' => 'success',
+                ]);
             }
         }
         

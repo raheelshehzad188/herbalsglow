@@ -1,7 +1,8 @@
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// Laravel 8 / Symfony 5.4 are not fully PHP 8.5 compatible; hide vendor deprecations.
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 

@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // PHP 8.4+/8.5 deprecations from older Symfony/Laravel 8 vendor code
+        error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
         require_once app_path('Helpers/helpers.php');
 
     }

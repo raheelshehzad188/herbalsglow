@@ -22,6 +22,23 @@ Route::get('/clear-cache', function() {
 Route::get('/test',[Admins\AdminController::class,'test'])->name('test');
 
 // Static assets routes - must be at the very beginning
+Route::get('/images/{path}', function ($path) {
+    $fullPath = public_path('images/' . $path);
+    $realBase = realpath(public_path('images'));
+    $realFile = realpath($fullPath);
+
+    if (!$realBase || !$realFile || strpos($realFile, $realBase) !== 0 || !is_file($realFile)) {
+        abort(404);
+    }
+
+    $mime = mime_content_type($realFile) ?: 'application/octet-stream';
+    // PNG saved as .webp still works; prefer correct mime by content
+    return response()->file($realFile, [
+        'Content-Type' => $mime,
+        'Cache-Control' => 'public, max-age=604800',
+    ]);
+})->where('path', '.*');
+
 Route::get('/theme2/css/{file}', function($file) {
     $path = public_path("theme2/css/{$file}");
     if (file_exists($path)) {

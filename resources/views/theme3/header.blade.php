@@ -293,13 +293,17 @@
                    aria-label="Header logo Link to Home">
                     @if(!empty($setting) && !empty($setting->logo))
                         <img src="{{ img_url($setting->logo) }}"
-                             alt="{{ $setting->site_name ?? $setting->title ?? 'Home' }}"
-                             class="t3-site-logo">
-                                    @else
-                        <svg class="icon icon-iherblogo">
-                            <use xlink:href="#icon-iherblogo"></use>
-                        </svg>
-                                    @endif
+                             alt="{{ $setting->site_title ?? $setting->title ?? 'Home' }}"
+                             class="t3-site-logo"
+                             onerror="this.onerror=null;this.style.display='none';var f=this.nextElementSibling;if(f){f.style.display='inline-block';}">
+                        <span class="t3-site-logo-fallback" style="display:none;font-weight:700;font-size:18px;color:#458500;">
+                            {{ $setting->site_title ?? $setting->title ?? 'Home' }}
+                        </span>
+                    @else
+                        <span class="t3-site-logo-fallback" style="display:inline-block;font-weight:700;font-size:18px;color:#458500;">
+                            {{ $setting->site_title ?? $setting->title ?? 'Home' }}
+                        </span>
+                    @endif
                 </a>
             </div>
         </div>

@@ -312,42 +312,6 @@
 </style>
 
 <div class="iherb-history-wrap container-fluid">
-    <div class="iherb-header-ccl"
-         tabindex="0"
-         data-url="pro/countryselected.html">
-        <svg class="icon icon-ccl-globe-white">
-            <use xlink:href="#icon-ccl-globe-black"></use>
-        </svg>
-        <svg style="position: absolute; width: 0; height: 0; overflow: hidden" version="1.1" xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-        <symbol id="icon-checkoutarrow" viewBox="0 0 18 28">
-            <title>checkoutarrow</title>
-            <path d="M1.077 1.077l15.077 12.923-15.077 12.923v-25.846z"></path>
-        </symbol>
-    </defs>
-</svg>
-<style>
-    .icon-checkoutarrow {
-        height: 7px;
-        width: 5px;
-    }
-</style>
-    <button class="selected-country-wrapper" data-on="off" aria-haspopup="true" aria-expanded="false"
-            aria-label="Locale menu in header"
-    >
-        <div class="country-select">
-            <span class="country-code-flag">PK</span>
-        </div>
-        <div class="language-select hidden-xs hidden-sm">
-            <span>EN</span>
-        </div>
-        <div class="currency-select hidden-xs hidden-sm">
-            <span>PKR</span>
-        </div>
-    </button>
-
-    </div>                
     <div id="iherb-history">
             <div class="iherb-history-main">
                 <div class="iherb-logo">

@@ -355,12 +355,12 @@
                     @if(!empty($sub_cat))
                         <li><span>Subcategory</span><span>{{ $sub_cat->name }}</span></li>
                     @endif
-                    <li><span>Availability</span><span>{{ $inStock ? 'In Stock' : 'Out of Stock' }}</span></li>
-                    @if($hasDiscount)
-                        <li><span>Price</span><span>{{ $currency }}{{ number_format($finalPrice, 2) }} <del class="t3-pdp-specs__cut">{{ $currency }}{{ number_format($listPrice, 2) }}</del></span></li>
-                    @else
-                        <li><span>Price</span><span>{{ $currency }}{{ number_format($finalPrice, 2) }}</span></li>
-                    @endif
+                    <li>
+                        <span>Availability</span>
+                        <span class="t3-pdp-specs__stock {{ $inStock ? 'is-in' : 'is-out' }}">
+                            {{ $inStock ? 'In Stock' : 'Out of Stock' }}
+                        </span>
+                    </li>
                 </ul>
 
                 @if($specTags->count() > 0)
