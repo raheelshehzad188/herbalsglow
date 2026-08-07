@@ -41,7 +41,7 @@ $cate = DB::table('categories')->get();
                                                             <tr class="tf-cart-item file-delete">
                                         <td class="tf-cart-item_product">
                                             <a href="product-detail.html" class="img-box">
-                                                <img src="{{env('IMG_URL')}}/{{$product->image_one}}" alt="img-product">
+                                                <img src="{{ img_url($product->image_one) }}" alt="img-product">
                                             </a>
                                             <div class="cart-info">
                                                 <a href="product-detail.html" class="cart-title link">{{$product->product_name}}</a>

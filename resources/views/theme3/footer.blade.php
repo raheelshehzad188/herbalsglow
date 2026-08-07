@@ -352,9 +352,9 @@
             <div class="iherb-history-main">
                 <div class="iherb-logo">
                     @if(!empty($setting) && !empty($setting->wlogo))
-                        <img src="{{ asset($setting->wlogo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
+                        <img src="{{ img_url($setting->wlogo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
                     @elseif(!empty($setting) && !empty($setting->logo))
-                        <img src="{{ asset($setting->logo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
+                        <img src="{{ img_url($setting->logo) }}" alt="{{ $setting->site_name ?? $setting->title ?? 'Logo' }}"/>
 							@else
                         <img src="https://s3.images-iherb.com/cms/images/logos/logo-iHerb.svg" alt="Logo"/>
 							@endif
@@ -525,93 +525,7 @@
                         }
 
                     </style>
-                <div class="footer-section ">
-                    <ul>
-                        <li class="title">About</li>
-                                <li class="">
-                                    <a href="info/about.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-AboutiHerb" data-ga-event-label="About Us" >
-About Us                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="https://www.iherb.com/ugc/store-reviews" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-AboutiHerb" data-ga-event-label="Store Reviews" data-ga-event-name="link_click" data-ga-interaction-type="store reviews" data-ga-location-detail="footer link">
-Store Reviews<span class="badge">New</span>                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="https://secure.iherb.com/iherb-rewards" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-AboutiHerb" data-ga-event-label="Rewards Program" >
-Rewards Program                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="info/affiliates.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-AboutiHerb" data-ga-event-label="Affiliate Program" >
-Affiliate Program                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="info/quality.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-AboutiHerb" data-ga-event-label="iHerb Quality Promise" >
-iHerb Quality Promise                                    </a>
-                                </li>
-                    </ul>
-                </div>
-                <div class="footer-section ">
-                    <ul>
-                        <li class="title">Company</li>
-                                <li class="english-only">
-                                    <a href="https://corporate.iherb.com/" target="_blank" rel="noopener" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-CompanyiHerb" data-ga-event-label="Corporate" >
-Corporate                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="pressreleases.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-CompanyiHerb" data-ga-event-label="Press" >
-Press                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="info/suppliers.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-CompanyiHerb" data-ga-event-label="Supplier Partners" >
-Partner with iHerb                                    </a>
-                                </li>
-                    </ul>
-                </div>
-                <div class="footer-section ">
-                    <ul>
-                        <li class="title">Resources</li>
-                                <li class="">
-                                    <a href="blog.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-ResourcesiHerb" data-ga-event-label="iHerb Blog" >
-Wellness Hub                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="userway-widget">Accessibility View</a>
-                                </li>
-                                <li class="">
-                                    <a href="info/sales-and-offers.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-ResourcesiHerb" data-ga-event-label="Sales &amp; Offers" >
-Sales &amp; Offers                                    </a>
-                                </li>
-                    </ul>
-                </div>
-                <div class="footer-section ">
-                    <ul>
-                        <li class="title">Customer Service</li>
-                                <li class="">
-                                    <a href="help/contact.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-Customer ServiceiHerb" data-ga-event-label="Contact Us" >
-24/7 Support                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="css/request-product.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-Customer ServiceiHerb" data-ga-event-label="Suggest a Product" >
-Suggest a Product                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="https://secure.iherb.com/orders/gc-tracking" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-Customer ServiceiHerb" data-ga-event-label="Order Status" >
-Order Status                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="{{ url('/shipping') }}" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-Customer ServiceiHerb" data-ga-event-label="Shipping" >
-Shipping                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="info/returns.html" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-Customer ServiceiHerb" data-ga-event-label="refunds and returns" >
-Returns                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="https://secure.iherb.com/communications/preferences" target="_self" rel="" data-ga-event="click" data-ga-event-category="Ecommerce" data-ga-event-action="Footer-Customer ServiceiHerb" data-ga-event-label="Communication Preferences" >
-Communication Preferences                                    </a>
-                                </li>
-                    </ul>
-                </div>
+                @include('theme3.partials.footer-nav-pages')
     </div>
 
     <div class="container-fluid">
@@ -775,20 +689,18 @@ Communication Preferences                                    </a>
         </div>
 
         <div>
-            <div class="col-xs-24 footer-links">
-                <a href="info/privacy.html" data-ga-event="click" data-ga-event-category="Ecommerce"
-                   data-ga-event-action="Footer-End-Links" data-ga-event-label="Privacy Policy">
-                    Privacy Policy | iHerb
-                </a>
-                <a href="#" id="teconsent" style="display: none"></a>
-                <a href="info/terms-of-use.html" data-ga-event="click" data-ga-event-category="Ecommerce"
-                   data-ga-event-action="Footer-End-Links" data-ga-event-label="Terms of Use">
-                    Terms of Use | iHerb
-                </a>
-                <a href="info/accessibility.html" data-ga-event="click" data-ga-event-category="Ecommerce"
-                   data-ga-event-action="Footer-End-Links" data-ga-event-label="accessibility">
-                    Accessibility
-                </a>
+            <div class="col-xs-24 footer-links t3-footer-bottom-links">
+                @php
+                    $policyLinks = collect($footer_menus['footer_policies']['pages'] ?? []);
+                    $privacyPage = $policyLinks->firstWhere('slug', 'privacy-policy');
+                    $termsPage = $policyLinks->firstWhere('slug', 'terms-conditions');
+                @endphp
+                @if($privacyPage)
+                    <a href="{{ page_url($privacyPage) }}">{{ $privacyPage->name }}</a>
+                @endif
+                @if($termsPage)
+                    <a href="{{ page_url($termsPage) }}">{{ $termsPage->name }}</a>
+                @endif
             </div>
         </div>
     </div>

@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-xl-3 col-md-4 col-6">
                         <a href="{{env('APP_URL')}}" class="logo-header"> 
-                            <img src="{{env('IMG_URL')}}{{$setting->logo}}" alt="logo" class="logo">
+                            <img src="{{ img_url($setting->logo) }}" alt="logo" class="logo">
                         </a>
                     </div>
                     <div class="col-xl-6 tf-md-hidden">

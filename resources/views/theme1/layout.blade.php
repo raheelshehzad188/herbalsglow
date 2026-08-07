@@ -347,7 +347,7 @@ $Site= Setting::where(['id'=>'1'])->first();
                                     <div class="tf-mini-cart-item">
                                         <div class="tf-mini-cart-image">
                                             <a href="{{url('/')}}/product/{{$product->slug}}">
-                                                <img src="{{ env('IMG_URL'); }}/{{$product->image_one}}" alt="">
+                                                <img src="{{ img_url($product->image_one) }}" alt="">
                                             </a>
                                         </div>
                                         <div class="tf-mini-cart-info">

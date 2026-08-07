@@ -34,7 +34,7 @@ $final_percntage = ceil($perctg);
                                     <div class="tf-loop-item">
                                     <div class="image">
                                         <a href="{{url('/')}}/product/{{$v->slug}}">
-                                            <img src="{{env('IMG_URL')}}{{$v->image_one}}" alt="">
+                                            <img src="{{ img_url($v->image_one) }}" alt="">
                                         </a>
                                     </div>
                                     <div class="content">

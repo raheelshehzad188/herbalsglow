@@ -292,14 +292,14 @@
                    data-ga-navigation-path="/"
                    aria-label="Header logo Link to Home">
                     @if(!empty($setting) && !empty($setting->logo))
-                        <img src="{{ asset($setting->logo) }}"
+                        <img src="{{ img_url($setting->logo) }}"
                              alt="{{ $setting->site_name ?? $setting->title ?? 'Home' }}"
                              class="t3-site-logo">
-                    @else
+                                    @else
                         <svg class="icon icon-iherblogo">
                             <use xlink:href="#icon-iherblogo"></use>
                         </svg>
-                    @endif
+                                    @endif
                 </a>
             </div>
         </div>
@@ -601,7 +601,7 @@
                                         </div>
                                     </a>
                                 </li>
-                    </ul>
+                        </ul>
                         <ul class="action-container">
                             <li class="iherb-header-signed-in">
                                 <a data-relative-checkout-link="true" href="https://checkout1.iherb.com/account/logoff" onclick="sessionStorage.clear()" class="btn btn-primary-universal btn-block"
@@ -636,7 +636,7 @@
         </span>
     </div>
 
-</div>
+				</div>
             
             <div class="iherb-header-cart">
                 @php
@@ -669,7 +669,7 @@
                 </svg>
                 <span class="add-to-cart-title">Added to Cart</span>
                 <span class="num-items"></span>
-            </div>
+			</div>
         </section>
         <section class="add-to-cart-content">
             <section class="add-to-cart-img col-xs-6"></section>
@@ -679,16 +679,16 @@
                     <div class="row">
                         <span class="col-xs-12">Total:</span>
                         <span class="col-xs-12 amount-total total-small text-right"></span>
-                    </div>
+					</div>
                     <div class="row discount">
                         <span class="col-xs-12">Discount:</span>
                         <span class="col-xs-12 amount-discount total-small text-right"></span>
-                    </div>
+			</div>
                     <div class="row together">
                         <span class="col-xs-12">Together:</span>
                         <span class="col-xs-12 amount-together total-small text-right"></span>
-                    </div>
-                </div>
+		</div>
+	</div>
                 <div class="add-to-cart-totals">
                     <div class="quantity">Quantity: <span class="qty-amt"></span>
                         <div class="delivery-frequency">Deliver every <span class="freq-amt"></span></div>
@@ -727,7 +727,7 @@
 
             </div>
 
-        </div>
+            </div>
     </div>
     <div class="sub-header-container-wrapper">
         <div class="branded-header-container header-container sub-header-container">
@@ -810,7 +810,7 @@
                                                                         <span>
                                                                         </span>
                                                                     </a>
-                                                                </div>
+            </div>
                                                             </div>
                                                             <div class="brand-entry">
                                                                 <div class="type-default brand-link">
@@ -3091,7 +3091,7 @@
         <div class="more-dropdown">
             <ul>
                 
-            </ul>
+                    </ul>
         </div>
 
     </div>

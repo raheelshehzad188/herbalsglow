@@ -156,10 +156,10 @@ use App\Models\Admins\Gallerie;
                                 ?>
                                 <div class="form-group"><label class="col-sm-12 control-label">Brand:</label>
                                     <div class="col-sm-12">
-                                    <select  class="js-example-basic-multiple form-control" name="brand" >
-                                        @foreach($brands as $category)
-                                        
-                                        <option <?php echo isset($edit->category_id) && in_array($category->id,$cats) ? "selected" : null; ?> value="{{$category->id}}">{{$category->name}}</option>
+                                    <select class="form-control" name="brand" id="product-brand">
+                                        <option value="">Select Brand</option>
+                                        @foreach($brands as $brandOption)
+                                            <option value="{{ $brandOption->id }}" {{ (isset($edit->brand) && (string)$edit->brand === (string)$brandOption->id) ? 'selected' : '' }}>{{ $brandOption->name }}</option>
                                         @endforeach
                                     </select>
                                     </div>
@@ -472,6 +472,7 @@ use App\Models\Admins\Gallerie;
             // alert( $('#short_discriiption').summernote('code'));
     $("#short_discriiption").val($('#short_discriiption').summernote('code'));
     $("#product_details").val($('#product_details').summernote('code'));
+    $("#add_info").val($('#add_info').summernote('code'));
     
     return true;
     // e.preventDefault();
@@ -483,6 +484,9 @@ $(document).on("submit","#product_form",function(e){
     }
     if ($('#short_discriiption').summernote('codeview.isActivated')) {
         $('#short_discriiption').summernote('codeview.deactivate'); 
+    }
+    if ($('#add_info').summernote('codeview.isActivated')) {
+        $('#add_info').summernote('codeview.deactivate');
     }
 });
       document.getElementById('pro-image').addEventListener('change', readImage, false);
@@ -614,7 +618,63 @@ else
 {
     $('#percent').val(0);
 }
-                                //percent
-                            }
+}
+
+(function () {
+    var seoTitleTouched = false;
+    var seoDescTouched = false;
+    var $seoTitle = $('input[name="stitle"]');
+    var $seoDesc = $('input[name="sdescription"]');
+    var $seoKeys = $('input[name="skeywords"]');
+    var $name = $('input[name="product_name"]');
+    var $tags = $('input[name="tags"]');
+
+    $seoTitle.on('input', function () { seoTitleTouched = true; });
+    $seoDesc.on('input', function () { seoDescTouched = true; });
+
+    function syncSeoTitle() {
+        if (seoTitleTouched && $.trim($seoTitle.val()) !== '') return;
+        var name = $.trim($name.val() || '');
+        if (!name) return;
+        $seoTitle.val('Buy ' + name + ' | {{ env("WEB_NAME", "Store") }}');
+    }
+
+    function syncSeoDesc() {
+        if (seoDescTouched && $.trim($seoDesc.val()) !== '') return;
+        var shortHtml = '';
+        if ($('#short_discriiption').length && typeof $('#short_discriiption').summernote === 'function') {
+            shortHtml = $('#short_discriiption').summernote('code') || '';
+        } else {
+            shortHtml = $('#short_discriiption').val() || '';
+        }
+        var text = $('<div>').html(shortHtml).text().replace(/\s+/g, ' ').trim();
+        if (!text) {
+            text = $.trim($name.val() || '');
+        }
+        if (text.length > 160) text = text.substring(0, 157) + '...';
+        $seoDesc.val(text);
+    }
+
+    function syncSeoKeywords() {
+        if ($.trim($seoKeys.val()) !== '') return;
+        var tags = $.trim($tags.val() || '');
+        if (tags) {
+            $seoKeys.val(tags.replace(/-/g, ' '));
+        }
+    }
+
+    $name.on('keyup change blur', function () {
+        create_slug();
+        syncSeoTitle();
+        syncSeoDesc();
+    });
+    $(document).on('summernote.change', '#short_discriiption', syncSeoDesc);
+    $tags.on('change blur', syncSeoKeywords);
+
+    // Initial autofill when empty
+    if ($.trim($seoTitle.val()) === '') syncSeoTitle();
+    if ($.trim($seoDesc.val()) === '') syncSeoDesc();
+    if ($.trim($seoKeys.val()) === '') syncSeoKeywords();
+})();
 </script>
-@endpush
+@endsection

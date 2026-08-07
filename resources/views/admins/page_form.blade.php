@@ -41,11 +41,7 @@
                         <div class="form-group"><label class="col-sm-12 control-label">Menu Type:</label>
                             <div class="col-sm-12">
                                 <?php
-                                $types = array(
-                                    'top_bar'=>'Top Bar',
-                                    'header'=>'Header',
-                                    'quick_links'=>'Quick Links',
-                                    );
+                                $types = page_menu_types();
                                 ?>
                             <select class="form-control" name="menu_type" id="menu_type">
                                 @foreach($types as $k=> $v)

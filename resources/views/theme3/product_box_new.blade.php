@@ -11,8 +11,8 @@
 
     $listPrice = (float) ($v->selling_price ?? 0);
     $salePrice = (float) ($v->discount_price ?? 0);
-    $hasDiscount = $salePrice > 0 && $salePrice < $listPrice;
-    $finalPrice = $hasDiscount ? $salePrice : $listPrice;
+    $hasDiscount = $salePrice > 0 && ($listPrice <= 0 || $salePrice < $listPrice);
+    $finalPrice = $hasDiscount ? $salePrice : ($listPrice > 0 ? $listPrice : $salePrice);
 
     $productUrl = url('/product/' . $v->slug);
     $imageUrl = img_url($v->image_one);

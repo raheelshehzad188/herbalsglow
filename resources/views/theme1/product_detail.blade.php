@@ -40,7 +40,7 @@ function get_rating_html($rating) {
                                         <div class="swiper-wrapper stagger-wrap">
                                             <div class="swiper-slide stagger-item">
                                                 <div class="item">
-                                                    <img class="lazyload" data-src="{{env('IMG_URL')}}{{$item->image_one}}" src="{{env('IMG_URL')}}{{$item->image_one}}" alt="">
+                                                    <img class="lazyload" data-src="{{ img_url($item->image_one) }}" src="{{ img_url($item->image_one) }}" alt="">
                                                 </div>
                                             </div>l
                                             @foreach($files as $k=> $v)
@@ -56,8 +56,8 @@ function get_rating_html($rating) {
                                     <div class="swiper tf-product-media-main" id="gallery-swiper-started">
                                         <div class="swiper-wrapper" >
                                             <div class="swiper-slide">
-                                                <a href="{{env('IMG_URL')}}{{$item->image_one}}" target="_blank" class="item" data-pswp-width="770px" data-pswp-height="1075px">
-                                                    <img class="tf-image-zoom lazyload" data-zoom="{{env('IMG_URL')}}{{$item->image_one}}" data-src="{{env('IMG_URL')}}{{$item->image_one}}" src="{{env('IMG_URL')}}{{$item->image_one}}" alt="">
+                                                <a href="{{ img_url($item->image_one) }}" target="_blank" class="item" data-pswp-width="770px" data-pswp-height="1075px">
+                                                    <img class="tf-image-zoom lazyload" data-zoom="{{ img_url($item->image_one) }}" data-src="{{ img_url($item->image_one) }}" src="{{ img_url($item->image_one) }}" alt="">
                                                 </a>
                                             </div>
                                             @foreach($files as $k=> $v)

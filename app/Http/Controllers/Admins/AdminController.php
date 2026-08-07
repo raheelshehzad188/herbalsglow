@@ -1226,8 +1226,7 @@ $ret = $query->offset($start)->limit($length)->get();
                 $product->add_info=$request->add_info;
                 
                 $product->short_discriiption=$request->short_discriiption;
-                $tags = preg_replace('/\s+/', '-', $request->tags);
-                $product->tags=$tags;
+                $product->tags = trim((string) preg_replace('/\s*,\s*/', ',', str_replace('-', ' ', (string) $request->tags)));
                 $product->shipping_price=$request->shipping_price;
                 $product->slug=$request->slug;
                 $product->brand=$request->brand;
@@ -1279,17 +1278,27 @@ $ret = $query->offset($start)->limit($length)->get();
                 
     
                 
-                $seo = ProductsToMeta::where('pid', '=',  $request->hidden_id)->first();
+                $webName = env('WEB_NAME', 'Store');
+                $seoTitle = trim((string) $request->stitle) !== ''
+                    ? $request->stitle
+                    : ('Buy ' . $request->product_name . ' | ' . $webName);
+                $seoDesc = trim((string) $request->sdescription) !== ''
+                    ? $request->sdescription
+                    : strip_tags((string) $request->short_discriiption);
+                $seoKeys = trim((string) ($request->skeywords ?: $request->tags));
+                $seoKeys = trim(preg_replace('/\s+/', ' ', str_replace('-', ' ', $seoKeys)));
+
+                $seo = ProductsToMeta::where('pid', '=', $request->hidden_id)->orderByDesc('id')->first();
                 if($seo !== null){
-                    $seo->title = $request->stitle;
-                    $seo->description = $request->sdescription;
-                    $seo->keywords = $request->skeywords;
+                    $seo->title = $seoTitle;
+                    $seo->description = $seoDesc;
+                    $seo->keywords = $seoKeys;
                     $seo->save();
                 }else{
                     $seo = new ProductsToMeta;
-                    $seo['title'] = $request->stitle;
-                    $seo['description'] = $request->sdescription;
-                    $seo['keywords'] = $request->skeywords;
+                    $seo['title'] = $seoTitle;
+                    $seo['description'] = $seoDesc;
+                    $seo['keywords'] = $seoKeys;
                     $seo['pid'] = $request->hidden_id;
                     $seo->save();
                 }
@@ -1332,8 +1341,7 @@ $ret = $query->offset($start)->limit($length)->get();
                 $product->product_details=$request->product_details;
                 $product->short_discriiption=$request->short_discriiption;
                 $product->add_info=$request->add_info;
-                $tags = preg_replace('/\s+/', '-', $request->tags);
-                $product->tags=$tags;
+                $product->tags = trim((string) preg_replace('/\s*,\s*/', ',', str_replace('-', ' ', (string) $request->tags)));
                 $product->shipping_price=$request->shipping_price;
                 $product->slug=$request->slug;
                 $product->brand=$request->brand;
@@ -1380,10 +1388,16 @@ $ret = $query->offset($start)->limit($length)->get();
                 }
                 
                
+                $webName = env('WEB_NAME', 'Store');
                 $seo = new ProductsToMeta;
-                $seo['title'] = $request->stitle;
-                $seo['description'] = $request->sdescription;
-                $seo['keywords'] = $request->skeywords;
+                $seo['title'] = trim((string) $request->stitle) !== ''
+                    ? $request->stitle
+                    : ('Buy ' . $request->product_name . ' | ' . $webName);
+                $seo['description'] = trim((string) $request->sdescription) !== ''
+                    ? $request->sdescription
+                    : strip_tags((string) $request->short_discriiption);
+                $seoKeys = trim((string) ($request->skeywords ?: $request->tags));
+                $seo['keywords'] = trim(preg_replace('/\s+/', ' ', str_replace('-', ' ', $seoKeys)));
                 $seo['pid'] = $lastid;
                 $seo->save();
                 
@@ -1412,7 +1426,7 @@ $ret = $query->offset($start)->limit($length)->get();
         $shap = Shap::all();
         if($id>0)
         $edit=Product::findorFail($id);
-        $seo=ProductsToMeta::where('pid',$id)->get();
+        $seo = ProductsToMeta::where('pid', $id)->orderByDesc('id')->get();
         // dd($seo);
         
         

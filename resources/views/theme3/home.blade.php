@@ -1,5 +1,5 @@
 @extends($layout)
-@section('content')
+  @section('content')
 @php
     $sliderBanners = theme3_slider_banners($Slider ?? collect());
     if (empty($sliderBanners)) {
@@ -81,4 +81,4 @@
     window.wellnessChatPayloadRoundLimit = 5;
 </script>
 @endpush
-@endsection
+     @endsection

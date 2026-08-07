@@ -22,14 +22,49 @@
     $avgRate = ($rcount ?? 0) > 0 && isset($rating) && count($rating)
         ? (float) collect($rating)->avg('rate')
         : 0;
-    $maxQty = max(1, min(10, (int) ($item->product_quantity ?? $item->stock ?? 10)));
+    $stockQty = (int) ($item->product_quantity ?? $item->stock ?? 0);
+    $inStock = $stockQty > 0;
+    $maxQty = $inStock ? max(1, min($stockQty, 99)) : 1;
     $shortDescription = $item->short_discriiption ?? $item->short_description ?? '';
     $ratingTitle = number_format($avgRate, 1) . '/5 - ' . number_format($rcount ?? 0) . ' Reviews';
     $productTags = collect(explode(',', (string) ($item->tags ?? '')))
-        ->map(function ($tag) { return trim($tag); })
+        ->merge(explode(',', (string) (($meta->keywords ?? '') )))
+        ->map(function ($tag) {
+            $tag = trim((string) $tag);
+            $tag = str_replace(['-', '_'], ' ', $tag);
+            return trim(preg_replace('/\s+/', ' ', $tag));
+        })
         ->filter()
+        ->unique(function ($tag) {
+            return mb_strtolower($tag);
+        })
         ->values();
     $hasOverview = !empty($item->product_details) || (!empty($faq) && count($faq) > 0);
+    $productSize = trim((string) ($item->size ?? $item->product_size ?? ''));
+    $madeIn = trim((string) ($item->made_in ?? ''));
+    $specTags = collect(explode(',', (string) ($item->specification ?? '')))
+        ->map(function ($tag) {
+            $tag = trim(str_replace(['-', '_'], ' ', (string) $tag));
+            return trim(preg_replace('/\s+/', ' ', $tag));
+        })
+        ->filter()
+        ->values();
+    $specHtml = trim((string) ($item->add_info ?? ''));
+    $hasSpecsContent = $specHtml !== '' || $specTags->count() > 0 || $madeIn !== '' || $productSize !== '';
+    $displayBrandName = trim((string) ($brandName ?? ($brand->name ?? '')));
+    $brandUrl = (!empty($brand) && !empty($brand->slug)) ? url('/brand/' . $brand->slug) : null;
+    $siteCfg = $setting ?? $sett ?? null;
+    $shippingFee = (float) ($siteCfg->shipping_charges ?? $item->shipping_price ?? 0);
+    $whatsappRaw = (string) ($siteCfg->whatsapp ?? $siteCfg->phone ?? '');
+    $whatsappNumber = preg_replace('/\D+/', '', $whatsappRaw);
+    if ($whatsappNumber !== '' && strpos($whatsappNumber, '92') !== 0) {
+        $whatsappNumber = ltrim($whatsappNumber, '0');
+        if (strpos($whatsappNumber, '92') !== 0) {
+            $whatsappNumber = '92' . $whatsappNumber;
+        }
+    }
+    $whatsappText = rawurlencode('Hi, I want to order: ' . $item->product_name . ' - ' . url('/product/' . $item->slug));
+    $whatsappUrl = $whatsappNumber !== '' ? ('https://wa.me/' . $whatsappNumber . '?text=' . $whatsappText) : null;
     $reviewCount = $rcount ?? 0;
     $starPath = 'M12.2328 18.5589L12.0001 18.4366L11.7674 18.5589L5.61072 21.796L6.78655 14.9398L6.83098 14.6807L6.64276 14.4972L1.66182 9.6416L8.54528 8.64129L8.80542 8.60349L8.92175 8.36776L12.0001 2.12985L15.0784 8.36776L15.1947 8.60349L15.4549 8.64129L22.3383 9.6416L17.3574 14.4972L17.1692 14.6807L17.2136 14.9398L18.3894 21.796L12.2328 18.5589Z';
 @endphp
@@ -104,15 +139,6 @@
                     <div id="product-summary-header">
                         <h1 id="name" data-testid="product-name">{{ $item->product_name }}</h1>
 
-                        @if($brand)
-                            <div id="brand">
-                                <bdi>By</bdi>
-                                <a href="{{ url('/brand/' . $brand->slug) }}" data-testid="product-brand-link">
-                                    <span><bdi>{{ $brand->name }}</bdi></span>
-                                </a>
-                            </div>
-                        @endif
-
                         @if(($rcount ?? 0) > 0)
                             <div class="product-review-summary-v2">
                                 @include('theme3.partials.product-stars', [
@@ -152,27 +178,36 @@
                     <div id="product-action">
                         <div class="product-action-container">
                             <section data-pricing class="pricing-wrapper pricing">
-                                <section id="product-price">
+                                <section id="product-price" class="t3-pdp-price">
                                     @if($hasDiscount)
-                                        <section class="original-price-wrapper original-price-config show">
-                                            <div class="list-price-content">
-                                                <span class="list-price">{{ $currency }}{{ number_format($listPrice, 2) }}</span>
-                                            </div>
-                                        </section>
-                                        <div class="strike-through-price-wrapper strike-through-config show">
-                                            <div class="discount-price-wrapper">
-                                                <div class="discount-price-content">
-                                                    <b class="discount-price">{{ $currency }}{{ number_format($finalPrice, 2) }}</b>
-                                                    <span class="percent-off">({{ $discountPct }}% off)</span>
-                                                </div>
-                                            </div>
+                                        <div class="t3-pdp-price__row">
+                                            <b class="discount-price">{{ $currency }}{{ number_format($finalPrice, 2) }}</b>
+                                            <span class="list-price is-cut">{{ $currency }}{{ number_format($listPrice, 2) }}</span>
+                                            @if($discountPct > 0)
+                                                <span class="percent-off">{{ $discountPct }}% off</span>
+                                            @endif
+                                        </div>
+                                        <div class="t3-pdp-price__save">
+                                            You save {{ $currency }}{{ number_format($listPrice - $finalPrice, 2) }}
                                         </div>
                                     @else
-                                        <section class="original-price-wrapper original-price-config show">
-                                            <div class="list-price-content">
-                                                <span class="list-price">{{ $currency }}{{ number_format($finalPrice, 2) }}</span>
-                                            </div>
-                                        </section>
+                                        <div class="t3-pdp-price__row">
+                                            <b class="discount-price is-regular">{{ $currency }}{{ number_format($finalPrice, 2) }}</b>
+                                        </div>
+                                    @endif
+
+                                    <div class="t3-pdp-stock {{ $inStock ? 'is-in' : 'is-out' }}">
+                                        @if($inStock)
+                                            <strong>In Stock</strong>
+                                        @else
+                                            <strong>Out of Stock</strong>
+                                        @endif
+                                    </div>
+
+                                    @if($shippingFee > 0)
+                                        <div class="t3-pdp-shipping">
+                                            Shipping charges: <strong>{{ $currency }}{{ number_format($shippingFee, 0) }}</strong>
+                                        </div>
                                     @endif
                                 </section>
                             </section>
@@ -189,9 +224,25 @@
                                                 class="btn btn-primary btn-block btn-lg btn-add-to-cart gtm-add-to-cart"
                                                 name="AddToCart"
                                                 data-product-id="{{ $item->id }}"
-                                                data-quantity="1">
+                                                data-quantity="1"
+                                                {{ !$inStock ? 'disabled' : '' }}>
                                             <strong>Add to Cart</strong>
                                         </button>
+                                    </div>
+                                    <div class="t3-pdp-cta-row">
+                                        <button type="button"
+                                                class="btn t3-pdp-order-btn btn-add-to-cart"
+                                                data-product-id="{{ $item->id }}"
+                                                data-quantity="1"
+                                                data-buy-now="1"
+                                                {{ !$inStock ? 'disabled' : '' }}>
+                                            Order Now
+                                        </button>
+                                        @if($whatsappUrl)
+                                            <a class="btn t3-pdp-whatsapp-btn" href="{{ $whatsappUrl }}" target="_blank" rel="noopener">
+                                                WhatsApp Order
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </section>
@@ -221,7 +272,7 @@
                         data-tab="specs"
                         aria-selected="{{ !$hasOverview ? 'true' : 'false' }}"
                         aria-controls="tab-specs">
-                    Specifications
+                    Product Specification
                 </button>
                 <button type="button"
                         class="t3-pdp-tabs__btn"
@@ -273,14 +324,30 @@
                  id="tab-specs"
                  role="tabpanel"
                  {{ $hasOverview ? 'hidden' : '' }}>
-                <h3>Specifications</h3>
+                <h3>Product Specification</h3>
+
                 <ul class="t3-pdp-specs">
+                    @if($displayBrandName !== '')
+                        <li>
+                            <span>Brand</span>
+                            <span>
+                                @if($brandUrl)
+                                    <a href="{{ $brandUrl }}">{{ $displayBrandName }}</a>
+                                @else
+                                    {{ $displayBrandName }}
+                                @endif
+                            </span>
+                        </li>
+                    @endif
+                    @if($madeIn !== '')
+                        <li><span>Made in</span><span>{{ $madeIn }}</span></li>
+                    @endif
+                    @if($productSize !== '')
+                        <li><span>Size</span><span>{{ $productSize }}</span></li>
+                    @endif
                     <li><span>Product code</span><span>{{ $partNumber }}</span></li>
                     @if(!empty($item->sku) && $item->sku !== $partNumber)
                         <li><span>SKU</span><span>{{ $item->sku }}</span></li>
-                    @endif
-                    @if($brand)
-                        <li><span>Brand</span><span>{{ $brand->name }}</span></li>
                     @endif
                     @if($cate)
                         <li><span>Category</span><span>{{ $cate->name }}</span></li>
@@ -288,10 +355,29 @@
                     @if(!empty($sub_cat))
                         <li><span>Subcategory</span><span>{{ $sub_cat->name }}</span></li>
                     @endif
-                    @if(!empty($item->product_quantity))
-                        <li><span>Stock</span><span>{{ $item->product_quantity }}</span></li>
+                    <li><span>Availability</span><span>{{ $inStock ? 'In Stock' : 'Out of Stock' }}</span></li>
+                    @if($hasDiscount)
+                        <li><span>Price</span><span>{{ $currency }}{{ number_format($finalPrice, 2) }} <del class="t3-pdp-specs__cut">{{ $currency }}{{ number_format($listPrice, 2) }}</del></span></li>
+                    @else
+                        <li><span>Price</span><span>{{ $currency }}{{ number_format($finalPrice, 2) }}</span></li>
                     @endif
                 </ul>
+
+                @if($specTags->count() > 0)
+                    <div class="t3-pdp-spec-tags">
+                        @foreach($specTags as $specTag)
+                            <span class="t3-pdp-tag">{{ $specTag }}</span>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if($specHtml !== '')
+                    <div class="t3-pdp-tabs__content t3-pdp-spec-html" style="margin-top:20px;">
+                        {!! $specHtml !!}
+                    </div>
+                @elseif(!$hasSpecsContent)
+                    <p class="t3-pdp-empty">No additional specifications available for this product.</p>
+                @endif
             </div>
 
             <div class="t3-pdp-tabs__panel"
@@ -374,7 +460,7 @@
                     <div class="t3-pdp-tags">
                         @foreach($productTags as $tag)
                             @php
-                                $tagSlug = preg_replace('/\s+/', '-', $tag);
+                                $tagSlug = Str::slug($tag);
                             @endphp
                             <a class="t3-pdp-tag" href="{{ url('/tags/' . $tagSlug) }}">{{ $tag }}</a>
                         @endforeach

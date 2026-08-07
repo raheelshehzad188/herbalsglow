@@ -26,7 +26,7 @@ $cate = DB::table('categories')->get();
                                 <div class="footer-infor">
                                     <div class="footer-logo">
                                         <a href="{{ url('/'); }}">
-                                            <img src="{{env('IMG_URL')}}{{$setting->wlogo}}" alt="">
+                                            <img src="{{ img_url($setting->wlogo) }}" alt="">
                                         </a>
                                     </div>
                                     <ul>

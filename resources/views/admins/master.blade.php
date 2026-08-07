@@ -771,11 +771,54 @@ $app_url = config('app.url');
     </script>
     <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
     <script>
-    $('.summernote').summernote(
-                {
-                height: 150
-                }
-                );
+    $('.summernote').summernote({
+        height: 300,
+        minHeight: 200,
+        maxHeight: 800,
+        focus: false,
+        styleTags: [
+            'p',
+            { title: 'Blockquote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' },
+            'pre',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
+        ],
+        fontNames: [
+            'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia',
+            'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman',
+            'Trebuchet MS', 'Verdana'
+        ],
+        fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '28', '32', '36', '48', '64'],
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video', 'hr']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        popover: {
+            image: [
+                ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+                ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                ['remove', ['removeMedia']]
+            ],
+            link: [
+                ['link', ['linkDialogShow', 'unlink']]
+            ],
+            table: [
+                ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+                ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+            ],
+            air: [
+                ['color', ['color']],
+                ['font', ['bold', 'underline', 'clear']]
+            ]
+        }
+    });
               /*          $('textarea').each(function(i, obj) {
     ClassicEditor
                                 .create( document.querySelector( '#'+$(this).attr('id') ) )

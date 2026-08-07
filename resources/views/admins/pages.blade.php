@@ -19,11 +19,7 @@ use App\Models\Admins\Brand;
 
 @section('content')
 <?php
-$types = array(
-                                    'top_bar'=>'Top Bar',
-                                    'header'=>'Header',
-                                    'quick_links'=>'Quick Links',
-                                    );
+$types = page_menu_types();
 ?>
 <div class="wrapper wrapper-content animated fadeInRight">
 <div class="row">

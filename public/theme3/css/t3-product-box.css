@@ -80,6 +80,15 @@
     font-size: 14px;
     color: #333;
 }
+.product-price .price.discount-red {
+    color: #c8232c;
+}
+.product-price .price-olp {
+    color: #888;
+    text-decoration: line-through;
+    font-size: 12px;
+    margin-left: 4px;
+}
 .hp-module-trending .product-price .price.discount-red,
 .home-carousel-container .product-price .price.discount-red {
     color: #c8232c;

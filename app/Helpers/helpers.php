@@ -6,31 +6,99 @@ if (!function_exists('format_amount')) {
     }
 }
 
+if (!function_exists('footer_menu_types')) {
+    function footer_menu_types(): array {
+        return [
+            'footer_policies' => 'Policies',
+            'footer_help' => 'Help',
+            'footer_information' => 'Information',
+        ];
+    }
+}
+
+if (!function_exists('page_menu_types')) {
+    function page_menu_types(): array {
+        return array_merge([
+            'top_bar' => 'Top Bar',
+            'header' => 'Header',
+            'quick_links' => 'Quick Links',
+        ], footer_menu_types());
+    }
+}
+
+if (!function_exists('page_url')) {
+    function page_url($page): string {
+        if (!$page) {
+            return url('/');
+        }
+
+        if (!empty($page->route)) {
+            $route = trim((string) $page->route);
+            if ($route === '/') {
+                return url('/');
+            }
+
+            return url('/' . ltrim($route, '/'));
+        }
+
+        if (!empty($page->slug)) {
+            return url('/' . ltrim((string) $page->slug, '/'));
+        }
+
+        return url('/');
+    }
+}
+
+if (!function_exists('footer_menus')) {
+    function footer_menus(): array {
+        $menus = [];
+
+        foreach (footer_menu_types() as $type => $title) {
+            $menus[$type] = [
+                'title' => $title,
+                'pages' => DB::table('pages')
+                    ->where('menu_type', $type)
+                    ->where('status', 1)
+                    ->orderByRaw('position IS NULL, position ASC')
+                    ->orderBy('id', 'ASC')
+                    ->get(),
+            ];
+        }
+
+        return $menus;
+    }
+}
+
 if (!function_exists('img_url')) {
     /**
      * Build image URL from .env IMG_URL (fallback: APP_URL).
+     * Use for products, categories, sliders, logos, and all DB-stored paths.
      */
     function img_url($path = ''): string {
-        $path = preg_replace('/^public\//', '', $path);
-        $pth = 'https://quickon.pk/public/';
-        return $pth.$path;
         $base = rtrim((string) (env('IMG_URL') ?: config('app.url')), '/');
 
-        $path = trim((string) $path);
-        if ($path === '') {
+        if ($path === null || trim((string) $path) === '') {
             return $base;
         }
 
+        $path = trim((string) $path);
+
         if (preg_match('#^https?://#i', $path)) {
+            if (!preg_match('#^https?://(127\.0\.0\.1|localhost)(:\d+)?/#i', $path)) {
+                $path = preg_replace('#^http://#i', 'https://', $path);
+            }
             return $path;
         }
 
+        $path = str_replace('\\', '/', $path);
         $path = ltrim($path, '/');
-        if (strpos($path, 'public/') === 0) {
-            $path = substr($path, 7);
+
+        $url = $base . '/' . $path;
+        if (!preg_match('#^https?://(127\.0\.0\.1|localhost)(:\d+)?/#i', $url)) {
+            $url = preg_replace('#^http://#i', 'https://', $url);
         }
 
-        return $base . '/' . $path;
+        return $url;
     }
 }
 

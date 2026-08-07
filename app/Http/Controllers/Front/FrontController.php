@@ -94,6 +94,7 @@ public function view($view, $data = array())
         }
 
         $data['header_menu_categories'] = $headerMenuCategories;
+        $data['footer_menus'] = footer_menus();
     }
 
     return view($ctheme .'.'.$view,$data);
@@ -1191,16 +1192,27 @@ return redirect()->back()->with([
         $sett = Setting::where('id','1')->first();
         $meta = DB::table('products_to_meta')
             ->where('pid', '=', $product[0]->id)
+            ->orderByDesc('id')
             ->first();
 
-        if($meta) {
-            if(isset($meta->title) && !$meta->title) {
-                $meta->title = $pro->product_name;
+        if (!$meta) {
+            $meta = (object) [
+                'title' => 'Buy ' . $pro->product_name . ' | ' . env('WEB_NAME', 'Store'),
+                'description' => strip_tags((string) ($pro->short_discriiption ?? '')),
+                'keywords' => str_replace('-', ' ', (string) ($pro->tags ?? '')),
+            ];
+        } else {
+            if (empty($meta->title)) {
+                $meta->title = 'Buy ' . $pro->product_name . ' | ' . env('WEB_NAME', 'Store');
+            }
+            if (empty($meta->description)) {
+                $meta->description = strip_tags((string) ($pro->short_discriiption ?? ''));
+            }
+            if (empty($meta->keywords)) {
+                $meta->keywords = str_replace('-', ' ', (string) ($pro->tags ?? ''));
             }
         }
-        if ($meta) {
-            $meta->url = url('/product/').'/'.$slug;
-        }
+        $meta->url = url('/product/') . '/' . $slug;
 
         $view = $product[0]->view;
         $category_id = $product[0]->category_id;
@@ -1209,7 +1221,18 @@ return redirect()->back()->with([
         $cate = Category::where(['id'=>$category_id])->first();
         $sub_cat = DB::table('sub_categories')->where('id', $sub_cat_id)->first();
         $rating = Rating::where(['status'=>1,'pid'=>$product[0]->id])->get();
-        $brand = Brand::where(['id'=>$product[0]->brand])->first();
+        $brand = null;
+        $brandName = null;
+        $productBrand = $product[0]->brand ?? null;
+        if (!empty($productBrand)) {
+            if (is_numeric($productBrand)) {
+                $brand = Brand::where('id', $productBrand)->first();
+            }
+            if (!$brand) {
+                $brand = Brand::where('name', $productBrand)->orWhere('slug', $productBrand)->first();
+            }
+            $brandName = $brand->name ?? (is_numeric($productBrand) ? null : (string) $productBrand);
+        }
         $rcount = Rating::where(['status'=>1,'pid'=>$product[0]->id])->count();
         $faq = Faq::where(['status'=>1,'pid'=>$product[0]->id])->get();
         $fproduct=Product::find($product[0]->id);
@@ -1239,6 +1262,7 @@ return redirect()->back()->with([
             'meta_file' => $meta_file,
             'item' => $item,
             'brand' => $brand,
+            'brandName' => $brandName,
             'cate' => $cate,
         ]);
 
@@ -1796,10 +1820,14 @@ return redirect()->back()->with([
     
      public function faq(Request $request)
     {
-        
-        $faq=DB::table('faqs')->get();
-        Session::put('title','FAQ');
-        return view('front.faq',compact('faq'));
+        $page = Pages::where('slug', 'faqs')->where('status', 1)->first();
+        if ($page) {
+            return $this->page_detail('faqs');
+        }
+
+        $faq = DB::table('faqs')->get();
+        Session::put('title', 'FAQ');
+        return view('front.faq', compact('faq'));
     }
     // public function order(Request $request)
     // {

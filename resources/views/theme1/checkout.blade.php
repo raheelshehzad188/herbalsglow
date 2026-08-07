@@ -70,7 +70,7 @@ $cate = DB::table('categories')->get();
                         @endphp
                                     <li class="checkout-product-item">
                                         <figure class="img-product">
-                                            <img src="{{env('IMG_URL')}}/{{$product->image_one}}" alt="product">
+                                            <img src="{{ img_url($product->image_one) }}" alt="product">
                                             <span class="quantity">{{$product['qty']}}</span>
                                         </figure>
                                         

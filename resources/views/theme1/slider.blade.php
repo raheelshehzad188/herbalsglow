@@ -5,7 +5,7 @@
                     @foreach ($Slider as $key => $slide)
                         <div class="swiper-slide" lazy="true">
                         <div class="wrap-slider">
-                            <img class="lazyload" data-src="{{ env('IMG_URL'); }}public/img/slider/{{$slide->slider_image}}" src="{{env('IMG_URL')}}public/img/slider/{{$slide->slider_image}}" alt="skincare-slideshow-01" loading="lazy">
+                            <img class="lazyload" data-src="{{ img_url('public/img/slider/' . $slide->slider_image) }}" src="{{ img_url('public/img/slider/' . $slide->slider_image) }}" alt="skincare-slideshow-01" loading="lazy">
                             <div class="box-content text-start">
                                 <div class="new" style="margin-left:100px; width:54%;">
                                     <h3 style="@media (max-width:425px){ display:none; }">{!! strip_tags($slide->p)!!}</h3>

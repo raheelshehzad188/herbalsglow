@@ -18,7 +18,7 @@
                                     <div class="collection-item style-left hover-img">
                                         <div class="collection-inner">
                                             <a href="{{ url('') }}/category/{{$v->slug}}" class="collection-image img-style">
-                                                <img class="lazyload" data-src="{{env('IMG_URL')}}{{ $v->image}}" src="{{env('IMG_URL')}}{{ $v->image}}" alt="collection-img">
+                                                <img class="lazyload" data-src="{{ img_url($v->image) }}" src="{{ img_url($v->image) }}" alt="collection-img">
                                             </a>
                                             <div class="collection-content">
                                                 <a href="{{ url('') }}/category/{{$v->slug}}" class="tf-btn collection-title hover-icon fs-15"><span>{{$v->name}}</span><i class="icon icon-arrow1-top-left"></i></a>

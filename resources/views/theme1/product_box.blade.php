@@ -49,7 +49,7 @@ $final_percntage = ceil($perctg);
                                 </a>
                             </div>
                             <a href="{{url('/')}}/product/{{$v->slug}}">
-                                                        <img class="1st lazyload img-product" data-src="{{env('IMG_URL')}}{{$v->image_one}}" src="{{env('APP_URL')}}{{$v->image_one}}" alt="image-product">
+                                                        <img class="1st lazyload img-product" data-src="{{ img_url($v->image_one) }}" src="{{ img_url($v->image_one) }}" alt="image-product">
                                                         </a>
                                                 </div>
                                                 <div class="card-product-info text-center">
