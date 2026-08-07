@@ -19,7 +19,14 @@ $Site= Setting::where(['id'=>'1'])->first();
 
    @if(isset($meta) && $meta)
 
-    
+    @if(!empty($meta->scheme1))
+    <script type="application/ld+json">{!! is_string($meta->scheme1) ? $meta->scheme1 : json_encode($meta->scheme1, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
+    @endif
+    @if(!empty($meta->scheme))
+    <script type="application/ld+json">
+    @json($meta->scheme)
+    </script>
+    @endif
 @else
 @if(isset($meta_file) && $meta_file != 'meta.brand' && $meta_file != 'meta.product_tag' && $meta_file != 'meta.brand_tag' && $meta_file != 'meta.page' && $meta_file != 'meta.blog_detail' )
 

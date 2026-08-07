@@ -238,3 +238,153 @@ if (!function_exists('theme3_section')) {
         include $path;
     }
 }
+
+if (!function_exists('seo_site_name')) {
+    function seo_site_name($setting = null): string {
+        $setting = $setting ?: (object) [];
+        return (string) ($setting->site_title ?? $setting->title ?? env('WEB_NAME', 'Store'));
+    }
+}
+
+if (!function_exists('seo_canonical')) {
+    function seo_canonical(?string $url = null): string {
+        if ($url && trim($url) !== '') {
+            return $url;
+        }
+        return url()->current();
+    }
+}
+
+if (!function_exists('seo_organization_schema')) {
+    function seo_organization_schema($setting = null): array {
+        $setting = $setting ?: \DB::table('setting')->where('id', 1)->first();
+        $name = seo_site_name($setting);
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            'name' => $name,
+            'url' => url('/'),
+        ];
+        if (!empty($setting->logo) || !empty($setting->logo1)) {
+            $schema['logo'] = img_url($setting->logo ?? $setting->logo1);
+        }
+        if (!empty($setting->phone) || !empty($setting->whatsapp)) {
+            $schema['telephone'] = (string) ($setting->phone ?? $setting->whatsapp);
+        }
+        $sameAs = array_values(array_filter([
+            $setting->facebook ?? null,
+            $setting->instagram ?? null,
+            $setting->twitter ?? null,
+            $setting->youtube ?? null,
+            $setting->tiktok ?? null,
+            $setting->pinterest ?? null,
+        ]));
+        if ($sameAs) {
+            $schema['sameAs'] = $sameAs;
+        }
+        return $schema;
+    }
+}
+
+if (!function_exists('seo_website_schema')) {
+    function seo_website_schema($setting = null): array {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => seo_site_name($setting),
+            'url' => url('/'),
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => url('/search') . '?q={search_term_string}',
+                'query-input' => 'required name=search_term_string',
+            ],
+        ];
+    }
+}
+
+if (!function_exists('seo_breadcrumb_schema')) {
+    function seo_breadcrumb_schema(array $items): array {
+        $list = [];
+        $position = 1;
+        foreach ($items as $item) {
+            if (empty($item['name'])) {
+                continue;
+            }
+            $entry = [
+                '@type' => 'ListItem',
+                'position' => $position++,
+                'name' => $item['name'],
+            ];
+            if (!empty($item['item'])) {
+                $entry['item'] = $item['item'];
+            }
+            $list[] = $entry;
+        }
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $list,
+        ];
+    }
+}
+
+if (!function_exists('seo_product_schema')) {
+    function seo_product_schema($product, $meta = null, $brandName = null, $ratingAvg = 0, $ratingCount = 0): array {
+        $list = (float) ($product->selling_price ?? 0);
+        $sale = (float) ($product->discount_price ?? 0);
+        $price = ($sale > 0 && ($list <= 0 || $sale < $list)) ? $sale : ($list > 0 ? $list : $sale);
+        $currency = env('CUR_CODE', 'PKR');
+        $url = url('/product/' . $product->slug);
+        $inStock = ((int) ($product->product_quantity ?? $product->stock ?? 0)) > 0;
+
+        $schema = [
+            '@context' => 'https://schema.org/',
+            '@type' => 'Product',
+            'name' => $meta->title ?? $product->product_name,
+            'description' => strip_tags((string) ($meta->description ?? $product->short_discriiption ?? $product->product_name)),
+            'sku' => (string) ($product->sku ?: ($product->product_code ?: ('P' . $product->id))),
+            'image' => [img_url($product->image_one ?? '')],
+            'url' => $url,
+            'offers' => [
+                '@type' => 'Offer',
+                'url' => $url,
+                'priceCurrency' => $currency,
+                'price' => number_format($price, 2, '.', ''),
+                'availability' => $inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'itemCondition' => 'https://schema.org/NewCondition',
+            ],
+        ];
+
+        if ($brandName) {
+            $schema['brand'] = [
+                '@type' => 'Brand',
+                'name' => $brandName,
+            ];
+        }
+
+        if ($ratingCount > 0 && $ratingAvg > 0) {
+            $schema['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => round($ratingAvg, 1),
+                'bestRating' => 5,
+                'worstRating' => 1,
+                'ratingCount' => (int) $ratingCount,
+                'reviewCount' => (int) $ratingCount,
+            ];
+        }
+
+        return $schema;
+    }
+}
+
+if (!function_exists('seo_collection_schema')) {
+    function seo_collection_schema(string $name, string $description, string $url): array {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'CollectionPage',
+            'name' => $name,
+            'description' => strip_tags($description),
+            'url' => $url,
+        ];
+    }
+}

@@ -1,12 +1,30 @@
 @php
-$setting = DB::table('setting')->first();
-$site_name = $setting->site_title ?? 'Shop Pakistan';
-$actual_link = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $site = $setting ?? $sett ?? \DB::table('setting')->where('id', 1)->first();
+    $siteName = seo_site_name($site);
+    $tagLabel = $tags ?? ($title ?? 'Tags');
+    $title = $tagLabel . ' - ' . $siteName;
+    $first = $product[0] ?? null;
+    $rawDesc = isset($first->short_discriiption) ? strip_tags((string) $first->short_discriiption) : $tagLabel;
+    $description = strlen($rawDesc) > 160 ? substr($rawDesc, 0, 157) . '...' : $rawDesc;
+    $keywords = isset($first->tags) ? preg_replace('/-/', ' ', (string) $first->tags) : $tagLabel;
+    $canonical = seo_canonical(url('/tags/' . ($slug ?? \Illuminate\Support\Str::slug($tagLabel))));
+    $image = $first ? img_url($first->image_one ?? '') : '';
 @endphp
-<title>{{ $tags }} - {{ $site_name }}</title>
-     <meta name="description" content="{{ isset($product[0]->short_discriiption) ? (strlen($product[0]->short_discriiption) > 170 ? substr($product[0]->short_discriiption, 0, 140) : $product[0]->short_discriiption) : ''}}" />
-
-<meta property="og:site_name" content="{{ $site_name }}" />
-<meta property="keywords" content="<?php echo preg_replace("/-/", " ", $product[0]->tags);?>">
-<link rel="canonical" href="{{ $actual_link; }}" />
-<meta property="og:image" content="{{ url($product[0]->image_one) }}" />
+<title>{{ $title }}</title>
+<meta name="title" content="{{ $title }}" />
+<meta name="description" content="{{ $description }}" />
+<meta name="keywords" content="{{ $keywords }}" />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="{{ $canonical }}" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="{{ $siteName }}" />
+<meta property="og:title" content="{{ $title }}" />
+<meta property="og:description" content="{{ $description }}" />
+<meta property="og:url" content="{{ $canonical }}" />
+@if($image)
+<meta property="og:image" content="{{ $image }}" />
+@endif
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{ $title }}" />
+<meta name="twitter:description" content="{{ $description }}" />

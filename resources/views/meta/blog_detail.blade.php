@@ -1,21 +1,24 @@
-
-
 @php
-$setting = DB::table('setting')->first();
-$site_name = $setting->site_title ?? 'Shop Pakistan';
+    $site = $setting ?? $sett ?? \DB::table('setting')->where('id', 1)->first();
+    $siteName = seo_site_name($site);
+    $post = $blogs_detail ?? null;
+    $title = $post->title ?? 'Blog';
+    $description = $post->description ?? '';
+    $keywords = $post->keywords ?? '';
+    $canonical = seo_canonical(url('/blog/' . ($post->slug ?? '')));
 @endphp
- <title><?php echo $blogs_detail->title;?></title>
-   
-    <meta name="description" content="<?php echo $blogs_detail->description;?>">
-    <meta property="keywords" content="<?php echo $blogs_detail->keywords;?>">
-   <meta property="og:site_name" content="{{ $site_name }}" />
-<meta property="og:title" content="<?php echo $blogs_detail->title;?>">
-
-<meta property="og:description" content="<?php echo $blogs_detail->description;?>">
-
-<meta property="og:url" content="{{ url('/blog/'.$blogs_detail->slug); }}">
-<link rel="canonical" href="{{ url('/blog/'.$blogs_detail->slug); }}" />
-<meta property="og:type" content="Ecommerce Website">
-
-
-
+<title>{{ $title }}</title>
+<meta name="title" content="{{ $title }}" />
+<meta name="description" content="{{ $description }}" />
+<meta name="keywords" content="{{ $keywords }}" />
+<meta name="robots" content="index,follow" />
+<link rel="canonical" href="{{ $canonical }}" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="{{ $siteName }}" />
+<meta property="og:title" content="{{ $title }}" />
+<meta property="og:description" content="{{ $description }}" />
+<meta property="og:url" content="{{ $canonical }}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ $title }}" />
+<meta name="twitter:description" content="{{ $description }}" />

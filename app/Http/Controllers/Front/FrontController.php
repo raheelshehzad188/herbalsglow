@@ -349,6 +349,8 @@ public function view($view, $data = array())
 
     if ($meta) {
         $meta->url = url('/');
+        $meta->scheme = seo_website_schema($meta);
+        $meta->scheme1 = seo_organization_schema($meta);
     }
 
     // product lists
@@ -389,6 +391,7 @@ public function view($view, $data = array())
         'Slider'            => $Slider,
         'Rating'            => $Rating,
         'meta'              => $meta,
+        'meta_file'         => 'meta.default',
         'onslaeproducts'    => $onslaeproducts,
         'shap'              => $shap,
         'home_cats'         => $home_cats,
@@ -1244,6 +1247,19 @@ return redirect()->back()->with([
         $item  =  $product[0];
         $fproducts=Product::select('products.*')->where('Featured','1')->orderBy('products.id','DESC')->limit(10)->get();
 
+        $breadcrumbItems = [
+            ['name' => 'Home', 'item' => url('/')],
+        ];
+        if ($cate) {
+            $breadcrumbItems[] = ['name' => $cate->name, 'item' => url('/category/' . $cate->slug)];
+        }
+        if (!empty($sub_cat) && !empty($sub_cat->name)) {
+            $breadcrumbItems[] = ['name' => $sub_cat->name, 'item' => url('/category/' . ($sub_cat->slug ?? ''))];
+        }
+        $breadcrumbItems[] = ['name' => $item->product_name, 'item' => $meta->url];
+        $meta->scheme1 = seo_breadcrumb_schema($breadcrumbItems);
+        $meta->scheme = seo_product_schema($item, $meta, $brandName, $rate, $rcount);
+
         return $this->view('product_detail', [
             'allcatagories' => $allcatagories,
             'sett' => $sett,
@@ -1572,9 +1588,24 @@ return redirect()->back()->with([
                 $meta = DB::table('categories_to_meta')
                     ->where('scid', '=', $subcategory_id->id)
                     ->first();
-                if ($meta) {
-                    $meta->url = url('/category/').'/'.$slug;
+                if (!$meta) {
+                    $meta = (object) [
+                        'title' => $subcategory_id->name,
+                        'description' => $subcategory_id->name,
+                        'keywords' => $subcategory_id->name,
+                    ];
                 }
+                $meta->url = url('/category/') . '/' . $slug;
+                $meta->scheme = seo_collection_schema(
+                    $meta->title ?? $subcategory_id->name,
+                    $meta->description ?? $subcategory_id->name,
+                    $meta->url
+                );
+                $meta->scheme1 = seo_breadcrumb_schema([
+                    ['name' => 'Home', 'item' => url('/')],
+                    ['name' => $pcategory->name ?? 'Category', 'item' => !empty($pcategory->slug) ? url('/category/' . $pcategory->slug) : url('/')],
+                    ['name' => $subcategory_id->name, 'item' => $meta->url],
+                ]);
                 
                 $category = 1;
                 $perPage = env('PRODUCTS_PER_PAGE', 12); // Default to 12, configurable via env
@@ -1602,9 +1633,23 @@ return redirect()->back()->with([
         $meta = DB::table('categories_to_meta')
             ->where('cid', '=', $category_id->id)
             ->first();
-        if ($meta) {
-            $meta->url = url('/category/').'/'.$slug;
+        if (!$meta) {
+            $meta = (object) [
+                'title' => $category_id->name,
+                'description' => $category_id->name,
+                'keywords' => $category_id->name,
+            ];
         }
+        $meta->url = url('/category/') . '/' . $slug;
+        $meta->scheme = seo_collection_schema(
+            $meta->title ?? $category_id->name,
+            $meta->description ?? $category_id->name,
+            $meta->url
+        );
+        $meta->scheme1 = seo_breadcrumb_schema([
+            ['name' => 'Home', 'item' => url('/')],
+            ['name' => $category_id->name, 'item' => $meta->url],
+        ]);
         $category = 1;
         $perPage = env('PRODUCTS_PER_PAGE', 12); // Default to 12, configurable via env
         $products=Product::where('status',1)->where(['category_id'=>$cateid , 'status'=>1])->paginate($perPage);
@@ -2985,7 +3030,24 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
             'title'=> $brand_id->name,
             'brand_name' => $brand_id->name,
             'brand_slug' => $brand_id->slug,
-            'brand_id' => $brand_id->id
+            'brand_id' => $brand_id->id,
+            'brand' => $brand_id,
+            'meta_file' => 'meta.brand',
+            'meta' => (object) [
+                'title' => ($brand_id->title ?? $brand_id->name) . ' - ' . seo_site_name(),
+                'description' => $brand_id->description ?? $brand_id->name,
+                'keywords' => $brand_id->s_keywords ?? $brand_id->keywords ?? $brand_id->name,
+                'url' => url('brand/' . $brand_id->slug),
+                'scheme' => seo_collection_schema(
+                    $brand_id->name,
+                    (string) ($brand_id->description ?? $brand_id->name),
+                    url('brand/' . $brand_id->slug)
+                ),
+                'scheme1' => seo_breadcrumb_schema([
+                    ['name' => 'Home', 'item' => url('/')],
+                    ['name' => $brand_id->name, 'item' => url('brand/' . $brand_id->slug)],
+                ]),
+            ],
         ));
     }
     

@@ -677,4 +677,4 @@ else
     if ($.trim($seoKeys.val()) === '') syncSeoKeywords();
 })();
 </script>
-@endsection
+@endpush
