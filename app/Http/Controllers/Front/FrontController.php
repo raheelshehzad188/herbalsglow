@@ -57,12 +57,38 @@ public function view($view, $data = array())
     $them_num = 2;
     $siteSetting = null;
     try {
-        $siteSetting = DB::table('setting')->where('id', 1)->first();
-        if ($siteSetting && isset($siteSetting->active_theme) && in_array((int) $siteSetting->active_theme, [1, 2, 3], true)) {
-            $them_num = (int) $siteSetting->active_theme;
+        $currentStore = \App\Support\CurrentStore::get();
+        if ($currentStore) {
+            $them_num = \App\Support\CurrentStore::theme();
+            $siteSetting = DB::table('setting')
+                ->when(
+                    \Illuminate\Support\Facades\Schema::hasColumn('setting', 'store_id'),
+                    function ($q) use ($currentStore) {
+                        $q->where('store_id', $currentStore->id);
+                    }
+                )
+                ->orderBy('id')
+                ->first();
+            if (!$siteSetting) {
+                $siteSetting = DB::table('setting')->where('id', 1)->first();
+            }
+            // Prefer store theme over legacy setting when store exists
+            if (in_array((int) $currentStore->active_theme, [1, 2, 3], true)) {
+                $them_num = (int) $currentStore->active_theme;
+            }
+        } else {
+            $siteSetting = DB::table('setting')->where('id', 1)->first();
+            if ($siteSetting && isset($siteSetting->active_theme) && in_array((int) $siteSetting->active_theme, [1, 2, 3], true)) {
+                $them_num = (int) $siteSetting->active_theme;
+            }
         }
     } catch (\Exception $e) {
         // fallback to default theme
+        try {
+            $siteSetting = DB::table('setting')->where('id', 1)->first();
+        } catch (\Exception $e2) {
+            $siteSetting = null;
+        }
     }
     if (isset($_GET['theme']) && in_array((int) $_GET['theme'], [1, 2, 3], true)) {
         $them_num = (int) $_GET['theme'];
@@ -74,6 +100,7 @@ public function view($view, $data = array())
     $data['assets_url'] = $assets;
     $data['active_theme'] = $them_num;
     $data['setting'] = $siteSetting;
+    $data['currentStore'] = \App\Support\CurrentStore::get();
 
     if ($them_num === 3) {
         $headerMenuCategories = Category::where('status', 1)
@@ -1955,6 +1982,36 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
         return 'Cash on Delivery';
     }
 
+    protected function dispatchPurchaseEvents($orderId, Request $request): void
+    {
+        try {
+            $store = \App\Support\CurrentStore::get();
+            if (!$store || !$orderId) {
+                return;
+            }
+            $amount = (float) (optional(\App\Models\Order::withoutGlobalScope('store')->find($orderId))->amount ?? 0);
+            $user = [
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'ip' => $request->ip(),
+                'ua' => $request->userAgent(),
+            ];
+            (new \App\Services\Integrations\MetaEventsService())->send($store, 'Purchase', [
+                'value' => $amount,
+                'currency' => 'PKR',
+                'content_ids' => [(string) $orderId],
+                'event_source_url' => url('/thankyou/' . $orderId),
+            ], $user);
+            (new \App\Services\Integrations\TikTokEventsService())->send($store, 'CompletePayment', [
+                'value' => $amount,
+                'currency' => 'PKR',
+                'url' => url('/thankyou/' . $orderId),
+            ], $user);
+        } catch (\Throwable $e) {
+            \Log::warning('Purchase event dispatch failed: ' . $e->getMessage());
+        }
+    }
+
     public function order_submit(Request $request)
     {
         $paymentMethodTitle = $this->resolvePaymentMethodTitle($request);
@@ -1999,6 +2056,7 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
             $this->send_grid($to,'Order Email', $html);
             }
             Session::forget('cart');
+            $this->dispatchPurchaseEvents($lastid ?? null, $request);
             return redirect('/thankyou/'.$lastid)->with([
                 'msg'=>'Order submit successfully',
                 'msg_type'=>'success',
@@ -2051,6 +2109,7 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
             }
         
             Session::forget('cart');
+            $this->dispatchPurchaseEvents($lastid ?? null, $request);
             return redirect('/thankyou/'.$lastid)->with([
                 'msg'=>'Order submit successfully',
                 'msg_type'=>'success',

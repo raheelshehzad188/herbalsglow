@@ -24,7 +24,15 @@
 
 
 
-<style></style>
+<style>
+.is-cut {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px; /* optional */
+    text-decoration-color: #999;    /* optional */
+    color: #999;                    /* optional */
+}
+
+</style>
 <script>(function(){
                                                 //this is not related to google tag 
                                                 //a third part plugin for our Accessibility roadmap
@@ -372,6 +380,7 @@ window.translations.IDS_CATA_HP_CAT_YOU_LOVE = "Categories you’ll love"
 
 
     @include('theme3.partials.seo-head')
+    @include('theme3.partials.tracking-pixels')
 
     
 

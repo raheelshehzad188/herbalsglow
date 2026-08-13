@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ResolveStore::class,
         ],
 
         'api' => [
@@ -56,6 +57,8 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'adminlogedin' => \App\Http\Middleware\adminlogedin::class,
         'adminnotlogedin' => \App\Http\Middleware\adminnotlogedin::class,
+        'superadmin' => \App\Http\Middleware\SuperAdminAuth::class,
+        'resolve.store' => \App\Http\Middleware\ResolveStore::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

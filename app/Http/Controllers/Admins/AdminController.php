@@ -39,6 +39,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use Illuminate\Validation\ValidationException;
+use App\Support\StoreContext;
+use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
@@ -46,6 +48,19 @@ class AdminController extends Controller
     {
         // Laravel handles sessions automatically
         // session_start(); // Remove this line as Laravel manages sessions
+    }
+
+    protected function storeScopedQuery($query, ?string $table = null)
+    {
+        return StoreContext::apply($query, $table);
+    }
+
+    protected function assertStoreOwns($model)
+    {
+        if ($model && !StoreContext::owns($model)) {
+            abort(403, 'This record belongs to another store.');
+        }
+        return $model;
     }
 
     public function adminloginpage()
@@ -231,14 +246,16 @@ class AdminController extends Controller
         $edit=null;
         $seo = null;
         if(isset($delete) && $id>0){
-            Brand::find($id)->delete();
+            $del = Brand::find($id);
+            $this->assertStoreOwns($del);
+            if ($del) { $del->delete(); }
             return redirect(route('admins.brand'))->with([
                 'msg'=>'Brand Deleted Successfully',
                 'msg_type'=>'success',
             ]);
         }
         if($id>0 && !isset($delete)){
-            $edit=Brand::find($id);
+            $edit=$this->assertStoreOwns(Brand::find($id));
         }
         if ($request->isMethod('post')) {
             $request->validate([
@@ -247,7 +264,7 @@ class AdminController extends Controller
 
             if($request->has('hidden_id')){
                 
-                $category=Brand::find($request->hidden_id);
+                $category=$this->assertStoreOwns(Brand::find($request->hidden_id));
                 $category->name=$request->name;
                 $category->status=$request->status;
                 $category->slug= strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->name)));
@@ -274,6 +291,7 @@ class AdminController extends Controller
             }else{
                 
                 $category=new Brand();
+                StoreContext::assignToModel($category);
                 $category->created_at=Date('Y-m-d h:i:s');
                 $category->name=$request->name;
                 $category->status=$request->status;
@@ -312,7 +330,9 @@ class AdminController extends Controller
         $edit=null;
         $seo = null;
         if(isset($delete) && $id>0){
-            Category::find($id)->delete();
+            $del = Category::find($id);
+            $this->assertStoreOwns($del);
+            if ($del) { $del->delete(); }
             return redirect(route('admins.category'))->with([
                 'msg'=>'Category Deleted Successfully',
                 'msg_type'=>'success',
@@ -320,7 +340,7 @@ class AdminController extends Controller
         }
         if($id>0 && !isset($delete)){
             $seo = CategoriesToMeta::where('cid', '=',  $id)->first();
-            $edit=Category::find($id);
+            $edit=$this->assertStoreOwns(Category::find($id));
         }
         if ($request->isMethod('post')) {
             $request->validate([
@@ -329,7 +349,7 @@ class AdminController extends Controller
 
             if($request->has('hidden_id')){
                 
-                $category=Category::find($request->hidden_id);
+                $category=$this->assertStoreOwns(Category::find($request->hidden_id));
                 $category->name=$request->name;
                 $category->status=$request->status;
                 $category->short_description=$request->short_description;
@@ -380,6 +400,7 @@ class AdminController extends Controller
             }else{
                 
                 $category=new Category();
+                StoreContext::assignToModel($category);
                 $category->created_at=Date('Y-m-d h:i:s');
                 $category->name=$request->name;
                 $category->status=$request->status;
@@ -1110,9 +1131,16 @@ $ret = $query->offset($start)->limit($length)->get();
     }
     
     public function orders(Request $request){
-        
-        $orders=DB::table('orders')->where('status',1)->orderBy('id','DESC')->get();
-        $r = DB::table('orders')->update(array('is_read'=>1));
+        $ordersQuery = DB::table('orders')->where('status',1)->orderBy('id','DESC');
+        if (Schema::hasColumn('orders', 'store_id') && StoreContext::id()) {
+            $ordersQuery->where('store_id', StoreContext::id());
+        }
+        $orders = $ordersQuery->get();
+        $mark = DB::table('orders');
+        if (Schema::hasColumn('orders', 'store_id') && StoreContext::id()) {
+            $mark->where('store_id', StoreContext::id());
+        }
+        $mark->update(array('is_read'=>1));
         return view('admins.orders',compact('orders'));
         
     }
@@ -1180,7 +1208,10 @@ $ret = $query->offset($start)->limit($length)->get();
             
             if($request->hidden_id){
                 // dd($_REQUEST);
-                $product=Product::find($request->hidden_id);
+                $product=$this->assertStoreOwns(Product::find($request->hidden_id));
+                if (!$product) {
+                    return redirect(route('admins.products'))->with(['msg'=>'Product not found','msg_type'=>'error']);
+                }
                 
                 // if(isset($request->image_one)){
                 //     $imageone = $request->image_one;
@@ -1289,6 +1320,7 @@ $ret = $query->offset($start)->limit($length)->get();
             }else{
                 // dd($request);
                 $product=new Product();
+                StoreContext::assignToModel($product);
                 
                 // if(isset($request->image_one)){
                 //     $imageone = $request->image_one;
@@ -1407,7 +1439,7 @@ $ret = $query->offset($start)->limit($length)->get();
         // dd($home_cats);
         $shap = Shap::all();
         if($id>0)
-        $edit=Product::findorFail($id);
+        $edit=$this->assertStoreOwns(Product::findorFail($id));
         $seo = ProductsToMeta::where('pid', $id)->orderByDesc('id')->get();
         // dd($seo);
         

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Models\Concerns\BelongsToStore;
     protected $table = 'custom_order';
+    protected $fillable = ['store_id'];
 }

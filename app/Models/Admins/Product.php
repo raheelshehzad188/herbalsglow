@@ -2,15 +2,16 @@
 
 namespace App\Models\Admins;
 
+use App\Models\Concerns\BelongsToStore;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToStore;
     
     protected $fillable = [
-        'product_name', 'slug', 'category_id', 'brand', 'product_details', 
+        'store_id', 'product_name', 'slug', 'category_id', 'brand', 'product_details', 
         'short_discriiption', 'tags', 'product_code', 'sku', 'selling_price', 
         'discount_price', 'status', 'image_one', 'gallary_images'
     ];

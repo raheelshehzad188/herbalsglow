@@ -37,7 +37,8 @@ $app_url = config('app.url');
 
 </head>
 
-<body>
+<body class="admin-shopify">
+    <link href="{{ asset('backend_assets/css/shopify-admin.css') }}" rel="stylesheet">
     <div id="wrapper">
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
@@ -49,10 +50,13 @@ $app_url = config('app.url');
                             </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear"> <span class="block m-t-xs"> <strong
-                                            class="font-bold">David Williams</strong>
-                                    </span> <span class="text-muted text-xs block">Admin <b
+                                            class="font-bold">{{ Session::get('admin')->name ?? Session::get('admin')->email ?? 'Admin' }}</strong>
+                                    </span> <span class="text-muted text-xs block">{{ (Session::get('admin')->role ?? '') === 'super_admin' ? 'Super Admin' : 'Store Admin' }} <b
                                             class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                @if((Session::get('admin')->role ?? '') === 'super_admin')
+                                <li><a href="{{ url('/superadmin/dashboard') }}">Super Admin Panel</a></li>
+                                @endif
                                 <li><a href="/admin/logout">Logout</a></li>
                             </ul>
                         </div>
@@ -63,6 +67,9 @@ $app_url = config('app.url');
                     <li class="@yield('dashboard_active')">
                         <a href="{{route('admins.dashboard')}}"><i class="fa fa-th-large"></i> <span
                                 class="nav-label">Dashboard</span></a>
+                    </li>
+                    <li class="@yield('integrations_active')">
+                        <a href="{{ url('/admin/integrations') }}"><i class="fa fa-plug"></i> <span class="nav-label">Apps (Meta / TikTok)</span></a>
                     </li>
                     <li class="@yield('category_active')">
                         <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Category</span><span

@@ -12,11 +12,25 @@ class Admin extends Model
     protected $table = 'admins';
     
     protected $fillable = [
-        'email', 
-        'password'
+        'name',
+        'email',
+        'password',
+        'role',
+        'store_id',
+        'status',
     ];
     
     protected $hidden = [
         'password'
     ];
+
+    public function isSuperAdmin(): bool
+    {
+        return ($this->role ?? '') === 'super_admin';
+    }
+
+    public function isStoreAdmin(): bool
+    {
+        return ($this->role ?? 'store_admin') === 'store_admin';
+    }
 }

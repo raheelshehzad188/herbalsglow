@@ -19,7 +19,16 @@ use App\Models\Admins\Gallerie;
 
 @section('content')
 <style>
-    
+    .shopify-form-hint {
+        background: #e4f5ef;
+        border: 1px solid #b4e1cd;
+        color: #0c5132;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+        font-size: 13px;
+    }
+    .ibox { border-radius: 12px; overflow: hidden; }
     .preview-images-zone {
         width: 100%;
         border: 1px solid #ddd;
@@ -109,6 +118,8 @@ use App\Models\Admins\Gallerie;
                     <h5>Product Form</h5>
                 </div>
                 <div class="ibox-content">
+                    <div class="shopify-form-hint">Shopify-style editor — title &amp; media, pricing &amp; inventory, organization, then SEO. Saves to this store only.</div>
+                    <div class="sa-section-title">Title &amp; media</div>
                     <form class="form-horizontal" id="product_form" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="sub_cat_id" value="<?php echo isset($edit->subcategory_id) ? $edit->subcategory_id : 0; ?>">

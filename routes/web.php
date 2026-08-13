@@ -21,6 +21,24 @@ Route::get('/clear-cache', function() {
  });
 Route::get('/test',[Admins\AdminController::class,'test'])->name('test');
 
+/* ===================== Super Admin (platform) ===================== */
+Route::prefix('/superadmin')->name('superadmin.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'login'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'loginSubmit'])->name('login.submit');
+    Route::get('/logout', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'logout'])->name('logout');
+
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('/', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'dashboard']);
+        Route::get('/stores', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'stores'])->name('stores');
+        Route::get('/stores/create', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeCreate'])->name('stores.create');
+        Route::post('/stores', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeSave'])->name('stores.store');
+        Route::get('/stores/{id}/edit', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeEdit'])->name('stores.edit');
+        Route::post('/stores/{id}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeSave'])->name('stores.update');
+        Route::post('/stores/{id}/delete', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeDelete'])->name('stores.delete');
+    });
+});
+
 // Static assets routes - must be at the very beginning
 Route::get('/images/{path}', function ($path) {
     $fullPath = public_path('images/' . $path);
@@ -171,6 +189,10 @@ Route::name('admins.')->prefix('/admin')->group(function () {
         Route::any('/clients/{id?}/{delete?}',[Admins\AdminController::class,'clients'])->name('clients');
         Route::any('/payment-methods/{id?}/{delete?}',[Admins\AdminController::class,'payment_methods'])->name('payment_methods');
         Route::any('/faq/{id?}/{delete?}',[Admins\AdminController::class,'faq'])->name('faq');
+        Route::get('/integrations',[Admins\IntegrationController::class,'index'])->name('integrations');
+        Route::post('/integrations',[Admins\IntegrationController::class,'save'])->name('integrations.save');
+        Route::post('/integrations/{provider}/sync-catalog',[Admins\IntegrationController::class,'syncCatalog'])->name('integrations.sync');
+        Route::post('/integrations/{provider}/test-event',[Admins\IntegrationController::class,'testEvent'])->name('integrations.test_event');
 
     });
     
