@@ -64,6 +64,14 @@ class DomainResolver
             return true;
         }
 
+        if ($normalized === 'herbalsglow.test' || substr($normalized, -16) === '.herbalsglow.test') {
+            return true;
+        }
+
+        if (substr($normalized, -5) === '.test') {
+            return true;
+        }
+
         return false;
     }
 

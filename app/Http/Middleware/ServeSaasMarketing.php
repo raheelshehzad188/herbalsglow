@@ -42,8 +42,8 @@ class ServeSaasMarketing
         $path = trim($request->path(), '/');
         $site = app(SiteController::class);
 
-        if ($request->isMethod('get')) {
-            if ($path === '') {
+        if ($request->isMethod('get') || $request->isMethod('head')) {
+            if ($path === '' || $path === 'dashboard') {
                 return $this->toResponse($site->home());
             }
             if ($path === 'pricing') {

@@ -4,9 +4,10 @@ return [
 
     /*
     | Primary marketing / control-plane host (no merchant storefront).
-    | www and bare host are treated as the same site.
+    | Local default: platform.herbalsglow.test
+    | On the live server set SAAS_PRIMARY_DOMAIN to your real domain (e.g. salesground.ai).
     */
-    'primary_domain' => env('SAAS_PRIMARY_DOMAIN', ''),
+    'primary_domain' => env('SAAS_PRIMARY_DOMAIN', 'platform.herbalsglow.test'),
 
     /*
     | Hosts that keep the local first-store fallback and may open /platform

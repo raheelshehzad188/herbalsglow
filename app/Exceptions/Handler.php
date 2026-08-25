@@ -13,7 +13,11 @@ class Handler extends ExceptionHandler
     {
         if ($this->isHttpException($exception)) {
             if ($exception->getStatusCode() == 404) {
-                return redirect('/'); // Home page par redirect
+                $path = ltrim($request->path(), '/');
+                if (strpos($path, 'platform') === 0 || strpos($path, 'superadmin') === 0) {
+                    return parent::render($request, $exception);
+                }
+                return redirect('/');
             }
         }
     

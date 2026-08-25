@@ -1181,11 +1181,13 @@ $ret = $query->offset($start)->limit($length)->get();
             $ordersQuery->where('store_id', StoreContext::id());
         }
         $orders = $ordersQuery->get();
-        $mark = DB::table('orders');
-        if (Schema::hasColumn('orders', 'store_id') && StoreContext::id()) {
-            $mark->where('store_id', StoreContext::id());
+        if (Schema::hasColumn('orders', 'is_read')) {
+            $mark = DB::table('orders');
+            if (Schema::hasColumn('orders', 'store_id') && StoreContext::id()) {
+                $mark->where('store_id', StoreContext::id());
+            }
+            $mark->update(['is_read' => 1]);
         }
-        $mark->update(array('is_read'=>1));
         return view('admins.orders',compact('orders'));
         
     }

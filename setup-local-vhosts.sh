@@ -1,13 +1,9 @@
 #!/bin/bash
 set -e
-HOSTS_BLOCK='
-# Herbals Glow local stores
-127.0.0.1 classic.herbalsglow.test
-127.0.0.1 wellness.herbalsglow.test
-127.0.0.1 shopus.herbalsglow.test
-'
-if ! grep -q 'classic.herbalsglow.test' /etc/hosts; then
-  echo "$HOSTS_BLOCK" >> /etc/hosts
-fi
+for host in classic.herbalsglow.test wellness.herbalsglow.test shopus.herbalsglow.test platform.herbalsglow.test; do
+  if ! grep -q "$host" /etc/hosts; then
+    echo "127.0.0.1 $host" >> /etc/hosts
+  fi
+done
 /Applications/XAMPP/xamppfiles/bin/apachectl graceful
 echo "Hosts + Apache reload done."

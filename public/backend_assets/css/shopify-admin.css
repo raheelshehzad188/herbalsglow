@@ -28,9 +28,13 @@ body.sa-body {
   display: flex;
   flex-direction: column;
   padding: 20px 14px;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
   height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  z-index: 40;
 }
 .sa-brand { display: flex; gap: 12px; align-items: center; padding: 8px 10px 22px; }
 .sa-brand-mark {
@@ -39,7 +43,20 @@ body.sa-body {
 }
 .sa-brand strong { display: block; font-size: 14px; }
 .sa-brand small { color: #aeb0b3; font-size: 12px; }
-.sa-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.sa-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.sa-nav::-webkit-scrollbar { width: 6px; }
+.sa-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.22); border-radius: 8px; }
+.sa-nav::-webkit-scrollbar-track { background: transparent; }
 .sa-nav-item {
   color: #d2d5d8; text-decoration: none; padding: 10px 12px; border-radius: 8px; font-weight: 500; font-size: 14px;
 }
@@ -50,10 +67,15 @@ body.sa-body {
 }
 .sa-stat-link { text-decoration: none; color: inherit; display: block; }
 .sa-stat-link:hover { border-color: #c9cccf; }
-.sa-sidebar-foot { border-top: 1px solid rgba(255,255,255,.08); padding-top: 14px; font-size: 13px; }
+.sa-sidebar-foot {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 14px;
+  font-size: 13px;
+  flex-shrink: 0;
+}
 .sa-sidebar-foot a { color: #aeb0b3; }
 
-.sa-main { flex: 1; min-width: 0; }
+.sa-main { flex: 1; min-width: 0; margin-left: 260px; }
 .sa-topbar {
   display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
   padding: 24px 28px 8px;
@@ -76,7 +98,16 @@ body.sa-body {
 .sa-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 960px) {
   .sa-shell { flex-direction: column; }
-  .sa-sidebar { width: 100%; height: auto; position: relative; }
+  .sa-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    position: relative;
+    left: auto;
+    overflow: visible;
+  }
+  .sa-nav { overflow: visible; max-height: none; }
+  .sa-main { margin-left: 0; }
   .sa-grid-4, .sa-grid-2 { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 640px) {

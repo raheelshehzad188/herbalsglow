@@ -53,7 +53,7 @@ Route::prefix('/superadmin')->name('superadmin.')->middleware('saas.suite')->gro
 });
 
 /* Public Shopify-like SaaS marketing site (super admin edits this) */
-Route::prefix('/platform')->middleware('saas.suite')->group(function () {
+Route::prefix('/platform')->group(function () {
     Route::get('/', [\App\Http\Controllers\Platform\SiteController::class, 'home']);
     Route::get('/products', [\App\Http\Controllers\Platform\SiteController::class, 'products']);
     Route::get('/themes', [\App\Http\Controllers\Platform\SiteController::class, 'themes']);
