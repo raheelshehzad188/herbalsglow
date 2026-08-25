@@ -34,7 +34,9 @@
     window.scaleWrapper = "&lt;div&#xA;  style=&quot;aspect-ratio: {sourceWidth}/{sourceHeight}; overflow: hidden; width: {targetWidth}px&quot;&#xA;&gt;&#xA;  &lt;div&#xA;    style=&quot;&#xA;      aspect-ratio: {sourceWidth}/{sourceHeight};&#xA;      width: {sourceWidth}px;&#xA;      transform: scale(calc({targetWidth} / {sourceWidth}));&#xA;      transform-origin: top left;&#xA;    &quot;&#xA;  &gt;&#xA;    {content}&#xA;  &lt;/div&gt;&#xA;&lt;/div&gt;";
 </script>
 
+@if(theme_setting('homepage.show_bento', true))
 @php theme3_section('bento-banners', compact('sliderBanners', 'sliderCount')); @endphp
+@endif
 @php theme3_section('braze-sdk'); @endphp
 @php theme3_section('banners-v2'); @endphp
 
@@ -42,7 +44,9 @@
     <div class="hp-modules">
 
         @php theme3_section('sign-in-prompt'); @endphp
+        @if(theme_setting('homepage.show_quality', true))
         @php theme3_section('quality-promise'); @endphp
+        @endif
         @php theme3_section('recently-viewed'); @endphp
         @php theme3_section('vitacost-brands'); @endphp
         @php theme3_section('recommendations'); @endphp
@@ -59,7 +63,9 @@
         @php theme3_section('more-items-to-consider'); @endphp
         @php theme3_section('flash-deals'); @endphp
 
+        @if(theme_setting('homepage.show_trending', true))
         @include('theme3.partials.trending-categories')
+        @endif
 
         @php theme3_section('brands-of-the-week'); @endphp
         @php theme3_section('best-selling'); @endphp

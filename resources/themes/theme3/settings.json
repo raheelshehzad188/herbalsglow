@@ -1,0 +1,42 @@
+{
+  "id": 3,
+  "theme_name": "Theme 3 — iHerb Wellness",
+  "version": "1.0.0",
+  "groups": [
+    {
+      "id": "header",
+      "label": "Header",
+      "fields": [
+        {"key": "header.show_logo", "type": "boolean", "label": "Show logo", "default": true},
+        {"key": "header.show_menu", "type": "boolean", "label": "Show category menu", "default": true},
+        {"key": "header.show_search", "type": "boolean", "label": "Show search", "default": true}
+      ]
+    },
+    {
+      "id": "homepage",
+      "label": "Homepage modules",
+      "fields": [
+        {"key": "homepage.show_bento", "type": "boolean", "label": "Show bento banners", "default": true},
+        {"key": "homepage.show_quality", "type": "boolean", "label": "Show quality promise", "default": true},
+        {"key": "homepage.show_trending", "type": "boolean", "label": "Show trending products", "default": true}
+      ]
+    },
+    {
+      "id": "colors",
+      "label": "Colors",
+      "fields": [
+        {"key": "colors.primary", "type": "color", "label": "Primary color", "default": "#2C0A47", "maps_to": "primary_color"},
+        {"key": "colors.navigation", "type": "color", "label": "Navigation color", "default": "#2C0A47", "maps_to": "navigation_color"},
+        {"key": "colors.button", "type": "color", "label": "Button color", "default": "#2C0A47", "maps_to": "button_color"}
+      ]
+    },
+    {
+      "id": "products",
+      "label": "Products",
+      "fields": [
+        {"key": "products.show_price", "type": "boolean", "label": "Show price", "default": true},
+        {"key": "products.show_rating", "type": "boolean", "label": "Show ratings", "default": true}
+      ]
+    }
+  ]
+}

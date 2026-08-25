@@ -38,6 +38,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ResolveStore::class,
+            \App\Http\Middleware\ServeSaasMarketing::class,
         ],
 
         'api' => [
@@ -58,6 +59,7 @@ class Kernel extends HttpKernel
         'adminlogedin' => \App\Http\Middleware\adminlogedin::class,
         'adminnotlogedin' => \App\Http\Middleware\adminnotlogedin::class,
         'superadmin' => \App\Http\Middleware\SuperAdminAuth::class,
+        'saas.suite' => \App\Http\Middleware\EnsureSaasSuite::class,
         'resolve.store' => \App\Http\Middleware\ResolveStore::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,

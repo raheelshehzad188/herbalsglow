@@ -1,0 +1,43 @@
+{
+  "id": 2,
+  "theme_name": "Theme 2 — Ayanstore",
+  "version": "1.0.0",
+  "groups": [
+    {
+      "id": "header",
+      "label": "Header",
+      "fields": [
+        {"key": "header.show_logo", "type": "boolean", "label": "Show logo", "default": true},
+        {"key": "header.show_menu", "type": "boolean", "label": "Show menu", "default": true},
+        {"key": "header.show_search", "type": "boolean", "label": "Show search", "default": true},
+        {"key": "header.show_cart", "type": "boolean", "label": "Show cart", "default": true}
+      ]
+    },
+    {
+      "id": "colors",
+      "label": "Colors",
+      "fields": [
+        {"key": "colors.primary", "type": "color", "label": "Primary color", "default": "#222222", "maps_to": "primary_color"},
+        {"key": "colors.navigation", "type": "color", "label": "Navigation color", "default": "#111111", "maps_to": "navigation_color"},
+        {"key": "colors.button", "type": "color", "label": "Button color", "default": "#111111", "maps_to": "button_color"}
+      ]
+    },
+    {
+      "id": "products",
+      "label": "Product cards",
+      "fields": [
+        {"key": "products.show_price", "type": "boolean", "label": "Show price", "default": true},
+        {"key": "products.show_compare_price", "type": "boolean", "label": "Show compare-at price", "default": true},
+        {"key": "products.show_add_to_cart", "type": "boolean", "label": "Show add to cart", "default": true}
+      ]
+    },
+    {
+      "id": "footer",
+      "label": "Footer",
+      "fields": [
+        {"key": "footer.enabled", "type": "boolean", "label": "Show footer", "default": true},
+        {"key": "footer.social_links", "type": "boolean", "label": "Social links", "default": true}
+      ]
+    }
+  ]
+}

@@ -1069,8 +1069,20 @@ $ret = $query->offset($start)->limit($length)->get();
                 $setting->button_color=$request->button_color;
                 $setting->theme_style=$request->theme_style;
                 $setting->active_theme = $request->active_theme ?? 2;
+                if (Schema::hasColumn('setting', 'home_layout')) {
+                    $allowedHomes = \App\Support\ThemeRegistry::homeIds((int) $setting->active_theme);
+                    $setting->home_layout = in_array((int) $request->home_layout, $allowedHomes, true)
+                        ? (int) $request->home_layout
+                        : ($allowedHomes[0] ?? 1);
+                }
                 $setting->head_scripts=$request->head_scripts;
                 $setting->save();
+
+                $currentStore = StoreContext::store() ?: \App\Support\CurrentStore::get();
+                if ($currentStore && in_array((int) $setting->active_theme, storefront_theme_ids(), true)) {
+                    $currentStore->active_theme = (int) $setting->active_theme;
+                    $currentStore->save();
+                }
 
                 return redirect('/admin/setting')->with([
                     'msg' => 'Settings updated successfully.',
@@ -1079,8 +1091,41 @@ $ret = $query->offset($start)->limit($length)->get();
             }
         }
         
-        $edit = Setting::where('id', '=',  '1')->first();
-        return view('admins.setting',compact('edit'));
+        $storeId = StoreContext::id();
+        if ($storeId && Schema::hasColumn('setting', 'store_id')) {
+            $edit = Setting::where('store_id', $storeId)->orderBy('id')->first();
+        }
+        if (empty($edit)) {
+            $edit = Setting::where('id', '=', '1')->first();
+        }
+        $themes = \App\Support\ThemeRegistry::all();
+        return view('admins.setting', compact('edit', 'themes'));
+    }
+
+    public function themeSettings(Request $request)
+    {
+        $store = StoreContext::store();
+        if (!$store) {
+            return redirect('/admin/setting')->with([
+                'msg' => 'No store is assigned to this account.',
+                'msg_type' => 'danger',
+            ]);
+        }
+
+        if ($request->isMethod('post')) {
+            \App\Support\ThemeSettings::save((array) $request->input('ts', []), $store);
+            return redirect('/admin/theme-settings')->with([
+                'msg' => 'Theme settings saved for this store only.',
+                'msg_type' => 'success',
+            ]);
+        }
+
+        $themeId = \App\Support\ThemeSettings::assignedThemeId($store);
+        $schema = \App\Support\ThemeSettings::schema($store);
+        $values = \App\Support\ThemeSettings::values($store);
+        $schemaPath = theme_path($themeId, 'settings.json');
+
+        return view('admins.theme_settings', compact('store', 'themeId', 'schema', 'values', 'schemaPath'));
     }
     
      public function learn_setting(Request $request,$id=0,$delete=null){

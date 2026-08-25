@@ -6,6 +6,86 @@ if (!function_exists('format_amount')) {
     }
 }
 
+if (!function_exists('is_saas_domain')) {
+    function is_saas_domain(?string $host = null): bool {
+        return \App\Support\DomainResolver::isSaasDomain($host);
+    }
+}
+
+if (!function_exists('platform_url')) {
+    function platform_url(string $path = ''): string {
+        $path = ltrim($path, '/');
+        $query = '';
+        if (strpos($path, '?') !== false) {
+            [$path, $query] = explode('?', $path, 2);
+        }
+        if (\App\Support\DomainResolver::isSaasDomain()) {
+            $url = url($path === '' ? '/' : '/' . $path);
+        } else {
+            $url = url($path === '' ? '/platform' : '/platform/' . $path);
+        }
+        return $query !== '' ? $url . '?' . $query : $url;
+    }
+}
+
+if (!function_exists('theme_path')) {
+    function theme_path($theme, string $file = 'settings.json'): ?string {
+        $id = is_numeric($theme) ? (int) $theme : (int) preg_replace('/\D+/', '', (string) $theme);
+        return \App\Support\ThemeRegistry::themePath($id, $file);
+    }
+}
+
+if (!function_exists('theme_setting')) {
+    function theme_setting(string $key, $default = null) {
+        return \App\Support\ThemeSettings::get($key, $default);
+    }
+}
+
+if (!function_exists('storefront_themes')) {
+    function storefront_themes(): array {
+        return \App\Support\ThemeRegistry::all();
+    }
+}
+
+if (!function_exists('storefront_theme_ids')) {
+    function storefront_theme_ids(): array {
+        return array_map('intval', array_keys(storefront_themes()));
+    }
+}
+
+if (!function_exists('storefront_home_layouts')) {
+    function storefront_home_layouts($themeId = null): array {
+        $id = (int) ($themeId ?: 4);
+        return \App\Support\ThemeRegistry::get($id)['homes'] ?? [1 => 'Default home'];
+    }
+}
+
+if (!function_exists('storefront_home_layout')) {
+    function storefront_home_layout($setting = null): int {
+        $themeId = (int) ($setting->active_theme ?? 4);
+        $allowed = \App\Support\ThemeRegistry::homeIds($themeId);
+        $layout = (int) ($setting->home_layout ?? ($allowed[0] ?? 1));
+        return in_array($layout, $allowed, true) ? $layout : ($allowed[0] ?? 1);
+    }
+}
+
+if (!function_exists('theme_color')) {
+    function theme_color($setting, string $key, int $themeId = 0): string {
+        $map = [
+            'primary' => 'primary_color',
+            'navigation' => 'navigation_color',
+            'button' => 'button_color',
+        ];
+        $column = $map[$key] ?? $key;
+        $value = trim((string) ($setting->{$column} ?? ''));
+        if ($value !== '') {
+            return $value;
+        }
+        $id = $themeId ?: (int) ($setting->active_theme ?? 4);
+        return (string) (\App\Support\ThemeRegistry::get($id)['colors'][$key] ?? '#111111');
+    }
+}
+
 if (!function_exists('footer_menu_types')) {
     function footer_menu_types(): array {
         return [
@@ -78,7 +158,7 @@ if (!function_exists('img_url')) {
         $base = rtrim((string) (env('IMG_URL') ?: config('app.url')), '/');
 
         if ($path === null || trim((string) $path) === '') {
-            return $base;
+            return '';
         }
 
         $path = trim((string) $path);
@@ -113,6 +193,23 @@ if (!function_exists('img_url')) {
     }
 }
 
+if (!function_exists('storefront_img')) {
+    function storefront_img($path = '', $fallback = ''): string {
+        $path = trim((string) $path);
+        if ($path !== '') {
+            return img_url($path);
+        }
+        $fallback = trim((string) $fallback);
+        if ($fallback === '') {
+            return '';
+        }
+        if (preg_match('#^(https?:)?//#i', $fallback) || strpos($fallback, '/') === 0) {
+            return $fallback;
+        }
+        return img_url($fallback);
+    }
+}
+
 if (!function_exists('img_cdn_url')) {
     /**
      * Always build image URL from IMG_URL (no local fallback).
@@ -122,7 +219,7 @@ if (!function_exists('img_cdn_url')) {
         $base = rtrim((string) (env('IMG_URL') ?: config('app.url')), '/');
 
         if ($path === null || trim((string) $path) === '') {
-            return $base;
+            return '';
         }
 
         $path = trim((string) $path);
@@ -429,5 +526,11 @@ if (!function_exists('seo_collection_schema')) {
             'description' => strip_tags($description),
             'url' => $url,
         ];
+    }
+}
+
+if (!function_exists('saas')) {
+    function saas($key, $default = '') {
+        return \App\Models\SaasSetting::get($key, $default);
     }
 }

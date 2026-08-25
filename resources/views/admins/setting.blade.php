@@ -393,11 +393,37 @@
                                             <label class="col-sm-12 control-label">Active Storefront Theme:</label>
                                             <div class="col-sm-12">
                                                 <select class="form-control" name="active_theme" id="active_theme">
-                                                    <option value="1" <?php echo (isset($edit->active_theme) && (int)$edit->active_theme === 1) ? 'selected' : ''; ?>>Theme 1 — Classic</option>
-                                                    <option value="2" <?php echo (!isset($edit->active_theme) || (int)$edit->active_theme === 2) ? 'selected' : ''; ?>>Theme 2 — Ayanstore</option>
-                                                    <option value="3" <?php echo (isset($edit->active_theme) && (int)$edit->active_theme === 3) ? 'selected' : ''; ?>>Theme 3 — iHerb Wellness</option>
+                                                    @php $themes = $themes ?? \App\Support\ThemeRegistry::all(); @endphp
+                                                    @foreach($themes as $tid => $themeMeta)
+                                                        <option value="{{ $tid }}"
+                                                            data-homes="{{ count($themeMeta['homes'] ?? []) }}"
+                                                            <?php echo (isset($edit->active_theme) && (int)$edit->active_theme === (int)$tid) ? 'selected' : ''; ?>>
+                                                            {{ $themeMeta['name'] }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
-                                                <small class="text-muted">Select which theme visitors see on the storefront. Preview with <code>?theme=3</code> in the URL.</small>
+                                                <small class="text-muted">Theme assign karne ke baad <a href="{{ url('/admin/theme-settings') }}">Theme customizer</a> us theme ka <code>settings.json</code> load karega. Preview: <code>?theme=4</code></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                        </div>
+
+                                <div class="row" id="theme-home-layout-row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-sm-12 control-label">Active homepage:</label>
+                                            <div class="col-sm-12">
+                                                <select class="form-control" name="home_layout" id="home_layout">
+                                                    @foreach($themes as $tid => $themeMeta)
+                                                        @foreach(($themeMeta['homes'] ?? [1 => 'Default']) as $hid => $hlabel)
+                                                            <option value="{{ $hid }}" data-theme="{{ $tid }}"
+                                                                <?php echo (isset($edit->home_layout) && (int)$edit->home_layout === (int)$hid && (int)($edit->active_theme ?? 0) === (int)$tid) ? 'selected' : ''; ?>>
+                                                                {{ $hlabel }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endforeach
+                                                </select>
+                                                <small class="text-muted">Jo theme select hogi, uske available homepages yahan dikhenge.</small>
                                             </div>
                                         </div>
                                     </div>
@@ -514,6 +540,24 @@
             var color = $(this).val();
             $('.color-preview').last().css('background-color', color);
         });
+
+        function filterHomes() {
+            var theme = $('#active_theme').val();
+            var $opts = $('#home_layout option');
+            $opts.hide();
+            var $visible = $opts.filter('[data-theme="' + theme + '"]');
+            $visible.show();
+            if ($visible.filter(':selected').length === 0) {
+                $visible.first().prop('selected', true);
+            }
+            if ($visible.length > 1) {
+                $('#theme-home-layout-row').show();
+            } else {
+                $('#theme-home-layout-row').hide();
+            }
+        }
+        $('#active_theme').on('change', filterHomes);
+        filterHomes();
     });
     
 </script>

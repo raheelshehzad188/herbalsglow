@@ -22,7 +22,7 @@ Route::get('/clear-cache', function() {
 Route::get('/test',[Admins\AdminController::class,'test'])->name('test');
 
 /* ===================== Super Admin (platform) ===================== */
-Route::prefix('/superadmin')->name('superadmin.')->group(function () {
+Route::prefix('/superadmin')->name('superadmin.')->middleware('saas.suite')->group(function () {
     Route::get('/login', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'login'])->name('login');
     Route::post('/login', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'loginSubmit'])->name('login.submit');
     Route::get('/logout', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'logout'])->name('logout');
@@ -36,7 +36,31 @@ Route::prefix('/superadmin')->name('superadmin.')->group(function () {
         Route::get('/stores/{id}/edit', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeEdit'])->name('stores.edit');
         Route::post('/stores/{id}', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeSave'])->name('stores.update');
         Route::post('/stores/{id}/delete', [\App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeDelete'])->name('stores.delete');
+
+        Route::get('/website', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'website'])->name('cms.website');
+        Route::post('/website', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'websiteSave'])->name('cms.website.save');
+        Route::get('/plans', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'plans'])->name('cms.plans');
+        Route::get('/themes-gallery', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'themes'])->name('cms.themes');
+        Route::get('/apps-directory', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'apps'])->name('cms.apps');
+        Route::get('/faqs', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'faqs'])->name('cms.faqs');
+        Route::get('/feature-cards', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'features'])->name('cms.features');
+        Route::get('/cms/{type}/create', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'form'])->name('cms.create');
+        Route::post('/cms/{type}', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'save'])->name('cms.store');
+        Route::get('/cms/{type}/{id}/edit', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'form'])->name('cms.edit');
+        Route::post('/cms/{type}/{id}', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'save'])->name('cms.update');
+        Route::post('/cms/{type}/{id}/delete', [\App\Http\Controllers\SuperAdmin\CmsController::class, 'delete'])->name('cms.delete');
     });
+});
+
+/* Public Shopify-like SaaS marketing site (super admin edits this) */
+Route::prefix('/platform')->middleware('saas.suite')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Platform\SiteController::class, 'home']);
+    Route::get('/products', [\App\Http\Controllers\Platform\SiteController::class, 'products']);
+    Route::get('/themes', [\App\Http\Controllers\Platform\SiteController::class, 'themes']);
+    Route::get('/apps', [\App\Http\Controllers\Platform\SiteController::class, 'apps']);
+    Route::get('/pricing', [\App\Http\Controllers\Platform\SiteController::class, 'pricing']);
+    Route::get('/start', [\App\Http\Controllers\Platform\SiteController::class, 'start']);
+    Route::post('/start', [\App\Http\Controllers\Platform\SiteController::class, 'startSubmit']);
 });
 
 // Static assets routes - must be at the very beginning
@@ -157,6 +181,8 @@ Route::name('admins.')->prefix('/admin')->group(function () {
         Route::get('/dsection/{id?}',[Admins\AdminController::class,'dsection'])->name('dsection');
         Route::get('/setting',[Admins\AdminController::class,'setting'])->name('setting');
         Route::any('/setting/{id?}',[Admins\AdminController::class,'setting'])->name('setting');
+        Route::get('/theme-settings',[Admins\AdminController::class,'themeSettings'])->name('theme_settings');
+        Route::post('/theme-settings',[Admins\AdminController::class,'themeSettings']);
         Route::get('/learn_setting',[Admins\AdminController::class,'learn_setting'])->name('learn_setting');
         Route::any('/learn_setting/{id?}',[Admins\AdminController::class,'learn_setting'])->name('learn_setting');
         Route::any('/page_form/{id?}',[Admins\AdminController::class,'page_form'])->name('page_form');
@@ -194,6 +220,18 @@ Route::name('admins.')->prefix('/admin')->group(function () {
         Route::post('/integrations/{provider}/sync-catalog',[Admins\IntegrationController::class,'syncCatalog'])->name('integrations.sync');
         Route::post('/integrations/{provider}/test-event',[Admins\IntegrationController::class,'testEvent'])->name('integrations.test_event');
 
+        Route::get('/import-data', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'index'])->name('import_data');
+        Route::post('/import-data/shopify/oauth', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'connectOAuth'])->name('import_data.oauth');
+        Route::get('/import-data/shopify/callback', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'callback'])->name('import_data.callback');
+        Route::post('/import-data/shopify/manual', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'connectManual'])->name('import_data.manual');
+        Route::post('/import-data/shopify/disconnect', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'disconnect'])->name('import_data.disconnect');
+        Route::post('/import-data/config', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'saveConfig'])->name('import_data.config');
+        Route::post('/import-data/start', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'start'])->name('import_data.start');
+        Route::get('/import-data/progress', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'progress'])->name('import_data.progress');
+        Route::post('/import-data/cancel', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'cancel'])->name('import_data.cancel');
+        Route::post('/import-data/retry', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'retryFailed'])->name('import_data.retry');
+        Route::get('/import-data/failed', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'failedItems'])->name('import_data.failed');
+
     });
     
 
@@ -214,8 +252,9 @@ Route::any('/shop',[Front\FrontController::class,'shop'])->name('shop');
 Route::get('/product/{id}',[Front\FrontController::class,'product_detail']);
 
 Route::get('/tags/{id}',[Front\FrontController::class,'tags_detail']);
-// Route::get('/blog',[Front\FrontController::class,'blogs']);
-// Route::get('/blog/{id}',[Front\FrontController::class,'blog_detail']);
+Route::get('/blog',[Front\FrontController::class,'blogs']);
+Route::get('/blogs',[Front\FrontController::class,'blogs']);
+Route::get('/blog/{id}',[Front\FrontController::class,'blog_detail']);
 Route::get('/category/{slug}',[Front\FrontController::class,'category_detail']);
 Route::get('/blog_category/{id}',[Front\FrontController::class,'blog_category']);
 Route::get('/shape/{id}',[Front\FrontController::class,'shape_detail']);
@@ -277,7 +316,7 @@ Route::any('/forget_pass',[Front\FrontController::class,'forget_pass'])->name('f
 Route::get('/load-more-products',[Front\FrontController::class,'loadMoreProducts'])->name('load-more-products');
 
 // Catch-all route - must be last, exclude admin routes
-Route::get('/{slug}',[Front\FrontController::class,'find'])->where('slug', '^(?!admin).*$');
+Route::get('/{slug}',[Front\FrontController::class,'find'])->where('slug', '^(?!admin|platform|superadmin).*$');
 
 
 

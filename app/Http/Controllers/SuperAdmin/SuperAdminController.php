@@ -93,7 +93,7 @@ class SuperAdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:190',
             'domain' => 'required|string|max:190',
-            'active_theme' => 'required|in:1,2,3',
+            'active_theme' => 'required|in:1,2,3,4',
             'status' => 'required|in:active,paused,draft',
             'owner_email' => 'nullable|email',
             'owner_password' => 'nullable|min:6',

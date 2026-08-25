@@ -1,843 +1,145 @@
-<?php
-
-$app_url = config('app.url');
-?> 
+@php
+    $admin = Session::get('admin');
+    $store = \App\Support\CurrentStore::get();
+    $storeName = $store->name ?? 'Store';
+@endphp
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>@yield('title')</title>
-  <style>
-.ck-editor__editable_inline {
-    min-height: 400px;
-}
-</style>
-
-  <link href="{{ $app_url.'backend_assets/css/bootstrap.min.css'}}" rel="stylesheet">
-  <link href="{{ $app_url.'backend_assets/font-awesome/css/font-awesome.css'}}" rel="stylesheet">
-
-  <link href="{{ $app_url.'backend_assets/css/plugins/dataTables/datatables.min.css'}}" rel="stylesheet">
-
-  <link href="{{ $app_url.'backend_assets/css/animate.css'}}" rel="stylesheet">
-  <link href="{{ $app_url.'backend_assets/css/style.css'}}" rel="stylesheet">
-  <link href="{{ $app_url.'backend_assets/css/plugins/select2/select2.min.css'}}" rel="stylesheet">
-
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin') — {{ $storeName }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ asset('backend_assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('backend_assets/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ asset('backend_assets/css/plugins/dataTables/datatables.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('backend_assets/css/plugins/select2/select2.min.css') }}" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css" rel="stylesheet"/>
-  
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    
-
-
-</head>
-
-<body class="admin-shopify">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
     <link href="{{ asset('backend_assets/css/shopify-admin.css') }}" rel="stylesheet">
-    <div id="wrapper">
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav metismenu" id="side-menu">
-                    <li class="nav-header">
-                        <div class="dropdown profile-element"> <span>
-                                <img alt="image" class="img-circle"
-                                    src="{{ asset('backend_assets/img/profile_small.jpg') }}" />
-                            </span>
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="clear"> <span class="block m-t-xs"> <strong
-                                            class="font-bold">{{ Session::get('admin')->name ?? Session::get('admin')->email ?? 'Admin' }}</strong>
-                                    </span> <span class="text-muted text-xs block">{{ (Session::get('admin')->role ?? '') === 'super_admin' ? 'Super Admin' : 'Store Admin' }} <b
-                                            class="caret"></b></span> </span> </a>
-                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                @if((Session::get('admin')->role ?? '') === 'super_admin')
-                                <li><a href="{{ url('/superadmin/dashboard') }}">Super Admin Panel</a></li>
-                                @endif
-                                <li><a href="/admin/logout">Logout</a></li>
-                            </ul>
-                        </div>
-                        <div class="logo-element">
-                            IN+
-                        </div>
-                    </li>
-                    <li class="@yield('dashboard_active')">
-                        <a href="{{route('admins.dashboard')}}"><i class="fa fa-th-large"></i> <span
-                                class="nav-label">Dashboard</span></a>
-                    </li>
-                    <li class="@yield('integrations_active')">
-                        <a href="{{ url('/admin/integrations') }}"><i class="fa fa-plug"></i> <span class="nav-label">Apps (Meta / TikTok)</span></a>
-                    </li>
-                    <li class="@yield('category_active')">
-                        <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Category</span><span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse @yield('category_active_c1') @yield('category_active_c2') @yield('category_active_c3')">
-                            <li class="@yield('category_child_1_active')"><a href="{{route('admins.category')}}">Category</a></li>
-                            <li class="@yield('category_child_2_active')"><a href="{{route('admins.subcategory')}}">Sub Category</a></li>
-                            <li style="display:none;" class="@yield('category_child_3_active')"><a href="{{route('admins.brand')}}">Brand</a></li>
-                        </ul>
-                    </li>
-                    <li class="@yield('product_active')">
-                        <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Products</span><span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse @yield('product_active_c1')">
-                            <li class="@yield('product_child_1_active')"><a href="{{route('admins.product_form')}}">Add Product</a></li>
-                            <li class="@yield('product_child_2_active')"><a href="{{route('admins.products')}}">All Product</a></li>
-
-                        </ul>
-                    </li>
-                    <!--<li class="@yield('product_attribute_active')">-->
-                    <!--    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Products Attributes</span><span-->
-                    <!--            class="fa arrow"></span></a>-->
-                    <!--    <ul class="nav nav-second-level collapse @yield('product_active_c1')">-->
-                    <!--        <li class="@yield('product_attribute_0_active')"><a href="{{route('admins.clarity')}}">Clarity</a></li>-->
-                    <!--        <li class="@yield('product_attribute_child_1_active')"><a href="{{route('admins.size')}}">Size</a></li>-->
-                    <!--        <li class="@yield('product_attribute_child_2_active')"><a href="{{route('admins.colors')}}">Color</a></li>-->
-                    <!--        <li class="@yield('product_attribute_child_3_active')"><a href="{{route('admins.shap')}}">Shape</a></li>-->
-
-                    <!--    </ul>-->
-                    <!--</li>-->
-                    <li class="@yield('page_active')">
-                        <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Pages</span><span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse @yield('page_active_c1')">
-                            <li class="@yield('page_1_active')"><a href="{{route('admins.page_form')}}">Add Page</a></li>
-                             
-                            <li class="@yield('page_2_active')"><a href="{{route('admins.pages')}}">All Page</a></li>
-                            <!--<li class="@yield('page_1_active')"><a href="{{route('admins.page_form')}}?section=1">Add Section</a></li>-->
-                            <!--<li class="@yield('page_2_active')"><a href="{{route('admins.msections')}}">Menu section</a></li>-->
-
-                        </ul>
-                    </li>
-                    <li class="@yield('coupon_active')" style="display:none;" >
-                        <a href="{{route('admins.coupon')}}"><i class="fa fa-flask"></i> <span
-                                class="nav-label">Coupons</span></a>
-                    </li>
-                    <li class="@yield('order')" style="display:;" >
-                        <a href="#"><i class="fa fa-flask"></i> <span
-                                class="nav-label">Orders</span><span
-                                class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse @yield('orderc1')">
-                            <li class="@yield('order1')"><a href="{{route('admins.orders')}}">Orders</a></li>
-                            <li class="@yield('corder')"><a href="{{route('admins.complete_orders')}}">Complete Orders</a></li>
-                        </ul>
-                    </li>
-                    <li class="@yield('slider')"> 
-                        <a href="{{route('admins.slider')}}"><i class="fa fa-pie-chart"></i> <span
-                                class="nav-label">Home Slider</span> </a>
-                    </li>
-                    <li class="@yield('clients')">
-                        <a href="{{route('admins.clients')}}"><i class="fa fa-users"></i> <span
-                                class="nav-label">Clients</span> </a>
-                    </li>
-                    <li class="@yield('payment_methods')">
-                        <a href="{{route('admins.payment_methods')}}"><i class="fa fa-credit-card"></i> <span
-                                class="nav-label">Payment Gateways</span> </a>
-                    </li>
-                    <li class="@yield('faq')"> 
-                        <a href="{{route('admins.faq')}}"><i class="fa fa-question"></i> <span
-                                class="nav-label">Faq's</span> </a>
-                    </li>
-                    <li class="@yield('boxs')"> 
-                        <a href="{{route('admins.boxs')}}"><i class="fa fa-box"></i> <span
-                                class="nav-label">Boxes</span> </a>
-                    </li>
-                    <li class="@yield('news_letters')"> 
-                        <a href="{{route('admins.news_letters')}}"><i class="fa fa-box"></i> <span
-                                class="nav-label">News Letters</span> </a>
-                    </li>
-                    <li class="@yield('brand')"> 
-                        <a href="{{route('admins.brand')}}"><i class="fa fa-box"></i> <span
-                                class="nav-label">Brands</span> </a>
-                    </li>
-                    <!--<li class="@yield('home_cats_active')"> -->
-                    <!--    <a href="{{route('admins.home_cats')}}"><i class="fa fa-list-alt"></i> <span-->
-                    <!--            class="nav-label">Home Categories</span> </a>-->
-                    <!--</li>-->
-                    <li class="@yield('setting')"> 
-                        <a href="{{route('admins.setting')}}"><i class="fa fa-cog"></i> <span
-                                class="nav-label">Settings</span> </a>
-                    </li>
-                    <li class="@yield('media')"> 
-                        <a href="{{route('admins.media')}}"><i class="fa fa-image"></i> <span
-                                class="nav-label">Social Media</span> </a>
-                    </li>
-                    <!-- <li class="@yield('learn_setting')"> -->
-                    <!--    <a href="{{route('admins.learn_setting')}}"><i class="fa fa-cog" ></i> <span-->
-                    <!--            class="nav-label">Learn Settings</span> </a>-->
-                    <!--</li>-->
-                    <li class="@yield('review')" style="display:;" > 
-                        <a href="{{route('admins.review')}}"><i class="fa fa-book"></i> <span
-                                class="nav-label">Reviews</span> </a>
-                    </li>
-                    <li class="@yield('blog_category_active')" style="display:;" > 
-                        <a href="{{route('admins.blog_category')}}"><i class="fa fa-book"></i> <span
-                                class="nav-label">Blog_category</span> </a>
-                    </li>
-                    <li class="@yield('blog_active')" style="display:;" > 
-                        <a href="{{route('admins.blog')}}"><i class="fa fa-book"></i> <span
-                                class="nav-label">Blog</span> </a>
-                    </li>
-                    <li class="@yield('message')" style="display:;" > 
-                        <a href="{{route('admins.contact')}}"><i class="fa fa-comment"></i> <span
-                                class="nav-label">Messages</span> </a>
-                    </li>
-                    <li class="@yield('admin')"> 
-                        <a href="{{route('admins.admin')}}"><i class="fa fa-user"></i> <span
-                                class="nav-label">Admin</span> </a>
-                    </li>
-                </ul>
-
+    <style>
+        .ck-editor__editable_inline { min-height: 400px; }
+    </style>
+    @stack('styles')
+</head>
+<body class="sa-body admin-shopify">
+<div class="sa-shell">
+    <aside class="sa-sidebar">
+        <div class="sa-brand">
+            <span class="sa-brand-mark">{{ strtoupper(substr($storeName, 0, 1)) }}</span>
+            <div>
+                <strong>{{ $storeName }}</strong>
+                <small>{{ ($admin->role ?? '') === 'super_admin' ? 'Super admin' : 'Store admin' }}</small>
             </div>
+        </div>
+        <nav class="sa-nav">
+            <a class="sa-nav-item @yield('dashboard_active')" href="{{ route('admins.dashboard') }}">Home</a>
+            <div class="sa-nav-label">Orders</div>
+            <a class="sa-nav-item @yield('order1')" href="{{ route('admins.orders') }}">Orders</a>
+            <a class="sa-nav-item @yield('corder')" href="{{ route('admins.complete_orders') }}">Completed</a>
+            <div class="sa-nav-label">Catalog</div>
+            <a class="sa-nav-item @yield('product_child_2_active')" href="{{ route('admins.products') }}">Products</a>
+            <a class="sa-nav-item @yield('product_child_1_active')" href="{{ route('admins.product_form') }}">Add product</a>
+            <a class="sa-nav-item @yield('category_child_1_active')" href="{{ route('admins.category') }}">Categories</a>
+            <a class="sa-nav-item @yield('category_child_2_active')" href="{{ route('admins.subcategory') }}">Subcategories</a>
+            <a class="sa-nav-item @yield('brand')" href="{{ route('admins.brand') }}">Brands</a>
+            <div class="sa-nav-label">Online store</div>
+            <a class="sa-nav-item @yield('page_2_active')" href="{{ route('admins.pages') }}">Pages</a>
+            <a class="sa-nav-item @yield('page_1_active')" href="{{ route('admins.page_form') }}">Add page</a>
+            <a class="sa-nav-item @yield('slider')" href="{{ route('admins.slider') }}">Home slider</a>
+            <a class="sa-nav-item @yield('faq')" href="{{ route('admins.faq') }}">FAQs</a>
+            <a class="sa-nav-item @yield('boxs')" href="{{ route('admins.boxs') }}">Boxes</a>
+            <a class="sa-nav-item @yield('clients')" href="{{ route('admins.clients') }}">Clients</a>
+            <a class="sa-nav-item @yield('blog_active')" href="{{ route('admins.blog') }}">Blog</a>
+            <a class="sa-nav-item @yield('blog_category_active')" href="{{ route('admins.blog_category') }}">Blog categories</a>
+            <div class="sa-nav-label">Sales channels</div>
+            <a class="sa-nav-item @yield('integrations_active')" href="{{ url('/admin/integrations') }}">Apps · Meta / TikTok</a>
+            <a class="sa-nav-item @yield('payment_methods')" href="{{ route('admins.payment_methods') }}">Payments</a>
+            <a class="sa-nav-item @yield('review')" href="{{ route('admins.review') }}">Reviews</a>
+            <a class="sa-nav-item @yield('message')" href="{{ route('admins.contact') }}">Inbox</a>
+            <a class="sa-nav-item @yield('news_letters')" href="{{ route('admins.news_letters') }}">Newsletters</a>
+            <div class="sa-nav-label">Settings</div>
+            <a class="sa-nav-item @yield('setting')" href="{{ route('admins.setting') }}">Settings</a>
+            <a class="sa-nav-item @yield('import_data')" href="{{ url('/admin/import-data') }}">Import data</a>
+            <a class="sa-nav-item @yield('theme_settings')" href="{{ route('admins.theme_settings') }}">Theme customizer</a>
+            <a class="sa-nav-item @yield('media')" href="{{ route('admins.media') }}">Social</a>
+            <a class="sa-nav-item @yield('admin')" href="{{ route('admins.admin') }}">Staff</a>
+            @if(($admin->role ?? '') === 'super_admin')
+                <a class="sa-nav-item" href="{{ url('/superadmin/dashboard') }}">Super Admin</a>
+            @endif
+            <a class="sa-nav-item" href="{{ url('/') }}" target="_blank">View store</a>
         </nav>
-
-        <div id="page-wrapper" class="gray-bg">
-            <div class="row border-bottom">
-                <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-                    <div class="navbar-header">
-                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
-                                class="fa fa-bars"></i> </a>
-                        <form style="display:none;" role="search" class="navbar-form-custom"
-                            action="http://webapplayers.com/inspinia_admin-v2.7/search_results.html">
-                            <div class="form-group">
-                                <input type="text" placeholder="Search for something..." class="form-control"
-                                    name="top-search" id="top-search">
+        <div class="sa-sidebar-foot">
+            <div class="sa-user">{{ $admin->email ?? 'Admin' }}</div>
+            <a href="{{ url('/admin/logout') }}">Log out</a>
                             </div>
-                        </form>
+    </aside>
+    <main class="sa-main">
+        <header class="sa-topbar">
+            <div>
+                <h1>@yield('page_title', View::getSection('title') ?: 'Home')</h1>
+                <p class="sa-subtitle">@yield('page_subtitle', $storeName)</p>
                     </div>
-                    <ul class="nav navbar-top-links navbar-right">
-
-
-                        <li>
-                            <a href="/admin/logout">
-                                <i class="fa fa-sign-out"></i> Log out
-                            </a>
-                        </li>
-                        
-                    </ul>
-
-                </nav>
+            <div class="sa-topbar-actions">
+                @yield('page_actions')
+                <a class="sa-btn sa-btn-secondary" href="{{ url('/') }}" target="_blank">View store</a>
             </div>
+        </header>
+        @if(Session::has('msg'))
+            <div class="sa-alert sa-alert-{{ Session::get('msg_type', 'success') }}">{{ Session::get('msg') }}</div>
+        @endif
+        <div class="sa-content">
             @yield('content')
-
-            <div class="footer">
-                <div class="pull-right">
-                    10GB of <strong>250GB</strong> Free.
-                </div>
-                <div>
-                    <strong>Copyright</strong> Example Company &copy; 2014-2017
-                </div>
-            </div>
         </div>
-        <div id="right-sidebar">
-            <div class="sidebar-container">
-
-                <ul class="nav nav-tabs navs-3">
-
-                    <li class="active"><a data-toggle="tab" href="#tab-1">
-                            Notes
-                        </a></li>
-                    <li><a data-toggle="tab" href="#tab-2">
-                            Projects
-                        </a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-3">
-                            <i class="fa fa-gear"></i>
-                        </a></li>
-                </ul>
-
-                <div class="tab-content">
-
-
-                    <div id="tab-1" class="tab-pane active">
-
-                        <div class="sidebar-title">
-                            <h3> <i class="fa fa-comments-o"></i> Latest Notes</h3>
-                            <small><i class="fa fa-tim"></i> You have 10 new message.</small>
+    </main>
                         </div>
 
-                        <div>
-
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a1.jpg') }}">
-
-                                        <div class="m-t-xs">
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-
-                                        There are many variations of passages of Lorem Ipsum available.
-                                        <br>
-                                        <small class="text-muted">Today 4:21 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a2.jpg') }}">
-                                    </div>
-                                    <div class="media-body">
-                                        The point of using Lorem Ipsum is that it has a more-or-less normal.
-                                        <br>
-                                        <small class="text-muted">Yesterday 2:45 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a3.jpg') }}">
-
-                                        <div class="m-t-xs">
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-                                        Mevolved over the years, sometimes by accident, sometimes on purpose (injected
-                                        humour and the like).
-                                        <br>
-                                        <small class="text-muted">Yesterday 1:10 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a4.jpg') }}">
-                                    </div>
-
-                                    <div class="media-body">
-                                        Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the
-                                        <br>
-                                        <small class="text-muted">Monday 8:37 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a8.jpg') }}">
-                                    </div>
-                                    <div class="media-body">
-
-                                        All the Lorem Ipsum generators on the Internet tend to repeat.
-                                        <br>
-                                        <small class="text-muted">Today 4:21 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a7.jpg') }}">
-                                    </div>
-                                    <div class="media-body">
-                                        Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                                        comes from a line in section 1.10.32.
-                                        <br>
-                                        <small class="text-muted">Yesterday 2:45 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a3.jpg') }}">
-
-                                        <div class="m-t-xs">
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                            <i class="fa fa-star text-warning"></i>
-                                        </div>
-                                    </div>
-                                    <div class="media-body">
-                                        The standard chunk of Lorem Ipsum used since the 1500s is reproduced below.
-                                        <br>
-                                        <small class="text-muted">Yesterday 1:10 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="sidebar-message">
-                                <a href="#">
-                                    <div class="pull-left text-center">
-                                        <img alt="image" class="img-circle message-avatar"
-                                            src="{{ asset('backend_assets/img/a4.jpg') }}">
-                                    </div>
-                                    <div class="media-body">
-                                        Uncover many web sites still in their infancy. Various versions have.
-                                        <br>
-                                        <small class="text-muted">Monday 8:37 pm</small>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div id="tab-2" class="tab-pane">
-
-                        <div class="sidebar-title">
-                            <h3> <i class="fa fa-cube"></i> Latest projects</h3>
-                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
-                        </div>
-
-                        <ul class="sidebar-list">
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Business valuation</h4>
-                                    It is a long established fact that a reader will be distracted.
-
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
-                                    </div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Contract with Company </h4>
-                                    Many desktop publishing packages and web page editors.
-
-                                    <div class="small">Completion with: 48%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 48%;" class="progress-bar"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Meeting</h4>
-                                    By the readable content of a page when looking at its layout.
-
-                                    <div class="small">Completion with: 14%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span class="label label-primary pull-right">NEW</span>
-                                    <h4>The generated</h4>
-                                    <!--<div class="small pull-right m-t-xs">9 hours ago</div>-->
-                                    There are many variations of passages of Lorem Ipsum available.
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Business valuation</h4>
-                                    It is a long established fact that a reader will be distracted.
-
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
-                                    </div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Contract with Company </h4>
-                                    Many desktop publishing packages and web page editors.
-
-                                    <div class="small">Completion with: 48%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 48%;" class="progress-bar"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <div class="small pull-right m-t-xs">9 hours ago</div>
-                                    <h4>Meeting</h4>
-                                    By the readable content of a page when looking at its layout.
-
-                                    <div class="small">Completion with: 14%</div>
-                                    <div class="progress progress-mini">
-                                        <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <span class="label label-primary pull-right">NEW</span>
-                                    <h4>The generated</h4>
-                                    <!--<div class="small pull-right m-t-xs">9 hours ago</div>-->
-                                    There are many variations of passages of Lorem Ipsum available.
-                                    <div class="small">Completion with: 22%</div>
-                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
-                                </a>
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-                    <div id="tab-3" class="tab-pane">
-
-                        <div class="sidebar-title">
-                            <h3><i class="fa fa-gears"></i> Settings</h3>
-                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
-                        </div>
-
-                        <div class="setings-item">
-                            <span>
-                                Show notifications
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox"
-                                        id="example">
-                                    <label class="onoffswitch-label" for="example">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Disable Chat
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" checked class="onoffswitch-checkbox"
-                                        id="example2">
-                                    <label class="onoffswitch-label" for="example2">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Enable history
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox"
-                                        id="example3">
-                                    <label class="onoffswitch-label" for="example3">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Show charts
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox"
-                                        id="example4">
-                                    <label class="onoffswitch-label" for="example4">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Offline users
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox"
-                                        id="example5">
-                                    <label class="onoffswitch-label" for="example5">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Global search
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox"
-                                        id="example6">
-                                    <label class="onoffswitch-label" for="example6">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setings-item">
-                            <span>
-                                Update everyday
-                            </span>
-                            <div class="switch">
-                                <div class="onoffswitch">
-                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox"
-                                        id="example7">
-                                    <label class="onoffswitch-label" for="example7">
-                                        <span class="onoffswitch-inner"></span>
-                                        <span class="onoffswitch-switch"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="sidebar-content">
-                            <h4>Settings</h4>
-                            <div class="small">
-                                I belive that. Lorem Ipsum is simply dummy text of the printing and typesetting
-                                industry.
-                                And typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever
-                                since the 1500s.
-                                Over the years, sometimes by accident, sometimes on purpose (injected humour and the
-                                like).
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
-
-
-        </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-        <!-- Mainly scripts -->
-    <script src="{{ $app_url.'backend_assets/js/jquery-3.1.1.min.js'}}"></script>
-    <script src="{{ $app_url.'backend_assets/js/bootstrap.min.js'}}"></script>
-    <script src="{{ $app_url.'backend_assets/js/plugins/metisMenu/jquery.metisMenu.js'}}"></script>
-    <script src="{{ $app_url.'backend_assets/js/plugins/slimscroll/jquery.slimscroll.min.js'}}"></script>
-
-    <script src="{{ $app_url.'backend_assets/js/plugins/dataTables/datatables.min.js'}}"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="{{ $app_url.'backend_assets/js/inspinia.js'}}"></script>
-    <script src="{{ $app_url.'backend_assets/js/plugins/pace/pace.min.js'}}"></script>
-    <!-- Select2 -->
-    <script src="{{ $app_url.'backend_assets/js/plugins/select2/select2.full.min.js'}}"></script>
-    <!-- SUMMERNOTE -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet"> 
+<script src="{{ asset('backend_assets/js/jquery-3.1.1.min.js') }}"></script>
+<script src="{{ asset('backend_assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('backend_assets/js/plugins/dataTables/datatables.min.js') }}"></script>
+<script src="{{ asset('backend_assets/js/plugins/select2/select2.full.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-
-    
-
-    <!-- Page-Level Scripts -->
     <script>
-        $(document).ready(function(){
+    $(document).ready(function () {
+        if ($.fn.DataTable) {
             $('.dataTables-example').DataTable({
                 pageLength: 25,
                 responsive: true,
-                aaSorting: [],
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy'},
-                    {extend: 'csv'},
-                    {extend: 'excel', title: 'ExampleFile'},
-                    {extend: 'pdf', title: 'ExampleFile'},
-
-                    {extend: 'print',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
-
+                aaSorting: []
             });
-
-        });
-
-    </script>
-
-    <script>
-        function showToastr(msg,msg_type)
-        {
-            switch(msg_type)
-                {
-                    case "success":
-                    toastr.success(msg);
-                    break;
-
-                    case "danger":
-                    case "error":
-                    toastr.error(msg)
-                    break;
-
-                    case "info":
-                    toastr.info(msg)
-                    break;
-                    
-                    case "warning":
-                    toastr.warning(msg)
-                    break;
-                }
         }
-        $(document).ready(function(){
-            $('.delete_record').click(function(){
-                $(".select2").select2();
-                swal({
-                title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-                })
-                .then((willDelete) => {
-                if (willDelete) {
-                    let href=$(this).data('href');
-                    window.location.href=href;
-                }
-                });
-
-            });
-
-
-
-            let msg_type="";
-            let msg="";
-            @if(Session::has('msg'))
-            msg_type="{{Session::get('msg_type')}}";
-            msg="{{Session::get('msg')}}";
-            @endif
-
-            if(msg!="")
-            {
-                switch(msg_type)
-                {
-                    case "success":
-                    toastr.success(msg);
-                    break;
-
-                    case "danger":
-                    case "error":
-                    toastr.error(msg)
-                    break;
-
-                    case "info":
-                    toastr.info(msg)
-                    break;
-                    
-                    case "warning":
-                    toastr.warning(msg)
-                    break;
-                }
-            }
-
-
-
-
-
-        });
-
-
-
-
-
-    </script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
-    <script>
-    $('.summernote').summernote({
-        height: 300,
-        minHeight: 200,
-        maxHeight: 800,
-        focus: false,
-        styleTags: [
-            'p',
-            { title: 'Blockquote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' },
-            'pre',
-            'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
-        ],
-        fontNames: [
-            'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia',
-            'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman',
-            'Trebuchet MS', 'Verdana'
-        ],
-        fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '24', '28', '32', '36', '48', '64'],
-        toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
-            ['fontname', ['fontname']],
-            ['fontsize', ['fontsize']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture', 'video', 'hr']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-        ],
-        popover: {
-            image: [
-                ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
-                ['float', ['floatLeft', 'floatRight', 'floatNone']],
-                ['remove', ['removeMedia']]
-            ],
-            link: [
-                ['link', ['linkDialogShow', 'unlink']]
-            ],
-            table: [
-                ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-                ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
-            ],
-            air: [
-                ['color', ['color']],
-                ['font', ['bold', 'underline', 'clear']]
-            ]
+        if ($.fn.select2) {
+            $('.select2').select2();
         }
+        if ($.fn.summernote) {
+            $('.summernote').summernote({ height: 300 });
+        }
+        $('.delete_record').click(function () {
+            var href = $(this).attr('href');
+            swal({ title: 'Are you sure?', icon: 'warning', buttons: true, dangerMode: true })
+                .then(function (ok) { if (ok) { window.location.href = href; } });
+            return false;
+        });
+        @if(Session::has('msg'))
+        showToastr("{{ Session::get('msg') }}", "{{ Session::get('msg_type') }}");
+        @endif
     });
-              /*          $('textarea').each(function(i, obj) {
-    ClassicEditor
-                                .create( document.querySelector( '#'+$(this).attr('id') ) )
-                                .then( editor => {
-                                        console.log( editor );
-                                } )
-                                .catch( error => {
-                                        console.error( error );
-                                } );
-});*/
+    function showToastr(msg, msg_type) {
+        if (!msg) return;
+        if (msg_type === 'success') toastr.success(msg);
+        else if (msg_type === 'danger' || msg_type === 'error') toastr.error(msg);
+        else if (msg_type === 'info') toastr.info(msg);
+        else if (msg_type === 'warning') toastr.warning(msg);
+    }
                 </script>
     @stack('scripts')
 </body>
-
 </html>

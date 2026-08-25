@@ -54,6 +54,7 @@ class Setting extends Model
         'button_color',
         'theme_style',
         'active_theme',
+        'home_layout',
         'head_scripts'
     ];
 }

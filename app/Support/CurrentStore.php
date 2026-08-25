@@ -24,6 +24,6 @@ class CurrentStore
     {
         $store = self::get();
         $theme = $store ? (int) $store->active_theme : 3;
-        return in_array($theme, [1, 2, 3], true) ? $theme : 3;
+        return in_array($theme, storefront_theme_ids(), true) ? $theme : 3;
     }
 }

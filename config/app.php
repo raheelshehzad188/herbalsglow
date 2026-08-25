@@ -56,6 +56,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'saas_primary_domain' => env('SAAS_PRIMARY_DOMAIN'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

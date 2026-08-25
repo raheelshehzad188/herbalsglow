@@ -24,6 +24,13 @@
         <nav class="sa-nav">
             <a class="sa-nav-item @yield('nav_dashboard')" href="{{ route('superadmin.dashboard') }}">Dashboard</a>
             <a class="sa-nav-item @yield('nav_stores')" href="{{ route('superadmin.stores') }}">Stores</a>
+            <a class="sa-nav-item @yield('nav_website')" href="{{ route('superadmin.cms.website') }}">Website</a>
+            <a class="sa-nav-item @yield('nav_plans')" href="{{ route('superadmin.cms.plans') }}">Plans</a>
+            <a class="sa-nav-item @yield('nav_themes')" href="{{ route('superadmin.cms.themes') }}">Themes</a>
+            <a class="sa-nav-item @yield('nav_apps')" href="{{ route('superadmin.cms.apps') }}">Apps</a>
+            <a class="sa-nav-item @yield('nav_faqs')" href="{{ route('superadmin.cms.faqs') }}">FAQs</a>
+            <a class="sa-nav-item @yield('nav_features')" href="{{ route('superadmin.cms.features') }}">Feature cards</a>
+            <a class="sa-nav-item" href="{{ platform_url() }}" target="_blank">View SaaS site</a>
             <a class="sa-nav-item" href="{{ url('/admin/dashboard') }}">Store Admin</a>
         </nav>
         <div class="sa-sidebar-foot">

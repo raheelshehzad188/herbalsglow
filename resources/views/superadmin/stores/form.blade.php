@@ -40,8 +40,14 @@
                 <div class="sa-field">
                     <label>Theme</label>
                     <select name="active_theme" required>
-                        @foreach([1,2,3] as $t)
-                            <option value="{{ $t }}" @if((int)old('active_theme', $store->active_theme ?? 3) === $t) selected @endif>Theme {{ $t }}</option>
+                        @foreach(storefront_theme_ids() as $t)
+                            <option value="{{ $t }}" @if((int)old('active_theme', $store->active_theme ?? 3) === $t) selected @endif>
+                                @if($t === 1) Theme 1 — Classic
+                                @elseif($t === 2) Theme 2 — Ayanstore
+                                @elseif($t === 3) Theme 3 — iHerb
+                                @else Theme 4 — ShopUS
+                                @endif
+                            </option>
                         @endforeach
                     </select>
                 </div>

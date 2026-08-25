@@ -54,33 +54,32 @@ class FrontController extends Controller
 }
 public function view($view, $data = array())
 {
+    if (\App\Support\DomainResolver::isSaasDomain()) {
+        abort(404);
+    }
+
     $them_num = 2;
     $siteSetting = null;
+    $currentStore = \App\Support\CurrentStore::get();
+    if (!$currentStore) {
+        abort(404);
+    }
     try {
-        $currentStore = \App\Support\CurrentStore::get();
-        if ($currentStore) {
-            $them_num = \App\Support\CurrentStore::theme();
-            $siteSetting = DB::table('setting')
-                ->when(
-                    \Illuminate\Support\Facades\Schema::hasColumn('setting', 'store_id'),
-                    function ($q) use ($currentStore) {
-                        $q->where('store_id', $currentStore->id);
-                    }
-                )
-                ->orderBy('id')
-                ->first();
-            if (!$siteSetting) {
-                $siteSetting = DB::table('setting')->where('id', 1)->first();
-            }
-            // Prefer store theme over legacy setting when store exists
-            if (in_array((int) $currentStore->active_theme, [1, 2, 3], true)) {
-                $them_num = (int) $currentStore->active_theme;
-            }
-        } else {
+        $them_num = \App\Support\CurrentStore::theme();
+        $siteSetting = DB::table('setting')
+            ->when(
+                \Illuminate\Support\Facades\Schema::hasColumn('setting', 'store_id'),
+                function ($q) use ($currentStore) {
+                    $q->where('store_id', $currentStore->id);
+                }
+            )
+            ->orderBy('id')
+            ->first();
+        if (!$siteSetting) {
             $siteSetting = DB::table('setting')->where('id', 1)->first();
-            if ($siteSetting && isset($siteSetting->active_theme) && in_array((int) $siteSetting->active_theme, [1, 2, 3], true)) {
-                $them_num = (int) $siteSetting->active_theme;
-            }
+        }
+        if (in_array((int) $currentStore->active_theme, storefront_theme_ids(), true)) {
+            $them_num = (int) $currentStore->active_theme;
         }
     } catch (\Exception $e) {
         // fallback to default theme
@@ -90,8 +89,9 @@ public function view($view, $data = array())
             $siteSetting = null;
         }
     }
-    if (isset($_GET['theme']) && in_array((int) $_GET['theme'], [1, 2, 3], true)) {
-        $them_num = (int) $_GET['theme'];
+    $previewTheme = (int) request()->query('theme', 0);
+    if ($previewTheme && in_array($previewTheme, storefront_theme_ids(), true)) {
+        $them_num = $previewTheme;
     }
     $ctheme = 'theme'.$them_num;
     $layout = 'theme'.$them_num.'.layout';
@@ -102,7 +102,19 @@ public function view($view, $data = array())
     $data['setting'] = $siteSetting;
     $data['currentStore'] = \App\Support\CurrentStore::get();
 
-    if ($them_num === 3) {
+    $storeId = \App\Support\CurrentStore::id();
+    $pageQuery = function (string $type) use ($storeId) {
+        $q = DB::table('pages')->where('status', 1)->where('menu_type', $type)->orderBy('position');
+        if ($storeId && \Illuminate\Support\Facades\Schema::hasColumn('pages', 'store_id')) {
+            $q->where('store_id', $storeId);
+        }
+        return $q->get();
+    };
+    $data['header_pages'] = $pageQuery('header');
+    $data['top_bar_pages'] = $pageQuery('top_bar');
+    $data['theme_config'] = \App\Support\ThemeRegistry::get($them_num);
+
+    if (in_array($them_num, storefront_theme_ids(), true)) {
         $headerMenuCategories = Category::where('status', 1)
             ->where('show_on_home', 1)
             ->orderBy('home_sort', 'ASC')
@@ -1146,7 +1158,9 @@ return redirect()->back()->with([
             $rating = Rating::where(['status'=>1,'pid'=>$product[0]->id])->get();
             $brand = Brand::where(['id'=>$product[0]->brand])->first();
             $rcount = Rating::where(['status'=>1,'pid'=>$product[0]->id])->count();
-            $faq = Faq::where(['status'=>1,'pid'=>$product[0]->id])->get();
+            $faq = Schema::hasColumn('faq', 'pid')
+                ? Faq::where(['status'=>1,'pid'=>$product[0]->id])->get()
+                : (Schema::hasTable('pfaqs') ? DB::table('pfaqs')->where('product_id', $product[0]->id)->get() : collect());
             $fproduct=Product::find($product[0]->id);
             $fproduct->view = $view+1;
             $fproduct->save();
@@ -1264,7 +1278,9 @@ return redirect()->back()->with([
             $brandName = $brand->name ?? (is_numeric($productBrand) ? null : (string) $productBrand);
         }
         $rcount = Rating::where(['status'=>1,'pid'=>$product[0]->id])->count();
-        $faq = Faq::where(['status'=>1,'pid'=>$product[0]->id])->get();
+        $faq = Schema::hasColumn('faq', 'pid')
+            ? Faq::where(['status'=>1,'pid'=>$product[0]->id])->get()
+            : (Schema::hasTable('pfaqs') ? DB::table('pfaqs')->where('product_id', $product[0]->id)->get() : collect());
         $fproduct=Product::find($product[0]->id);
         $fproduct->view = $view+1;
         $fproduct->save();
@@ -1317,16 +1333,31 @@ return redirect()->back()->with([
 
     public function blog_detail($slug)
     {
-        $blog = Blog_Post::where(['slug'=>$slug])->get();
-        $blogs_detail = Blog_Post::where(['slug'=>$slug])->first();
-      
-        $cid = $blog[0]->category_id;
-        $rblog = Blog_Post::where('category_id','=',$cid)->where('id','!=',$blog[0]->id)->get();
-        $cum = Blog_Comment::where(['bid'=>$blog[0]->id])->get();
+        $blogs_detail = Blog_Post::where('slug', $slug)->first();
+        if (!$blogs_detail) {
+            abort(404);
+        }
+        $blog = collect([$blogs_detail]);
+        $rblogQuery = Blog_Post::where('id', '!=', $blogs_detail->id);
+        if (Schema::hasColumn('posts', 'category_id') && !empty($blogs_detail->category_id)) {
+            $rblogQuery->where('category_id', $blogs_detail->category_id);
+        }
+        $rblog = $rblogQuery->orderByDesc('id')->limit(3)->get();
+        $cum = collect();
+        try {
+            $cum = Blog_Comment::where('bid', $blogs_detail->id)->get();
+        } catch (\Exception $e) {
+            $cum = collect();
+        }
         $bcate = Blog_Category::all();
-        $meta_file  = 'meta.blog_detail';
-        Session::put('title','Blog Detail');
-        return view('front.blog_detail',compact('blog','rblog','cum','bcate','blogs_detail' ,'meta_file'));
+        $meta_file = 'meta.blog_detail';
+        Session::put('title', $blogs_detail->title ?? $blogs_detail->title_english ?? 'Blog Detail');
+        $data = compact('blog', 'rblog', 'cum', 'bcate', 'blogs_detail', 'meta_file');
+        try {
+            return $this->view('blog_detail', $data);
+        } catch (\InvalidArgumentException $e) {
+            return view('front.blog_detail', $data);
+        }
     }
     public function blod_comment(Request $request)
     {
@@ -1508,6 +1539,8 @@ return redirect()->back()->with([
                 $template = 'theme2.product_box_new';
             } elseif ($theme === 'theme3') {
                 $template = 'theme3.product_box_new';
+            } elseif ($theme === 'theme4') {
+                $template = 'theme4.product_box';
             } elseif ($theme === 'front') {
                 $template = 'includes.parts.product_box';
             }
@@ -1713,16 +1746,24 @@ return redirect()->back()->with([
     }
      public function blogs()
     {
-       $slug = request()->segment(count(request()->segments()));
-       
-         $meta_file  = 'meta.page';
-        $pages = Pages::where(['slug'=> $slug])->get();
-        Session::put('title','Blogs');
-        $post=Blog_Post::all();
-        $cate = Blog_Category::limit('6')->get();
-        return view('front.blog',compact('post','cate' , 'meta_file' , 'pages'));
-
-       
+        $slug = request()->segment(count(request()->segments()));
+        $meta_file = 'meta.page';
+        $pages = Pages::where(['slug' => $slug])->get();
+        Session::put('title', 'Blogs');
+        $postQuery = Blog_Post::query();
+        if (Schema::hasColumn('posts', 'status')) {
+            $postQuery->where(function ($q) {
+                $q->where('status', 1)->orWhereNull('status');
+            });
+        }
+        $post = $postQuery->orderByDesc('id')->get();
+        $cate = Blog_Category::limit(6)->get();
+        $data = compact('post', 'cate', 'meta_file', 'pages');
+        try {
+            return $this->view('blog', $data);
+        } catch (\InvalidArgumentException $e) {
+            return view('front.blog', $data);
+        }
     }
     
     public function cart()
