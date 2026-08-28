@@ -40,6 +40,7 @@ $assets = $assets_url ?? asset('theme4') . '/';
         }
     </style>
     {!! $Site->head_scripts ?? '' !!}
+    @include('theme3.partials.tracking-pixels')
 </head>
 <body class="{{ $bodyClass }}">
     @include('theme4.header')
