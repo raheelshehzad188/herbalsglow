@@ -223,10 +223,16 @@ class ShopusHome1Seeder extends Seeder
                 $data = [
                     'title' => $title,
                     'slug' => $slug,
-                    'content' => $body,
                     'image' => $blogImg . $file,
                     'updated_at' => now(),
                 ];
+                if (Schema::hasColumn('posts', 'content')) {
+                    $data['content'] = $body;
+                } elseif (Schema::hasColumn('posts', 'description')) {
+                    $data['description'] = $body;
+                } elseif (Schema::hasColumn('posts', 'description_english')) {
+                    $data['description_english'] = $body;
+                }
                 if (Schema::hasColumn('posts', 'status')) {
                     $data['status'] = 1;
                 }

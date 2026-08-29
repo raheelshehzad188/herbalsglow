@@ -41,11 +41,12 @@ class DomainResolver
 
     public static function isSaasDomain(?string $host = null): bool
     {
+        $normalized = self::host($host);
         $primary = self::primaryDomain();
-        if ($primary === '') {
-            return false;
+        if ($primary !== '' && $normalized === $primary) {
+            return true;
         }
-        return self::host($host) === $primary;
+        return $normalized === 'platform.localhost';
     }
 
     public static function isLocalHost(?string $host = null): bool

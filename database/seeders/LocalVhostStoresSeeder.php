@@ -118,6 +118,8 @@ class LocalVhostStoresSeeder extends Seeder
         }
 
         $map = [];
+        $autoInc = $this->tableHasAutoIncrement($table);
+        $nextId = $autoInc ? 0 : ((int) DB::table($table)->max('id') + 1);
         $rows = DB::table($table)->where('store_id', $fromStoreId)->get();
         foreach ($rows as $row) {
             $data = (array) $row;
@@ -132,9 +134,24 @@ class LocalVhostStoresSeeder extends Seeder
                     $data[$col] = $idMap[$data[$col]];
                 }
             }
-            $map[$oldId] = DB::table($table)->insertGetId($data);
+            if ($autoInc) {
+                $map[$oldId] = DB::table($table)->insertGetId($data);
+            } else {
+                $data['id'] = $nextId++;
+                DB::table($table)->insert($data);
+                $map[$oldId] = $data['id'];
+            }
         }
         return $map;
+    }
+
+    private function tableHasAutoIncrement(string $table): bool
+    {
+        $col = DB::selectOne(
+            'SELECT EXTRA FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+            [$table, 'id']
+        );
+        return $col && stripos((string) $col->EXTRA, 'auto_increment') !== false;
     }
 
     private function cloneGalleries(array $prodMap): void
