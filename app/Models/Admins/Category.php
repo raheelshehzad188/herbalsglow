@@ -10,5 +10,5 @@ class Category extends Model
 {
     use HasFactory, BelongsToStore;
 
-    protected $fillable = ['store_id', 'name', 'slug', 'status', 'image', 'short_description', 'sort', 'home_sort'];
+    protected $fillable = ['store_id', 'name', 'slug', 'status', 'image', 'short_description', 'sort', 'home_sort', 'shopify_collection_id', 'shopify_handle'];
 }

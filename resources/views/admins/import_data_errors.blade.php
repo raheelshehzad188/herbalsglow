@@ -2,6 +2,11 @@
 @section('title','Import errors')
 @section('page_title','Failed import items')
 @section('import_data','is-active')
+@php
+    $source = ($source ?? 'shopify') === 'woocommerce' ? 'woocommerce' : 'shopify';
+    $backUrl = $source === 'woocommerce' ? url('/admin/import-data?source=woocommerce') : url('/admin/import-data');
+    $retryUrl = $source === 'woocommerce' ? url('/admin/import-data/woocommerce/retry') : url('/admin/import-data/retry');
+@endphp
 @section('content')
 <div class="sa-card">
     <h3>Import error log</h3>
@@ -10,7 +15,7 @@
         <thead>
             <tr>
                 <th>Type</th>
-                <th>Shopify ID</th>
+                <th>Remote ID</th>
                 <th>Name</th>
                 <th>Error</th>
                 <th>When</th>
@@ -33,9 +38,9 @@
         </tbody>
     </table>
     <div class="imp-actions" style="margin-top:16px;">
-        <a class="sa-btn sa-btn-secondary" href="{{ url('/admin/import-data') }}">Back</a>
+        <a class="sa-btn sa-btn-secondary" href="{{ $backUrl }}">Back</a>
         @if($job)
-        <form method="post" action="{{ url('/admin/import-data/retry') }}" style="display:inline;">
+        <form method="post" action="{{ $retryUrl }}" style="display:inline;">
             @csrf
             <button class="sa-btn sa-btn-primary" type="submit">Retry failed items</button>
         </form>

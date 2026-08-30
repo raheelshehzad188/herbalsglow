@@ -30,7 +30,6 @@
                     @forelse($topBarPages as $page)
                         <a href="{{ page_url($page) }}"><span>{{ $page->name }}</span></a>
                     @empty
-                        <a href="{{ url('/shop') }}"><span>Account</span></a>
                         <a href="{{ url('/track_order') }}"><span>Track Order</span></a>
                         <a href="{{ url('/faq') }}"><span>Support</span></a>
                     @endforelse
@@ -83,11 +82,6 @@
                         </div>
                     </div>
                     @endif
-                    <div class="header-favourite">
-                        <a href="{{ url('/my_wishlist') }}" class="cart-item">
-                            <span class="cart-text">Wishlist</span>
-                        </a>
-                    </div>
                     @if(theme_setting('header.show_cart', true))
                     <div class="header-cart">
                         <a href="{{ url('/cart') }}" class="cart-item">
@@ -96,13 +90,6 @@
                         </a>
                     </div>
                     @endif
-                    <div class="header-user">
-                        <a href="{{ url('/shop') }}" aria-label="Account">
-                            <span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="fill-current"><path fill="none" d="M0 0h24v24H0z"></path><path d="M20 22H4v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2zm-8-9a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"></path></svg>
-                            </span>
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>

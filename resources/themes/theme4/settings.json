@@ -57,6 +57,13 @@
       ]
     },
     {
+      "id": "product_detail",
+      "label": "Product detail page",
+      "fields": [
+        {"key": "products.show_tags", "type": "boolean", "label": "Show product tags", "default": true}
+      ]
+    },
+    {
       "id": "footer",
       "label": "Footer",
       "fields": [

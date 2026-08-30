@@ -20,7 +20,7 @@
                     @php $line = ($product->discount_price ?: $product->selling_price) * $product->qty; $tot += $line; @endphp
                     <tr>
                         <td>
-                            <a href="{{ url('/product/' . $product->slug) }}">
+                            <a href="{{ product_url($product) }}">
                                 <img src="{{ img_url($product->image_one) }}" alt="">
                                 {{ $product->product_name }}
                             </a>

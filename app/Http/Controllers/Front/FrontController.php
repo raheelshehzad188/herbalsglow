@@ -1184,7 +1184,12 @@ return redirect()->back()->with([
     \Log::info('Product Detail Called', ['slug' => $slug]);
     $allcatagories = Category::where(['status'=>1])->get();
     $Slider=Slider::all();
-    $product = Product::where(['slug'=>$slug, 'status'=>1])->get();
+    $product = Product::where('status', 1)->where(function ($q) use ($slug) {
+        $q->where('slug', $slug);
+        if (Schema::hasColumn('products', 'shopify_handle')) {
+            $q->orWhere('shopify_handle', $slug);
+        }
+    })->get();
     \Log::info('Product Found', ['count' => count($product)]);
     $rate = 0;
     $lrate = array();
@@ -1256,7 +1261,7 @@ return redirect()->back()->with([
                 $meta->keywords = str_replace('-', ' ', (string) ($pro->tags ?? ''));
             }
         }
-        $meta->url = url('/product/') . '/' . $slug;
+        $meta->url = product_url($pro);
 
         $view = $product[0]->view;
         $category_id = $product[0]->category_id;
@@ -1264,7 +1269,7 @@ return redirect()->back()->with([
         $rproducts = Product::where('category_id','=',$category_id)->where('id','!=',$product[0]->id)->limit('4')->get();
         $cate = Category::where(['id'=>$category_id])->first();
         $sub_cat = DB::table('sub_categories')->where('id', $sub_cat_id)->first();
-        $rating = Rating::where(['status'=>1,'pid'=>$product[0]->id])->get();
+        $rating = Rating::where(['status'=>1,'pid'=>$product[0]->id])->orderByDesc('id')->get();
         $brand = null;
         $brandName = null;
         $productBrand = $product[0]->brand ?? null;
@@ -1322,6 +1327,7 @@ return redirect()->back()->with([
             'item' => $item,
             'brand' => $brand,
             'brandName' => $brandName,
+            'rate' => $rate,
             'cate' => $cate,
         ]);
 
@@ -1556,7 +1562,12 @@ return redirect()->back()->with([
                 $boxData['productColClass'] = 't3-list-product';
                 $boxData['alwaysShowRating'] = true;
             }
-            $html .= view($template, $boxData)->render();
+            $boxHtml = view($template, $boxData)->render();
+            if ($theme === 'theme4') {
+                $html .= '<div class="col-xl-2 col-md-4">' . $boxHtml . '</div>';
+            } else {
+                $html .= $boxHtml;
+            }
         }
         
         // Return JSON response for AJAX requests or if Accept header includes application/json
@@ -2225,34 +2236,42 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
 
     public function rating_submit(Request $request)
     {
-        // dd($request);
-            $rating=new Rating();
+        $request->validate([
+            'pid' => 'required|integer',
+            'name' => 'required|string|max:120',
+            'email' => 'required|email|max:191',
+            'review' => 'required|string|max:2000',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
 
-            $rating->pid=$request->pid;
-            $rating->rate=$request->rating;
-            $rating->name=$request->name;
-            $rating->email=$request->email;
-            $rating->review=$request->review;
-            
-            // Handle image upload if provided
-            if ($request->hasFile('reviewImage')) {
-                $file = $request->file('reviewImage');
-                $extension = $file->getClientOriginalExtension();
-                $filename = time() . '.' . $extension;
-                $file->move(public_path('/images/reviews/'), $filename);
-                $rating->image = 'public/images/reviews/'.$filename;
-            }
-            
-            $rating->status = 0; // Set status to active
-            $rating->save();
+        $product = Product::where('id', $request->pid)->where('status', 1)->first();
+        if (!$product) {
+            return back()->with(['message' => 'Product not found.', 'msg_type' => 'error']);
+        }
 
-            $product = product::where(['id'=>$request->pid , 'status'=>1])->get();
-            $pro = $product[0];
+        $rating = new Rating();
+        $rating->pid = (int) $product->id;
+        $rating->rate = (int) $request->rating;
+        $rating->name = $request->name;
+        $rating->email = $request->email;
+        $rating->review = $request->review;
+        $rating->status = 0;
+        $rating->is_read = 0;
+        if (Schema::hasColumn('rating', 'store_id')) {
+            $rating->store_id = (int) ($product->store_id ?: (\App\Support\CurrentStore::id() ?: 0));
+        }
+        if ($request->hasFile('reviewImage') && Schema::hasColumn('rating', 'image')) {
+            $file = $request->file('reviewImage');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('/images/reviews/'), $filename);
+            $rating->image = 'public/images/reviews/' . $filename;
+        }
+        $rating->save();
 
-            return redirect('/product/'.$product[0]->slug)->with([
-                'message'=>'Review submit successfully',
-                'msg_type'=>'success',
-            ]);
+        return redirect('/product/' . $product->slug)->with([
+            'message' => 'Thanks! Your review is waiting for admin approval.',
+            'msg_type' => 'success',
+        ]);
     }
     public function faq_submit(Request $request)
     {
@@ -3183,27 +3202,32 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
 
     public function tags_detail($slug)
     {
-        $Slider=Slider::all();
-        $categories=Category::all();
-        $nslug = $slug;
-
-        $tags = str_replace('-', ' ', $slug);
-        $meta_file  = 'meta.product_tag';
-        
-        $perPage = env('PRODUCTS_PER_PAGE', 12); // Default to 12, configurable via env
-        
-        $query = Product::where('status', 1)->where('tags', 'like', '%' . $nslug . '%');
-        
-        if ($query->count() == 0) {
-            $nslug = preg_replace("/-/", " ", $slug);
-            $query = Product::where('status', 1)->where('tags', 'like', '%' . $nslug . '%');
+        $slug = Str::slug((string) $slug);
+        if ($slug === '') {
+            abort(404);
         }
-        
-        $rproducts = $query->orderBy('view','DESC')->paginate($perPage);
-        $product = $rproducts; 
+        $label = trim(str_replace('-', ' ', $slug));
+        $title = ucwords($label);
+        $perPage = env('PRODUCTS_PER_PAGE', 12);
 
-        Session::put('title', $nslug);
-        return $this->view('list',array('products'=>$rproducts,'title'=>$nslug,'tags'=> $tags,'slug'=> $slug,'meta_file'=> $meta_file,'product'=>$product,'pagination'=>0));
+        $query = Product::where('status', 1)->where(function ($q) use ($slug, $label) {
+            $q->where('tags', 'like', '%' . $label . '%')
+                ->orWhere('tags', 'like', '%' . str_replace('-', '_', $slug) . '%')
+                ->orWhere('tags', 'like', '%' . $slug . '%');
+        });
+
+        $rproducts = $query->orderBy('view', 'DESC')->paginate($perPage);
+        Session::put('title', $title);
+
+        return $this->view('list', [
+            'products' => $rproducts,
+            'title' => $title,
+            'tags' => $label,
+            'slug' => $slug,
+            'meta_file' => 'meta.product_tag',
+            'product' => $rproducts,
+            'pagination' => 0,
+        ]);
     }
 
     public function search_detail(Request $slug)
@@ -3364,7 +3388,7 @@ private function sendEmailWithSendGrid($toEmail, $toName, $subject, $content) {
                 'slug' => $product->slug ?? '',
                 'image' => $imageUrl,
                 'price' => $finalPrice,
-                'url' => url('/product/' . ($product->slug ?? ''))
+                'url' => product_url($product)
             ];
         }
         

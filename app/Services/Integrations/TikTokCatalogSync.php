@@ -49,7 +49,7 @@ class TikTokCatalogSync
                     'currency' => 'PKR',
                 ],
                 'landing_page' => [
-                    'url' => url('/product/' . $product->slug),
+                    'url' => product_url($product),
                 ],
             ];
             if ($image) {

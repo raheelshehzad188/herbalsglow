@@ -11,9 +11,10 @@ class Product extends Model
     use HasFactory, BelongsToStore;
     
     protected $fillable = [
-        'store_id', 'product_name', 'slug', 'category_id', 'brand', 'product_details', 
-        'short_discriiption', 'tags', 'product_code', 'sku', 'selling_price', 
-        'discount_price', 'status', 'image_one', 'gallary_images'
+        'store_id', 'shopify_product_id', 'shopify_handle', 'product_name', 'slug',
+        'category_id', 'brand', 'product_details',
+        'short_discriiption', 'tags', 'product_code', 'sku', 'selling_price',
+        'discount_price', 'status', 'image_one', 'gallary_images', 'ptype'
     ];
     
     // Relationship with Brand

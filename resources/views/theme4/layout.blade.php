@@ -31,7 +31,7 @@ $assets = $assets_url ?? asset('theme4') . '/';
     <link rel="stylesheet" href="{{ $assets }}css/nouislider.min.css">
     <link rel="stylesheet" href="{{ $assets }}css/aos-3.0.0.css">
     <link rel="stylesheet" href="{{ $assets }}css/style.css">
-    <link rel="stylesheet" href="{{ $assets }}css/theme-overrides.css">
+    <link rel="stylesheet" href="{{ $assets }}css/theme-overrides.css?v=20260830">
     <style>
         :root {
             --shopus-accent: {{ $primary }};

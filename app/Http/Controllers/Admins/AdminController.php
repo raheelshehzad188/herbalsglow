@@ -858,10 +858,19 @@ $ret = $query->offset($start)->limit($length)->get();
 }
     
     public function review(Request $request,$id=0,$delete=null){
-        $reviews = DB::table('rating')->orderBy('id','DESC')->get();
-        $pendingreviews = Rating::where('status', 0)->get();
-        $r = DB::table('rating')->update(array('is_read'=>1));
-        return view('admins.review',compact('reviews' , 'pendingreviews'));
+        $storeId = StoreContext::id();
+        $query = Rating::query()->orderByDesc('id');
+        if ($storeId && Schema::hasColumn('rating', 'store_id')) {
+            $query->withoutStore()->where('store_id', $storeId);
+        }
+        $reviews = $query->get();
+        $pendingreviews = $reviews->where('status', 0);
+        $readQ = Rating::query();
+        if ($storeId && Schema::hasColumn('rating', 'store_id')) {
+            $readQ->withoutStore()->where('store_id', $storeId);
+        }
+        $readQ->update(['is_read' => 1]);
+        return view('admins.review', compact('reviews', 'pendingreviews'));
     }
     
     public function pages(Request $request,$id=0,$delete=null){

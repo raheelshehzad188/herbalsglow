@@ -48,7 +48,7 @@ class MetaCatalogSync
                     'availability' => ((int) $product->product_quantity > 0) ? 'in stock' : 'out of stock',
                     'condition' => 'new',
                     'price' => number_format($price, 2, '.', '') . ' PKR',
-                    'url' => url('/product/' . $product->slug),
+                    'url' => product_url($product),
                     'brand' => (string) ($product->brand ?: $store->name),
                 ],
             ];

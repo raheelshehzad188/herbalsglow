@@ -220,17 +220,38 @@ Route::name('admins.')->prefix('/admin')->group(function () {
         Route::post('/integrations/{provider}/sync-catalog',[Admins\IntegrationController::class,'syncCatalog'])->name('integrations.sync');
         Route::post('/integrations/{provider}/test-event',[Admins\IntegrationController::class,'testEvent'])->name('integrations.test_event');
 
+        Route::get('/flush-data', [\App\Http\Controllers\Admins\FlushDataController::class, 'index'])->name('flush_data');
+        Route::post('/flush-data', [\App\Http\Controllers\Admins\FlushDataController::class, 'flush'])->name('flush_data.run');
+
         Route::get('/import-data', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'index'])->name('import_data');
+        Route::post('/import-data/shopify/connect', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'connect'])->name('import_data.connect');
+        Route::post('/import-data/shopify/test', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'testConnection'])->name('import_data.test');
+        Route::post('/import-data/shopify/fetch-products', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'fetchProducts'])->name('import_data.fetch');
         Route::post('/import-data/shopify/oauth', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'connectOAuth'])->name('import_data.oauth');
         Route::get('/import-data/shopify/callback', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'callback'])->name('import_data.callback');
-        Route::post('/import-data/shopify/manual', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'connectManual'])->name('import_data.manual');
         Route::post('/import-data/shopify/disconnect', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'disconnect'])->name('import_data.disconnect');
+        Route::get('/import-data/shopify/status', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'progress'])->name('import_data.status');
         Route::post('/import-data/config', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'saveConfig'])->name('import_data.config');
         Route::post('/import-data/start', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'start'])->name('import_data.start');
+        Route::post('/import-data/tick', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'tickBatch'])->name('import_data.tick');
+        Route::post('/import-data/shopify/import', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'start'])->name('import_data.import');
         Route::get('/import-data/progress', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'progress'])->name('import_data.progress');
+        Route::get('/import-data/shopify/import-status', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'progress'])->name('import_data.import_status');
         Route::post('/import-data/cancel', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'cancel'])->name('import_data.cancel');
         Route::post('/import-data/retry', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'retryFailed'])->name('import_data.retry');
         Route::get('/import-data/failed', [\App\Http\Controllers\Admins\ShopifyImportController::class, 'failedItems'])->name('import_data.failed');
+
+        Route::post('/import-data/woocommerce/connect', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'connect'])->name('import_data.woo.connect');
+        Route::post('/import-data/woocommerce/test', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'testConnection'])->name('import_data.woo.test');
+        Route::post('/import-data/woocommerce/fetch-products', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'fetchProducts'])->name('import_data.woo.fetch');
+        Route::post('/import-data/woocommerce/disconnect', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'disconnect'])->name('import_data.woo.disconnect');
+        Route::get('/import-data/woocommerce/status', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'progress'])->name('import_data.woo.status');
+        Route::post('/import-data/woocommerce/config', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'saveConfig'])->name('import_data.woo.config');
+        Route::post('/import-data/woocommerce/start', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'start'])->name('import_data.woo.start');
+        Route::post('/import-data/woocommerce/tick', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'tickBatch'])->name('import_data.woo.tick');
+        Route::post('/import-data/woocommerce/cancel', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'cancel'])->name('import_data.woo.cancel');
+        Route::post('/import-data/woocommerce/retry', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'retryFailed'])->name('import_data.woo.retry');
+        Route::get('/import-data/woocommerce/failed', [\App\Http\Controllers\Admins\WooCommerceImportController::class, 'failedItems'])->name('import_data.woo.failed');
 
     });
     
@@ -250,6 +271,7 @@ Route::get('/products_tag',[Front\FrontController::class,'products_tag'])->name(
 Route::get('/shop/{id}',[Front\FrontController::class,'shop'])->name('shop');
 Route::any('/shop',[Front\FrontController::class,'shop'])->name('shop');
 Route::get('/product/{id}',[Front\FrontController::class,'product_detail']);
+Route::get('/products/{id}',[Front\FrontController::class,'product_detail']);
 
 Route::get('/tags/{id}',[Front\FrontController::class,'tags_detail']);
 Route::get('/blog',[Front\FrontController::class,'blogs']);

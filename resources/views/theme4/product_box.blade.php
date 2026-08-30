@@ -5,7 +5,7 @@
 @endphp
 <div class="product-wrapper" data-aos="fade-up">
     <div class="product-img">
-        <a href="{{ url('/product/' . $v->slug) }}">
+        <a href="{{ product_url($v) }}">
             <img src="{{ storefront_img($v->image_one ?? '', asset('theme4/assets/images/homepage-one/product-img/product-img-1.webp')) }}" alt="{{ $v->product_name }}">
         </a>
     </div>
@@ -22,7 +22,7 @@
             </span>
         </div>
         <div class="product-description">
-            <a href="{{ url('/product/' . $v->slug) }}" class="product-details">{{ $v->product_name }}</a>
+            <a href="{{ product_url($v) }}" class="product-details">{{ $v->product_name }}</a>
             <div class="price">
                 @if(theme_setting('products.show_price', true))
                 @if(theme_setting('products.show_compare_price', true) && $discount_price > 0 && $saling_price > $discount_price)

@@ -1,189 +1,75 @@
-<style>
-    td{
-        vertical-align: middle !important;
-    }
-    td img{
-        width: 50px;
-    }
-</style>
 @extends('admins.master')
-
-@section('title','Review')
-
-@section('review','active')
-
-
-
-<?php
-use App\Models\Admins\Category;
-use App\Models\Admins\SubCategory;
-use App\Models\Childcatagorie;
-use App\Models\Admins\Product;
-use App\Models\Admins\Gallerie;
-use App\Models\Admins\Brand;
-  ?>
+@section('title','Reviews')
+@section('page_title','Reviews')
+@section('page_subtitle','Approve customer reviews before they appear on the store')
+@section('review','is-active')
 
 @section('content')
-<div class="wrapper wrapper-content animated fadeInRight">
-<div class="row">
-        <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Subcriber List</h5>
-            </div>
-            <div class="ibox-content">
- 
-            <div class="table-responsive" style="max-height:100vh;">
-				<table class="table table-striped table-bordered table-hover dataTables-example" >
-				<thead>
-				<tr>
-					<th>#</th>
-					<th>Product Name</th>
-					<th>Customer Name</th>
-					<th>Review</th>
-					<th>Image</th>
-					<th>Rating</th>
-					<th>Customer Email</th>
-					<th>Status</th>
-					<th>Action</th>
-				</tr>
-				</thead>
-				<tbody>
-					@foreach($reviews as $review)
-					<tr>
-						<?php 
-							$products = product::where(['id'=>$review->pid])->get();
-						?>
-						
-						@foreach($products as $product)
-						<td>{{$review->id}}</td>
-						<td>{{$product->product_name}}</td>
-						@endforeach
-						
-						<td>{{$review->name}}</td>
-						<td style="white-space: normal; word-wrap: break-word; max-width: 300px;">{{$review->review}}</td>
-						<td>
-							@if(!empty($review->image))
-								<?php 
-									// Remove 'public/' prefix if exists
-									$imagePath = $review->image;
-									// Generate full URL using url() helper
-									$imageUrl = url($imagePath);
-								?>
-								<img src="{{ $imageUrl }}" alt="Review Image" style="max-width: 100px; max-height: 100px; border-radius: 4px; cursor: pointer;" onclick="window.open('{{ $imageUrl }}', '_blank')" title="Click to view full size">
-							@else
-								<span class="text-muted">No Image</span>
-							@endif
-						</td>
-						<td>{{$review->rate}}</td>
-						<td>{{$review->email}}</td>
-						<td>
-							<div class="switch">
-								<div class="onoffswitch">
-									<input type="checkbox" name="product_status" data-id="{{$review->id}}" <?php echo $review->status==1 ? 'checked' : null; ?> class="onoffswitch-checkbox toggle-event" id="example-{{$review->id}}">
-									<label class="onoffswitch-label" for="example-{{$review->id}}">
-										<span class="onoffswitch-inner"></span>
-										<span class="onoffswitch-switch"></span>
-									</label>
-								</div>
-							</div>
-						</td>
-						<td>
-							<a data-href="{{route('admins.review_delete',['id'=>$review->id])}}" class="btn btn-danger btn-sm delete_records" href="javascript:void(0)"><i class="fa fa-times"></i>&nbsp;Delete</a>
-						</td>
-					</tr>
-					@endforeach
-				</tbody>
-            </table>
-                </div>
-  
-            </div>
-        </div>
-    </div>
-    </div>
-  </div>
+@php
+    use App\Models\Admins\Product;
+    $productNames = Product::withoutStore()->whereIn('id', $reviews->pluck('pid')->filter())->pluck('product_name', 'id');
+@endphp
+<div class="sa-card">
+    <p class="sa-muted">Pending: <strong>{{ $pendingreviews->count() }}</strong> · Total: <strong>{{ $reviews->count() }}</strong>. Approved reviews show on the product page.</p>
+    <table class="sa-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Customer</th>
+                <th>Review</th>
+                <th>Stars</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($reviews as $review)
+            <tr>
+                <td>{{ $productNames[$review->pid] ?? ('#' . $review->pid) }}</td>
+                <td>
+                    {{ $review->name }}
+                    <div class="sa-muted">{{ $review->email }}</div>
+                </td>
+                <td style="max-width:320px;white-space:normal;">{{ $review->review }}</td>
+                <td>{{ (int) $review->rate }}/5</td>
+                <td>
+                    <label class="sa-check" style="margin:0;">
+                        <input type="checkbox" class="js-review-status" data-id="{{ $review->id }}" {{ (int) $review->status === 1 ? 'checked' : '' }}>
+                        <span>{{ (int) $review->status === 1 ? 'Approved' : 'Pending' }}</span>
+                    </label>
+                </td>
+                <td>
+                    <a class="sa-btn sa-btn-danger delete_records" href="javascript:void(0)" data-href="{{ route('admins.review_delete', ['id' => $review->id]) }}">Delete</a>
+                </td>
+            </tr>
+            @empty
+            <tr><td colspan="6">No reviews yet.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 @endsection
 
-
 @push('scripts')
-  <script>
-  
-    $('.delete_records').click(function(){
-        $(".select2").select2();
-        swal({
-        title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-        })
-        .then((willDelete) => {
-        if (willDelete) {
-            let href=$(this).data('href');
-            window.location.href=href;
+<script>
+$('.delete_records').on('click', function () {
+    var href = $(this).data('href');
+    swal({ title: 'Delete this review?', icon: 'warning', buttons: true, dangerMode: true })
+        .then(function (ok) { if (ok) window.location.href = href; });
+});
+$('.js-review-status').on('change', function () {
+    var $el = $(this);
+    var status = $el.prop('checked') ? 1 : 0;
+    $el.closest('label').find('span').text(status ? 'Approved' : 'Pending');
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        url: '{{ route('admins.update_review_status') }}',
+        type: 'POST',
+        data: { review_id: $el.data('id'), Status: status },
+        success: function (response) {
+            if (typeof showToastr === 'function') showToastr(response.msg, response.msg_type);
         }
-        });
-
     });
-  
-    $(".toggle-event").change(function(){
-        
-        let status=0;
-        let product_id=0;
-    
-        if($(this).prop("checked") == true){
-            //run code
-            // alert('checked');
-            status=1;
-            product_id=$(this).data('id');
-            console.log(product_id);
-           
-        }else{
-           //run code
-            // alert('un checked');
-            status=0;
-            product_id=$(this).data('id');
-            console.log(product_id);
-        
-        }
-        
-        updateStatus(status,product_id);
-    });
-      
-      function updateStatus(status,product_id)
-      {
-            if(product_id>0){
-                $.ajax({
-                    headers: {
-                            'X-CSRF-TOKEN': "{{csrf_token()}}",
-                        },
-                    url : "{{route('admins.update_review_status')}}",
-                    type : "POST",
-                    data : {
-                        review_id : product_id,
-                        Status : status,
-                    },
-                    success : function(response){
-                        showToastr(response.msg,response.msg_type);
-                    }
-                });
-            }
-      }
-    //   $(document).ready(function(){
-    //       let status=0;
-    //       let product_id=0;
-    //       $('.swithch').change(function(){
-    //         if($(this).is(':checked')){
-    //             status=1;
-    //             product_id=$(this).data('id');
-    //             console.log(product_id);
-    //         }else{
-    //             status=0;
-    //             product_id=$(this).data('id');
-    //             console.log(product_id);
-    //         }
-    //         updateStatus(status,product_id);
-    //       });
-    //   });
-  </script>
+});
+</script>
 @endpush

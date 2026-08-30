@@ -11,11 +11,37 @@ use App\Models\ShopifyConnection;
 use App\Models\ShopifyImportError;
 use App\Models\ShopifyImportJob;
 use App\Models\ShopifyResourceMap;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ShopifyImporter
 {
+    /** @var array<int, array{title:string,sku:string,price:string,status:string}> */
+    public array $lastBatch = [];
+
+    protected string $resourcePrefix = '';
+
+    protected function mapType(string $type): string
+    {
+        return $this->resourcePrefix === '' ? $type : $this->resourcePrefix . $type;
+    }
+
+    protected function mappedLocal(int $storeId, string $type, $sid): ?int
+    {
+        return ShopifyResourceMap::findLocal($storeId, $this->mapType($type), $sid);
+    }
+
+    protected function mappedRemember(int $storeId, int $connectionId, string $type, $sid, int $localId): void
+    {
+        ShopifyResourceMap::remember($storeId, $connectionId, $this->mapType($type), $sid, $localId);
+    }
+
+    protected function writesShopifyIds(): bool
+    {
+        return $this->resourcePrefix === '';
+    }
+
     public static function defaultMapping(): array
     {
         return [
@@ -32,47 +58,37 @@ class ShopifyImporter
 
     public function buildPreview(ShopifyConnection $connection, array $config): array
     {
-        $client = ShopifyAdminClient::forConnection($connection);
+        $gql = app(ShopifyClient::class);
         $types = $config['types'] ?? [];
-        $opt = $config['options'] ?? [];
         $preview = ['samples' => [], 'totals' => []];
 
-        $statuses = $this->productStatuses($opt);
-        $productQuery = [];
-        if ($statuses) {
-            $productQuery['status'] = implode(',', $statuses);
-        }
+        $productCount = in_array('products', $types, true) ? $gql->productsCount($connection) : 0;
+        [$products] = (in_array('products', $types, true) || in_array('brands', $types, true))
+            ? $gql->productsPage($connection)
+            : [[], null];
+        [$collections] = in_array('collections', $types, true) ? $gql->collectionsPage($connection) : [[], null];
 
-        $productCount = in_array('products', $types, true) ? $client->count('products', $productQuery) : 0;
-        $customCount = in_array('collections', $types, true) ? $client->count('custom_collections') : 0;
-        $smartCount = in_array('collections', $types, true) ? $client->count('smart_collections') : 0;
-
-        $products = [];
         $vendors = [];
         $images = 0;
         $variants = 0;
-        if (in_array('products', $types, true) || in_array('brands', $types, true)) {
-            [$page] = $client->page('products.json', 'products', array_merge($productQuery, ['limit' => 50]));
-            foreach ($page as $p) {
-                $products[] = $p;
-                if (!empty($p['vendor'])) {
-                    $vendors[$p['vendor']] = true;
-                }
-                $images += count($p['images'] ?? []);
-                $variants += count($p['variants'] ?? []);
+        foreach ($products as $p) {
+            if (!empty($p['vendor'])) {
+                $vendors[$p['vendor']] = true;
             }
+            $images += count($p['images'] ?? []);
+            $variants += count($p['variants'] ?? []);
+        }
+        if (!$productCount) {
+            $productCount = count($products);
         }
 
         $preview['totals'] = [
             'products' => $productCount,
-            'categories' => $customCount + $smartCount,
-            'brands' => count($vendors) ?: ($productCount ? null : 0),
+            'categories' => count($collections),
+            'brands' => count($vendors),
             'images' => $productCount ? (int) round($images * max($productCount / max(count($products), 1), 1)) : 0,
             'variants' => $productCount ? (int) round($variants * max($productCount / max(count($products), 1), 1)) : 0,
         ];
-        if ($preview['totals']['brands'] === null) {
-            $preview['totals']['brands'] = count($vendors);
-        }
 
         foreach (array_slice($products, 0, 5) as $p) {
             $v = $p['variants'][0] ?? [];
@@ -89,6 +105,7 @@ class ShopifyImporter
 
     public function tick(ShopifyImportJob $job, int $seconds = 8): void
     {
+        $this->lastBatch = [];
         $job->refresh();
         if (in_array($job->status, ['completed', 'failed', 'cancelled'], true)) {
             return;
@@ -113,6 +130,7 @@ class ShopifyImporter
         }
 
         $client = ShopifyAdminClient::forConnection($connection);
+        $gql = app(ShopifyClient::class);
         $cursor = $job->cursor();
         $stage = $cursor['stage'] ?? 'start';
         $deadline = microtime(true) + $seconds;
@@ -140,9 +158,9 @@ class ShopifyImporter
                 $cursor = $job->cursor();
                 $stage = $cursor['stage'] ?? 'done';
                 if ($stage === 'collections') {
-                    $this->importCollectionsPage($job, $connection, $client, $cursor);
+                    $this->importCollectionsPage($job, $connection, $gql, $cursor);
                 } elseif ($stage === 'products') {
-                    $this->importProductsPage($job, $connection, $client, $cursor);
+                    $this->importProductsPage($job, $connection, $gql, $cursor);
                 } elseif ($stage === 'orders') {
                     $this->importOrdersPage($job, $connection, $client, $cursor);
                 } else {
@@ -163,7 +181,7 @@ class ShopifyImporter
         }
     }
 
-    protected function importCollectionsPage(ShopifyImportJob $job, ShopifyConnection $connection, ShopifyAdminClient $client, array $cursor): void
+    protected function importCollectionsPage(ShopifyImportJob $job, $connection, $gql, array $cursor): void
     {
         $config = $job->config();
         if (!in_array('collections', $config['types'] ?? [], true)) {
@@ -173,23 +191,13 @@ class ShopifyImporter
             $job->save();
             return;
         }
-        $kind = $cursor['kind'] ?? 'custom';
-        $path = $kind === 'smart' ? 'smart_collections.json' : 'custom_collections.json';
-        $key = $kind === 'smart' ? 'smart_collections' : 'custom_collections';
-        [$items, $next] = $client->page($path, $key, ['limit' => 50], $cursor['page_info'] ?? null);
+        [$items, $next] = $gql->collectionsPage($connection, $cursor['page_info'] ?? null);
         foreach ($items as $col) {
             $this->upsertCategory($job, $connection, $col);
             $this->bump($job, 'categories', 'done');
         }
         if ($next) {
             $cursor['page_info'] = $next;
-            $job->setCursor($cursor);
-            $job->save();
-            return;
-        }
-        if ($kind === 'custom') {
-            $cursor['kind'] = 'smart';
-            $cursor['page_info'] = null;
             $job->setCursor($cursor);
             $job->save();
             return;
@@ -201,7 +209,7 @@ class ShopifyImporter
         $job->save();
     }
 
-    protected function importProductsPage(ShopifyImportJob $job, ShopifyConnection $connection, ShopifyAdminClient $client, array $cursor): void
+    protected function importProductsPage(ShopifyImportJob $job, $connection, $gql, array $cursor): void
     {
         $config = $job->config();
         $types = $config['types'] ?? [];
@@ -212,12 +220,7 @@ class ShopifyImporter
             $job->save();
             return;
         }
-        $query = ['limit' => 25];
-        $statuses = $this->productStatuses($config['options'] ?? []);
-        if ($statuses && empty($cursor['page_info'])) {
-            $query['status'] = implode(',', $statuses);
-        }
-        [$items, $next] = $client->page('products.json', 'products', $query, $cursor['page_info'] ?? null);
+        [$items, $next] = $gql->productsPage($connection, $cursor['page_info'] ?? null, 10);
         foreach ($items as $product) {
             $this->importOneProduct($job, $connection, $product);
         }
@@ -233,7 +236,7 @@ class ShopifyImporter
         $job->save();
     }
 
-    protected function importOrdersPage(ShopifyImportJob $job, ShopifyConnection $connection, ShopifyAdminClient $client, array $cursor): void
+    protected function importOrdersPage(ShopifyImportJob $job, $connection, $client, array $cursor): void
     {
         $config = $job->config();
         if (!in_array('orders', $config['types'] ?? [], true) || !Schema::hasTable('custom_order')) {
@@ -258,7 +261,7 @@ class ShopifyImporter
         $job->save();
     }
 
-    protected function importOneProduct(ShopifyImportJob $job, ShopifyConnection $connection, array $sp): void
+    protected function importOneProduct(ShopifyImportJob $job, $connection, array $sp): void
     {
         $config = $job->config();
         $types = $config['types'] ?? [];
@@ -276,9 +279,19 @@ class ShopifyImporter
                 return;
             }
 
-            $existingId = ShopifyResourceMap::findLocal($storeId, 'product', $sid);
+            $variants = $sp['variants'] ?? [];
+            $first = $variants[0] ?? [];
+
+            $existingId = $this->mappedLocal($storeId, 'product', $sid);
+            if (!$existingId && $this->writesShopifyIds() && Schema::hasColumn('products', 'shopify_product_id')) {
+                $existingId = Product::withoutStore()
+                    ->where('store_id', $storeId)
+                    ->where('shopify_product_id', $sid)
+                    ->value('id');
+            }
             if ($existingId && $mode === 'skip') {
                 $this->bump($job, 'products', 'skipped');
+                $this->noteBatch($name, $first['sku'] ?? '', (string) ($first['price'] ?? ''), 'skipped');
                 return;
             }
 
@@ -295,8 +308,6 @@ class ShopifyImporter
                 // keep
             }
 
-            $variants = $sp['variants'] ?? [];
-            $first = $variants[0] ?? [];
             $price = $first['price'] ?? 0;
             $compare = $first['compare_at_price'] ?? null;
             $selling = $compare ?: $price;
@@ -308,12 +319,22 @@ class ShopifyImporter
 
             $brandId = null;
             if (!empty($sp['vendor'])) {
-                $brandId = ShopifyResourceMap::findLocal($storeId, 'vendor', md5(strtolower($sp['vendor'])));
+                $brandId = $this->mappedLocal($storeId, 'vendor', md5(strtolower($sp['vendor'])));
             }
             $catId = $this->firstMappedCollection($storeId, $sp);
 
             $product->product_name = $name;
-            $product->slug = Str::slug($name) . '-' . substr($sid, -6);
+            $handle = self::normalizeHandle($sp['handle'] ?? null, $name);
+            $product->slug = $this->uniqueStoreSlug('products', $storeId, $handle, $product->id ?? null);
+            if ($this->writesShopifyIds() && Schema::hasColumn('products', 'shopify_product_id')) {
+                $product->shopify_product_id = $sid;
+            }
+            if ($this->writesShopifyIds() && Schema::hasColumn('products', 'shopify_handle')) {
+                $product->shopify_handle = $handle;
+            }
+            if (Schema::hasColumn('products', 'ptype') && isset($sp['product_type'])) {
+                $product->ptype = $sp['product_type'] ?: null;
+            }
             if ($catId) {
                 $product->category_id = $catId;
             }
@@ -352,11 +373,13 @@ class ShopifyImporter
             $product->status = (($sp['status'] ?? '') === 'active') ? 1 : 0;
             $product->save();
 
-            ShopifyResourceMap::remember($storeId, (int) $connection->id, 'product', $sid, (int) $product->id);
+            $this->mappedRemember($storeId, (int) $connection->id, 'product', $sid, (int) $product->id);
             if ($existingId && $mode === 'update') {
                 $this->bump($job, 'products', 'updated');
+                $this->noteBatch($name, $first['sku'] ?? '', (string) ($price ?? ''), 'updated');
             } else {
                 $this->bump($job, 'products', 'imported');
+                $this->noteBatch($name, $first['sku'] ?? '', (string) ($price ?? ''), 'imported');
             }
 
             if (in_array('images', $types, true) && !empty($opt['import_images'])) {
@@ -369,20 +392,21 @@ class ShopifyImporter
                 }
                 $this->bump($job, 'variants', 'done', count($variants));
                 if ($first) {
-                    ShopifyResourceMap::remember($storeId, (int) $connection->id, 'variant', $first['id'] ?? '', (int) $product->id);
+                    $this->mappedRemember($storeId, (int) $connection->id, 'variant', $first['id'] ?? '', (int) $product->id);
                 }
             }
         } catch (\Throwable $e) {
             $this->fail($job, 'product', $sid, $name, $this->safe($e->getMessage()));
             $this->bump($job, 'products', 'failed');
+            $this->noteBatch($name, '', '', 'failed');
         }
     }
 
-    protected function importExtraVariant(ShopifyImportJob $job, ShopifyConnection $connection, Product $parent, array $sp, array $variant, string $mode): void
+    protected function importExtraVariant(ShopifyImportJob $job, $connection, Product $parent, array $sp, array $variant, string $mode): void
     {
         $storeId = (int) $job->store_id;
         $vid = (string) ($variant['id'] ?? '');
-        $existing = ShopifyResourceMap::findLocal($storeId, 'variant', $vid);
+        $existing = $this->mappedLocal($storeId, 'variant', $vid);
         if ($existing && $mode === 'skip') {
             $this->bump($job, 'products', 'skipped');
             return;
@@ -397,7 +421,12 @@ class ShopifyImporter
             $p->store_id = $storeId;
         }
         $p->product_name = $title;
-        $p->slug = Str::slug($title) . '-' . substr($vid, -6);
+        $parentHandle = $parent->shopify_handle ?: $parent->slug ?: self::normalizeHandle($sp['handle'] ?? null, $sp['title'] ?? 'product');
+        $variantBit = Str::slug($variant['title'] ?? $vid);
+        $p->slug = $this->uniqueStoreSlug('products', $storeId, $parentHandle . '-' . $variantBit, $p->id ?? null);
+        if ($this->writesShopifyIds() && Schema::hasColumn('products', 'shopify_product_id')) {
+            $p->shopify_product_id = $vid;
+        }
         $p->category_id = $parent->category_id;
         $p->brand = $parent->brand;
         $p->sku = $variant['sku'] ?? null;
@@ -408,10 +437,10 @@ class ShopifyImporter
         $p->status = $parent->status;
         $p->image_one = $parent->image_one;
         $p->save();
-        ShopifyResourceMap::remember($storeId, (int) $connection->id, 'variant', $vid, (int) $p->id);
+        $this->mappedRemember($storeId, (int) $connection->id, 'variant', $vid, (int) $p->id);
     }
 
-    protected function importImages(ShopifyImportJob $job, ShopifyConnection $connection, Product $product, array $images): void
+    protected function importImages(ShopifyImportJob $job, $connection, Product $product, array $images): void
     {
         usort($images, function ($a, $b) {
             return ((int) ($a['position'] ?? 0)) <=> ((int) ($b['position'] ?? 0));
@@ -426,7 +455,17 @@ class ShopifyImporter
             if (!$src) {
                 continue;
             }
+            $imgId = (string) ($img['id'] ?? '');
+            if ($imgId && $this->mappedLocal((int) $job->store_id, 'image', $imgId)) {
+                $this->bump($job, 'images', 'skipped');
+                continue;
+            }
             try {
+                $imageSid = (string) ($img['id'] ?? '');
+                if ($imageSid && $this->mappedLocal((int) $job->store_id, 'image', $imageSid)) {
+                    $this->bump($job, 'images', 'skipped');
+                    continue;
+                }
                 $local = $this->downloadImage($src, $dir, $product->id . '-' . $i);
                 if (!$local) {
                     continue;
@@ -448,7 +487,7 @@ class ShopifyImporter
                     }
                 }
                 $this->bump($job, 'images', 'imported');
-                ShopifyResourceMap::remember((int) $job->store_id, (int) $connection->id, 'image', $img['id'] ?? $i, (int) $product->id);
+                $this->mappedRemember((int) $job->store_id, (int) $connection->id, 'image', $img['id'] ?? $i, (int) $product->id);
             } catch (\Throwable $e) {
                 $this->fail($job, 'image', $img['id'] ?? null, $product->product_name, $this->safe($e->getMessage()));
                 $this->bump($job, 'images', 'failed');
@@ -480,14 +519,14 @@ class ShopifyImporter
         return $file;
     }
 
-    protected function upsertCategory(ShopifyImportJob $job, ShopifyConnection $connection, array $col): void
+    protected function upsertCategory(ShopifyImportJob $job, $connection, array $col): void
     {
         $storeId = (int) $job->store_id;
         $sid = (string) ($col['id'] ?? '');
         $name = $col['title'] ?? 'Collection';
         $mode = $job->duplicate_mode ?: 'update';
         try {
-            $existing = ShopifyResourceMap::findLocal($storeId, 'collection', $sid);
+            $existing = $this->mappedLocal($storeId, 'collection', $sid);
             if ($existing && $mode === 'skip') {
                 $this->bump($job, 'categories', 'skipped');
                 return;
@@ -505,7 +544,14 @@ class ShopifyImporter
                 $this->bump($job, 'categories', 'updated');
             }
             $cat->name = $name;
-            $cat->slug = Str::slug($name) . '-sh' . substr($sid, -5);
+            $handle = self::normalizeHandle($col['handle'] ?? null, $name);
+            $cat->slug = $this->uniqueStoreSlug('categories', $storeId, $handle, $cat->id ?? null);
+            if ($this->writesShopifyIds() && Schema::hasColumn('categories', 'shopify_collection_id')) {
+                $cat->shopify_collection_id = $sid;
+            }
+            if ($this->writesShopifyIds() && Schema::hasColumn('categories', 'shopify_handle')) {
+                $cat->shopify_handle = $handle;
+            }
             $cat->short_description = Str::limit(strip_tags($col['body_html'] ?? ''), 250);
             if (!empty($col['image']['src'])) {
                 $dir = public_path('images/categories/imports/' . $storeId);
@@ -518,26 +564,32 @@ class ShopifyImporter
                 }
             }
             $cat->save();
-            ShopifyResourceMap::remember($storeId, (int) $connection->id, 'collection', $sid, (int) $cat->id);
+            $this->mappedRemember($storeId, (int) $connection->id, 'collection', $sid, (int) $cat->id);
         } catch (\Throwable $e) {
             $this->fail($job, 'collection', $sid, $name, $this->safe($e->getMessage()));
             $this->bump($job, 'categories', 'failed');
         }
     }
 
-    protected function upsertBrand(ShopifyImportJob $job, ShopifyConnection $connection, string $vendor): void
+    protected function upsertBrand(ShopifyImportJob $job, $connection, string $vendor): void
     {
         $storeId = (int) $job->store_id;
         $key = md5(strtolower($vendor));
         $mode = $job->duplicate_mode ?: 'update';
         try {
-            $existing = ShopifyResourceMap::findLocal($storeId, 'vendor', $key);
+            $existing = $this->mappedLocal($storeId, 'vendor', $key);
             if ($existing && $mode === 'skip') {
                 return;
             }
             $brand = null;
             if ($existing && $mode !== 'duplicate') {
                 $brand = Brand::withoutStore()->where('store_id', $storeId)->where('id', $existing)->first();
+            }
+            if (!$brand) {
+                $brand = Brand::withoutStore()
+                    ->where('store_id', $storeId)
+                    ->whereRaw('LOWER(name) = ?', [strtolower($vendor)])
+                    ->first();
             }
             if (!$brand) {
                 $brand = new Brand();
@@ -548,22 +600,22 @@ class ShopifyImporter
                 $this->bump($job, 'brands', 'updated');
             }
             $brand->name = $vendor;
-            $brand->slug = Str::slug($vendor) . '-sh';
+            $brand->slug = $this->uniqueStoreSlug('brands', $storeId, $vendor, $brand->id ?? null);
             $brand->save();
-            ShopifyResourceMap::remember($storeId, (int) $connection->id, 'vendor', $key, (int) $brand->id);
+            $this->mappedRemember($storeId, (int) $connection->id, 'vendor', $key, (int) $brand->id);
         } catch (\Throwable $e) {
             $this->fail($job, 'vendor', $key, $vendor, $this->safe($e->getMessage()));
             $this->bump($job, 'brands', 'failed');
         }
     }
 
-    protected function upsertOrder(ShopifyImportJob $job, ShopifyConnection $connection, array $order): void
+    protected function upsertOrder(ShopifyImportJob $job, $connection, array $order): void
     {
         $storeId = (int) $job->store_id;
         $sid = (string) ($order['id'] ?? '');
         $mode = $job->duplicate_mode ?: 'update';
         try {
-            $existing = ShopifyResourceMap::findLocal($storeId, 'order', $sid);
+            $existing = $this->mappedLocal($storeId, 'order', $sid);
             if ($existing && $mode === 'skip') {
                 $this->bump($job, 'orders', 'skipped');
                 return;
@@ -589,7 +641,7 @@ class ShopifyImporter
             $row->address = trim(($addr['address1'] ?? '') . ' ' . ($addr['city'] ?? ''));
             $row->status = $order['financial_status'] ?? 'pending';
             $row->save();
-            ShopifyResourceMap::remember($storeId, (int) $connection->id, 'order', $sid, (int) $row->id);
+            $this->mappedRemember($storeId, (int) $connection->id, 'order', $sid, (int) $row->id);
         } catch (\Throwable $e) {
             $this->fail($job, 'order', $sid, $order['name'] ?? 'Order', $this->safe($e->getMessage()));
             $this->bump($job, 'orders', 'failed');
@@ -599,18 +651,18 @@ class ShopifyImporter
     protected function firstMappedCollection(int $storeId, array $sp): ?int
     {
         foreach ($sp['collection_ids'] ?? [] as $cid) {
-            $local = ShopifyResourceMap::findLocal($storeId, 'collection', $cid);
+            $local = $this->mappedLocal($storeId, 'collection', $cid);
             if ($local) {
                 return $local;
             }
         }
         return ShopifyResourceMap::withoutStore()
             ->where('store_id', $storeId)
-            ->where('resource_type', 'collection')
+            ->where('resource_type', $this->mapType('collection'))
             ->value('local_id');
     }
 
-    protected function finish(ShopifyImportJob $job, ShopifyConnection $connection): void
+    protected function finish(ShopifyImportJob $job, $connection): void
     {
         $job->status = 'completed';
         $job->finished_at = now();
@@ -618,6 +670,45 @@ class ShopifyImporter
         $job->save();
         $connection->last_synced_at = now();
         $connection->save();
+    }
+
+    public static function normalizeHandle(?string $handle, string $fallbackName = 'product'): string
+    {
+        $raw = strtolower(trim((string) $handle, "/ \t\n\r"));
+        if ($raw !== '' && preg_match('/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/', $raw)) {
+            return $raw;
+        }
+        if ($raw !== '') {
+            $slug = Str::slug($raw);
+            if ($slug !== '') {
+                return $slug;
+            }
+        }
+        return Str::slug($fallbackName) ?: 'product';
+    }
+
+    protected function uniqueStoreSlug(string $table, int $storeId, string $preferred, $ignoreId = null): string
+    {
+        $base = self::normalizeHandle($preferred, 'item');
+        $slug = $base;
+        $n = 2;
+        while (
+            DB::table($table)
+                ->where('store_id', $storeId)
+                ->where('slug', $slug)
+                ->when($ignoreId, function ($q) use ($ignoreId) {
+                    $q->where('id', '!=', $ignoreId);
+                })
+                ->exists()
+        ) {
+            $slug = $base . '-' . $n;
+            $n++;
+            if ($n > 50) {
+                $slug = $base . '-' . substr(md5($preferred . $storeId), 0, 6);
+                break;
+            }
+        }
+        return $slug;
     }
 
     protected function productStatuses(array $opt): array
@@ -633,6 +724,16 @@ class ShopifyImporter
             $out[] = 'archived';
         }
         return $out ?: ['active'];
+    }
+
+    protected function noteBatch(string $title, string $sku, string $price, string $status): void
+    {
+        $this->lastBatch[] = [
+            'title' => $title,
+            'sku' => $sku,
+            'price' => $price,
+            'status' => $status,
+        ];
     }
 
     protected function bump(ShopifyImportJob $job, string $group, string $key, int $by = 1): void
@@ -661,7 +762,8 @@ class ShopifyImporter
 
     protected function safe(string $message): string
     {
-        return preg_replace('/shpat_[a-zA-Z0-9]+|shpss_[a-zA-Z0-9]+/', '[redacted]', $message);
+        $message = preg_replace('/shpat_[a-zA-Z0-9]+|shpss_[a-zA-Z0-9]+|ck_[A-Za-z0-9]+|cs_[A-Za-z0-9]+/', '[redacted]', $message);
+        return preg_replace('/[A-Za-z0-9]{40,}/', '[redacted]', $message);
     }
 
     protected function isAuthError(\Throwable $e): bool

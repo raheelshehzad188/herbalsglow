@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Models\ShopifyImportJob;
 use App\Services\Shopify\ShopifyImporter;
+use App\Services\WooCommerce\WooCommerceImporter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -34,6 +36,12 @@ class ProcessShopifyImportJob implements ShouldQueue
             ->first();
         if (!$job) {
             return;
+        }
+        $source = (Schema::hasColumn('shopify_import_jobs', 'source') && $job->source === 'woocommerce')
+            ? 'woocommerce'
+            : 'shopify';
+        if ($source === 'woocommerce') {
+            $importer = app(WooCommerceImporter::class);
         }
         $importer->tick($job, 20);
         $job->refresh();

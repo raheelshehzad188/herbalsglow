@@ -15,32 +15,61 @@ class ShopifyAdminClient
     {
         $this->shop = self::normalizeShop($shopDomain);
         $this->token = $accessToken;
-        $this->version = (string) config('shopify.api_version', '2024-10');
+        $this->version = (string) config('shopify.api_version', '2026-07');
     }
 
     public static function forConnection(ShopifyConnection $connection): self
     {
-        return new self($connection->shop_domain, $connection->getAccessToken());
+        $token = app(ShopifyAuthService::class)->getAccessToken($connection);
+        return new self($connection->shop_domain, $token);
     }
 
     public static function normalizeShop(string $input): string
     {
         $input = strtolower(trim($input));
-        $input = preg_replace('#^https?://#', '', $input);
-        $input = rtrim($input, '/');
-        $input = preg_replace('#/.*$#', '', $input);
-        if (!str_contains($input, '.')) {
-            $input .= '.myshopify.com';
-        }
-        if (!preg_match('/^[a-z0-9][a-z0-9\-]*\.myshopify\.com$/', $input)) {
+        if ($input === '' || preg_match('#^(javascript|data|file):#i', $input)) {
             throw new RuntimeException('Enter a valid Shopify store URL, like your-store.myshopify.com');
         }
-        return $input;
+        $input = preg_replace('#^https?://#', '', $input);
+        $input = preg_replace('#^www\.#', '', $input);
+        $input = rtrim($input, '/');
+        $host = preg_replace('#/.*$#', '', $input);
+        $host = explode(':', (string) $host)[0];
+        if (filter_var($host, FILTER_VALIDATE_IP) || in_array($host, ['localhost', '127.0.0.1', '::1'], true)) {
+            throw new RuntimeException('Enter a valid Shopify store URL, like your-store.myshopify.com');
+        }
+        if (!str_contains($host, '.')) {
+            $host .= '.myshopify.com';
+        }
+        if (!preg_match('/^[a-z0-9][a-z0-9\-]*\.myshopify\.com$/', $host)) {
+            throw new RuntimeException('Enter a valid Shopify store URL, like your-store.myshopify.com');
+        }
+        return $host;
     }
 
     public function get(string $path, array $query = []): array
     {
         return $this->request('GET', $path, $query);
+    }
+
+    /**
+     * Revoke this app's access token on Shopify. Safe to call if already revoked.
+     */
+    public function revoke(): void
+    {
+        $url = 'https://' . $this->shop . '/admin/api_permissions/current.json';
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_HTTPHEADER => [
+                'X-Shopify-Access-Token: ' . $this->token,
+                'Accept: application/json',
+            ],
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
     }
 
     public function getShop(): array

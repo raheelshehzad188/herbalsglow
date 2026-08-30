@@ -35,6 +35,24 @@ if (!function_exists('theme_path')) {
     }
 }
 
+if (!function_exists('product_path')) {
+    function product_path($product): string {
+        $handle = trim((string) (is_object($product) ? ($product->shopify_handle ?? '') : ($product['shopify_handle'] ?? '')));
+        $slug = trim((string) (is_object($product) ? ($product->slug ?? '') : ($product['slug'] ?? '')));
+        $key = $handle !== '' ? $handle : $slug;
+        if ($handle !== '') {
+            return '/products/' . ltrim($key, '/');
+        }
+        return '/product/' . ltrim($slug, '/');
+    }
+}
+
+if (!function_exists('product_url')) {
+    function product_url($product): string {
+        return url(product_path($product));
+    }
+}
+
 if (!function_exists('theme_setting')) {
     function theme_setting(string $key, $default = null) {
         return \App\Support\ThemeSettings::get($key, $default);
@@ -474,7 +492,7 @@ if (!function_exists('seo_product_schema')) {
         $sale = (float) ($product->discount_price ?? 0);
         $price = ($sale > 0 && ($list <= 0 || $sale < $list)) ? $sale : ($list > 0 ? $list : $sale);
         $currency = env('CUR_CODE', 'PKR');
-        $url = url('/product/' . $product->slug);
+        $url = product_url($product);
         $inStock = ((int) ($product->product_quantity ?? $product->stock ?? 0)) > 0;
 
         $schema = [

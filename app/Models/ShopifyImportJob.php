@@ -12,6 +12,7 @@ class ShopifyImportJob extends Model
     protected $fillable = [
         'store_id',
         'connection_id',
+        'source',
         'status',
         'duplicate_mode',
         'config_json',

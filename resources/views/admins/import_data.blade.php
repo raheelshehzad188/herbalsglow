@@ -1,59 +1,162 @@
 @extends('admins.master')
 @section('title','Import data')
 @section('page_title','Import data')
-@section('page_subtitle','Bring your Shopify catalog into this store')
+@section('page_subtitle','Import a catalog from Shopify or WooCommerce')
 @section('import_data','is-active')
 @php
+    $source = ($source ?? request('source')) === 'woocommerce' ? 'woocommerce' : 'shopify';
+    $isWoo = $source === 'woocommerce';
+    $sourceName = $isWoo ? 'WooCommerce' : 'Shopify';
+    $pageQs = $isWoo ? 'source=woocommerce' : '';
+    $pageUrl = url('/admin/import-data' . ($pageQs ? '?' . $pageQs : ''));
+    $stepUrl = function ($step) use ($isWoo) {
+        return url('/admin/import-data?' . ($isWoo ? 'source=woocommerce&' : '') . 'step=' . $step);
+    };
+    $testUrl = $isWoo ? url('/admin/import-data/woocommerce/test') : url('/admin/import-data/shopify/test');
+    $fetchUrl = $isWoo ? url('/admin/import-data/woocommerce/fetch-products') : url('/admin/import-data/shopify/fetch-products');
+    $disconnectUrl = $isWoo ? url('/admin/import-data/woocommerce/disconnect') : url('/admin/import-data/shopify/disconnect');
+    $connectUrl = $isWoo ? url('/admin/import-data/woocommerce/connect') : url('/admin/import-data/shopify/connect');
+    $configUrl = $isWoo ? url('/admin/import-data/woocommerce/config') : url('/admin/import-data/config');
+    $startUrl = $isWoo ? url('/admin/import-data/woocommerce/start') : url('/admin/import-data/start');
+    $tickUrl = $isWoo ? url('/admin/import-data/woocommerce/tick') : url('/admin/import-data/tick');
+    $cancelUrl = $isWoo ? url('/admin/import-data/woocommerce/cancel') : url('/admin/import-data/cancel');
+    $failedUrl = $isWoo ? url('/admin/import-data/woocommerce/failed') : url('/admin/import-data/failed');
+    $storeLabel = '';
+    $storeHost = '';
+    if ($connection) {
+        $storeLabel = $isWoo
+            ? ($connection->shop_name ?: $connection->shop_host ?: $connection->shop_url)
+            : ($connection->shop_name ?: $connection->shop_domain);
+        $storeHost = $isWoo ? ($connection->shop_url ?: $connection->shop_host) : $connection->shop_domain;
+    }
     $step = request('step', ($connection && $connection->isConnected()) ? 'select' : 'connect');
     if ($job && in_array($job->status, ['queued','running'])) { $step = 'progress'; }
     if ($job && $job->status === 'completed' && request('step') !== 'select') { $step = request('step', 'done'); }
     $cfg = $job ? $job->config() : [];
     $opt = $cfg['options'] ?? [];
-    $sel = $cfg['types'] ?? ['products','collections','brands','images','variants','options','inventory','tags'];
+    $sel = $cfg['types'] ?? ['products','collections','brands','images','variants','inventory'];
     $map = $cfg['mapping'] ?? $mapping;
     $preview = $job ? $job->preview() : [];
     $counts = $job ? $job->counts() : [];
     $connected = $connection && $connection->isConnected();
+    $imports = $imports ?? collect();
 @endphp
 @section('content')
 <div class="imp-wrap">
+    <div class="imp-source-tabs">
+        <a class="{{ !$isWoo ? 'on' : '' }}" href="{{ url('/admin/import-data?source=shopify') }}">Shopify</a>
+        <a class="{{ $isWoo ? 'on' : '' }}" href="{{ url('/admin/import-data?source=woocommerce') }}">WooCommerce</a>
+    </div>
+
     <div class="sa-card imp-hero">
-        <h2>Import your store data</h2>
-        <p>Connect your Shopify store and bring your existing catalog into this store.</p>
         @if(!$connected)
-            <div class="imp-actions">
-                <button type="button" class="sa-btn sa-btn-primary" data-toggle="modal" data-target="#oauthModal">Connect Shopify</button>
-                <button type="button" class="sa-btn sa-btn-secondary" data-toggle="modal" data-target="#manualModal">Use API credentials</button>
-            </div>
-            @if(!$oauthReady)
-                <p class="sa-muted" style="margin-top:12px;">One-click connect needs a Shopify app. Until that’s set up, use API credentials from Shopify Admin → Settings → Apps → Develop apps.</p>
+            <h2>Connect {{ $sourceName }}</h2>
+            @if($isWoo)
+                <p>Enter this store’s WooCommerce URL, Consumer Key and Consumer Secret. Keys are stored encrypted and never shown in the browser.</p>
+            @else
+                <p>Enter this store’s Shopify URL, Client ID and Client Secret. ShopUS exchanges them for an access token on the server. The token is never shown in the browser.</p>
             @endif
+        @else
+            <h2>{{ $sourceName }} connected ✓</h2>
+            <p>Store: <strong>{{ $storeLabel }}</strong></p>
+            <p class="sa-muted">{{ $storeHost }}</p>
+            <div class="imp-actions">
+                <form method="post" action="{{ $testUrl }}" style="display:inline;">
+                    @csrf
+                    <button class="sa-btn sa-btn-secondary" type="submit">Test connection</button>
+                </form>
+                <form method="post" action="{{ $fetchUrl }}" style="display:inline;" id="fetchForm">
+                    @csrf
+                    <button class="sa-btn sa-btn-primary" type="submit" id="fetchBtn">Fetch products</button>
+                </form>
+                <form method="post" action="{{ $disconnectUrl }}" style="display:inline;">
+                    @csrf
+                    <button class="sa-btn sa-btn-danger" type="submit">Disconnect {{ $sourceName }}</button>
+                </form>
+            </div>
         @endif
     </div>
 
-    @if($connection)
-    <div class="sa-card">
-        <h3>Connected Shopify store</h3>
-        <div class="imp-meta">
-            <div><span>Store name</span><strong>{{ $connection->shop_name ?: '—' }}</strong></div>
-            <div><span>Store domain</span><strong>{{ $connection->shop_domain }}</strong></div>
-            <div><span>Status</span>
-                @if($connection->status === 'connected') <em class="sa-badge">Connected</em>
-                @elseif($connection->status === 'invalid') <em class="sa-badge is-paused">Needs reconnect</em>
-                @else <em class="sa-badge is-draft">Disconnected</em>
-                @endif
-            </div>
-            <div><span>Last imported</span><strong>{{ $connection->last_synced_at ? $connection->last_synced_at->diffForHumans() : 'Never' }}</strong></div>
-        </div>
-        <div class="imp-actions" style="margin-top:16px;">
-            @if($connected)
-                <button type="button" class="sa-btn sa-btn-secondary" data-toggle="modal" data-target="#oauthModal">Reconnect</button>
-            @endif
-            <form method="post" action="{{ url('/admin/import-data/shopify/disconnect') }}" style="display:inline;">
+    @if(!$connected || request()->has('reconnect'))
+    <div class="sa-card" id="store-keys">
+        @if($isWoo)
+            <h3>WooCommerce REST API</h3>
+            <p class="sa-muted">Create a REST API key with <strong>Read</strong> permission. Do not paste WordPress admin passwords here.</p>
+            <ol class="imp-howto">
+                <li>Open WooCommerce → Settings → Advanced → REST API.</li>
+                <li>Add key. Description: ShopUS import. Permissions: <strong>Read</strong> (or Read/Write if you also import orders that need extra access).</li>
+                <li>Copy the <strong>Consumer key</strong> (<code>ck_</code>) and <strong>Consumer secret</strong> (<code>cs_</code>).</li>
+                <li>Store URL example: <code>https://yourstore.com</code></li>
+            </ol>
+            <form method="post" action="{{ $connectUrl }}" style="margin-top:20px;" id="shopifyConnectForm">
                 @csrf
-                <button class="sa-btn sa-btn-danger" type="submit">Disconnect</button>
+                <div class="sa-field">
+                    <label>WooCommerce store URL</label>
+                    <input name="shop_url" placeholder="https://yourstore.com" value="{{ old('shop_url') }}" required>
+                    <small>Accepted: yourstore.com or https://yourstore.com</small>
+                </div>
+                <div class="sa-field">
+                    <label>Consumer key</label>
+                    <input name="consumer_key" value="{{ old('consumer_key') }}" autocomplete="off" required>
+                </div>
+                <div class="sa-field">
+                    <label>Consumer secret</label>
+                    <input type="password" name="consumer_secret" autocomplete="new-password" required>
+                    <small>Stored encrypted for this ShopUS store only. It is never shown again.</small>
+                </div>
+                <button class="sa-btn sa-btn-primary" type="submit" id="connectBtn">Connect WooCommerce</button>
             </form>
-        </div>
+        @else
+            <h3>Shopify Client Credentials</h3>
+            <p class="sa-muted">Client Credentials authentication works for stores in the <strong>same Shopify organization</strong> as this app. Do not paste an Admin API access token (<code>shpat_</code>).</p>
+            <ol class="imp-howto">
+                <li>Open <a href="https://dev.shopify.com/dashboard" target="_blank" rel="noopener">Shopify Dev Dashboard</a> and create (or open) your app.</li>
+                <li>Create an app version and enable <strong>Client credentials</strong> grant.</li>
+                <li>Admin API scopes: <code>read_products</code>. Add an inventory read scope only if you need stock import.</li>
+                <li>Install / release the version onto the Shopify store in the same organization.</li>
+                <li>Copy <strong>Client ID</strong> and <strong>Client secret</strong> from the app settings.</li>
+                <li>Store URL example: <code>zenmart.myshopify.com</code></li>
+            </ol>
+            <form method="post" action="{{ $connectUrl }}" style="margin-top:20px;" id="shopifyConnectForm">
+                @csrf
+                <div class="sa-field">
+                    <label>Shopify store URL</label>
+                    <input name="shop_url" placeholder="zenmart.myshopify.com" value="{{ old('shop_url') }}" required>
+                    <small>Accepted: zenmart.myshopify.com or https://zenmart.myshopify.com</small>
+                </div>
+                <div class="sa-field">
+                    <label>Client ID</label>
+                    <input name="client_id" value="{{ old('client_id') }}" autocomplete="off" required>
+                </div>
+                <div class="sa-field">
+                    <label>Client secret</label>
+                    <input type="password" name="client_secret" autocomplete="new-password" required>
+                    <small>Stored encrypted for this ShopUS store only. It is never shown again.</small>
+                </div>
+                <button class="sa-btn sa-btn-primary" type="submit" id="connectBtn">Connect Shopify</button>
+            </form>
+        @endif
+    </div>
+    @endif
+
+    @if($imports->count())
+    <div class="sa-card">
+        <h3>Import history</h3>
+        <table class="sa-table">
+            <thead><tr><th>When</th><th>Status</th><th>Products</th><th>Categories</th><th>Brands</th></tr></thead>
+            <tbody>
+            @foreach($imports as $hist)
+                @php $hc = $hist->counts(); @endphp
+                <tr>
+                    <td>{{ optional($hist->finished_at ?: $hist->started_at)->format('d M Y, h:i A') ?: '—' }}</td>
+                    <td>{{ ucfirst($hist->status) }}</td>
+                    <td>{{ ($hc['products']['imported'] ?? 0) + ($hc['products']['updated'] ?? 0) }}</td>
+                    <td>{{ ($hc['categories']['imported'] ?? 0) + ($hc['categories']['updated'] ?? 0) }}</td>
+                    <td>{{ ($hc['brands']['imported'] ?? 0) + ($hc['brands']['updated'] ?? 0) }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
     @endif
 
@@ -67,11 +170,11 @@
         </div>
 
         @if($step !== 'progress' && $step !== 'done')
-        <form method="post" action="{{ url('/admin/import-data/config') }}" id="importConfig">
+        <form method="post" action="{{ $configUrl }}" id="importConfig">
             @csrf
             <div class="sa-card">
                 <h3>Select data</h3>
-                <p class="sa-muted">Only items this store can import are listed. Customers are skipped because accounts are not store-scoped yet.</p>
+                <p class="sa-muted">Customers are not imported. Orders are optional.</p>
                 <label class="sa-check"><input type="checkbox" id="selectAll"> Select all</label>
                 <div class="imp-checks">
                     @foreach($types as $key => $label)
@@ -85,21 +188,21 @@
                 <div class="sa-grid sa-grid-2">
                     <div>
                         <p class="sa-section-title">Products</p>
-                        <label class="sa-check"><input type="checkbox" name="opt_active" value="1" @if($opt['active'] ?? true) checked @endif> Import active products</label>
+                        <label class="sa-check"><input type="checkbox" name="opt_active" value="1" @if($opt['active'] ?? true) checked @endif> Import published products</label>
                         <label class="sa-check"><input type="checkbox" name="opt_draft" value="1" @if($opt['draft'] ?? false) checked @endif> Import draft products</label>
-                        <label class="sa-check"><input type="checkbox" name="opt_archived" value="1" @if($opt['archived'] ?? false) checked @endif> Import archived products</label>
+                        <label class="sa-check"><input type="checkbox" name="opt_archived" value="1" @if($opt['archived'] ?? false) checked @endif> Import {{ $isWoo ? 'private' : 'archived' }} products</label>
                         <label class="sa-check"><input type="checkbox" name="opt_descriptions" value="1" @if($opt['import_descriptions'] ?? true) checked @endif> Import product descriptions</label>
                         <label class="sa-check"><input type="checkbox" name="opt_images" value="1" @if($opt['import_images'] ?? true) checked @endif> Import images (downloaded locally)</label>
                         <label class="sa-check"><input type="checkbox" name="opt_variants" value="1" @if($opt['import_variants'] ?? true) checked @endif> Import variants</label>
                         <label class="sa-check"><input type="checkbox" name="opt_sku" value="1" @if($opt['import_sku'] ?? true) checked @endif> Import SKU</label>
                         <label class="sa-check"><input type="checkbox" name="opt_barcode" value="1" @if($opt['import_barcode'] ?? true) checked @endif> Import barcode</label>
                         <label class="sa-check"><input type="checkbox" name="opt_pricing" value="1" @if($opt['import_pricing'] ?? true) checked @endif> Import pricing</label>
-                        <label class="sa-check"><input type="checkbox" name="opt_compare" value="1" @if($opt['import_compare'] ?? true) checked @endif> Import compare-at pricing</label>
+                        <label class="sa-check"><input type="checkbox" name="opt_compare" value="1" @if($opt['import_compare'] ?? true) checked @endif> Import compare-at / regular pricing</label>
                         <label class="sa-check"><input type="checkbox" name="opt_inventory" value="1" @if($opt['import_inventory'] ?? true) checked @endif> Import inventory</label>
                     </div>
                     <div>
                         <p class="sa-section-title">Categories & brands</p>
-                        <label class="sa-check"><input type="checkbox" name="opt_map_collections" value="1" @if($opt['map_collections'] ?? true) checked @endif> Map collections to categories</label>
+                        <label class="sa-check"><input type="checkbox" name="opt_map_collections" value="1" @if($opt['map_collections'] ?? true) checked @endif> Map {{ $isWoo ? 'categories' : 'collections' }} to categories</label>
                         <label class="sa-check"><input type="checkbox" name="opt_create_categories" value="1" @if($opt['create_categories'] ?? true) checked @endif> Create missing categories automatically</label>
                         <label class="sa-check"><input type="checkbox" name="opt_create_brands" value="1" @if($opt['create_brands'] ?? true) checked @endif> Create missing brands automatically</label>
                         <p class="sa-section-title">If an item already exists</p>
@@ -112,9 +215,18 @@
 
             <div class="sa-card">
                 <h3>Data mapping</h3>
-                <p class="sa-muted">Automatic mapping is applied. Change a field only if you need something different.</p>
+                <p class="sa-muted">{{ $sourceName }} slugs are kept as ShopUS slugs so product URLs stay the same per store.</p>
                 @php
-                    $labels = [
+                    $labels = $isWoo ? [
+                        'title' => ['WooCommerce product name', 'Our product name'],
+                        'body_html' => ['WooCommerce description', 'Our product description'],
+                        'vendor' => ['WooCommerce brand', 'Our brand'],
+                        'collection' => ['WooCommerce category', 'Our category'],
+                        'sku' => ['WooCommerce SKU', 'Our SKU'],
+                        'price' => ['WooCommerce price', 'Our price'],
+                        'compare_at_price' => ['WooCommerce regular price', 'Our compare price'],
+                        'images' => ['WooCommerce images', 'Our product media'],
+                    ] : [
                         'title' => ['Shopify product title', 'Our product name'],
                         'body_html' => ['Shopify description', 'Our product description'],
                         'vendor' => ['Shopify vendor', 'Our brand'],
@@ -151,7 +263,7 @@
             <p class="sa-muted">Variants (estimated): {{ $preview['totals']['variants'] ?? 0 }}</p>
             <table class="sa-table">
                 <thead><tr><th>Title</th><th>Vendor</th><th>SKU</th><th>Price</th><th>Status</th></tr></thead>
-                <tbody>
+                <tbody id="previewRows">
                 @forelse(($preview['samples'] ?? []) as $row)
                     <tr>
                         <td>{{ $row['title'] }}</td>
@@ -161,35 +273,50 @@
                         <td>{{ $row['status'] }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="5">No sample products returned. Check your Shopify permissions.</td></tr>
+                    <tr id="previewEmpty"><td colspan="5">No sample products returned. Reconnect {{ $sourceName }} if this persists.</td></tr>
                 @endforelse
                 </tbody>
             </table>
-            <div class="imp-actions" style="margin-top:16px;">
-                <a class="sa-btn sa-btn-secondary" href="{{ url('/admin/import-data?step=select') }}">Back</a>
-                <form method="post" action="{{ url('/admin/import-data/start') }}" style="display:inline;">
-                    @csrf
-                    <button class="sa-btn sa-btn-primary" type="submit">Start import</button>
-                </form>
+            <div id="ajaxImportProgress" style="display:none;margin-top:18px;">
+                <h4>Importing products…</h4>
+                <div class="imp-bar"><span id="ajaxFill" style="width:0%"></span></div>
+                <p id="ajaxPct">0%</p>
+                <ul class="imp-progress" id="ajaxCounts"></ul>
+                <p class="sa-muted" id="ajaxStage"></p>
             </div>
+            <div id="ajaxImportDone" style="display:none;margin-top:18px;">
+                <h4>Import completed ✓</h4>
+                <ul class="imp-progress" id="ajaxDoneList"></ul>
+                <div class="imp-actions">
+                    <a class="sa-btn sa-btn-primary" href="{{ url('/admin/products') }}">View imported products</a>
+                    <a class="sa-btn sa-btn-secondary" href="{{ $failedUrl }}">View failed items</a>
+                    <a class="sa-btn sa-btn-secondary" href="{{ $stepUrl('select') }}">Import again</a>
+                </div>
+            </div>
+            <div class="imp-actions" id="previewActions" style="margin-top:16px;">
+                <a class="sa-btn sa-btn-secondary" href="{{ $stepUrl('select') }}">Back</a>
+                <button class="sa-btn sa-btn-primary" type="button" id="startImportBtn">Start import</button>
+                <button class="sa-btn sa-btn-danger" type="button" id="cancelImportBtn" style="display:none;">Cancel import</button>
+            </div>
+            <p id="ajaxImportError" class="sa-muted" style="display:none;color:#d72c0d;margin-top:10px;"></p>
         </div>
         @endif
 
         @if($step === 'progress' && $job)
         <div class="sa-card" id="progressCard">
-            <h3>Importing your store…</h3>
+            <h3>Importing {{ $sourceName }} store…</h3>
             <div class="imp-bar"><span id="impFill" style="width:8%"></span></div>
             <p id="impPct">8%</p>
             <ul class="imp-progress" id="impList">
                 <li>Working…</li>
             </ul>
-            <form method="post" action="{{ url('/admin/import-data/cancel') }}">@csrf<button class="sa-btn sa-btn-danger" type="submit">Cancel import</button></form>
+            <form method="post" action="{{ $cancelUrl }}">@csrf<button class="sa-btn sa-btn-danger" type="submit">Cancel import</button></form>
         </div>
         @endif
 
         @if($step === 'done' && $job && $job->status === 'completed')
         <div class="sa-card">
-            <h3>Import completed</h3>
+            <h3>Import completed ✓</h3>
             <ul class="imp-progress">
                 <li>Products imported: {{ $counts['products']['imported'] ?? 0 }}</li>
                 <li>Products updated: {{ $counts['products']['updated'] ?? 0 }}</li>
@@ -202,74 +329,164 @@
             </ul>
             <div class="imp-actions">
                 <a class="sa-btn sa-btn-primary" href="{{ url('/admin/products') }}">View imported products</a>
-                <a class="sa-btn sa-btn-secondary" href="{{ url('/admin/import-data/failed') }}">View failed items</a>
-                <a class="sa-btn sa-btn-secondary" href="{{ url('/admin/import-data?step=select') }}">Import again</a>
+                <a class="sa-btn sa-btn-secondary" href="{{ $failedUrl }}">View failed items</a>
+                <a class="sa-btn sa-btn-secondary" href="{{ $stepUrl('select') }}">Import again</a>
             </div>
         </div>
         @endif
     @endif
 </div>
 
-<div class="modal fade" id="oauthModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" style="padding:20px;border-radius:12px;">
-            <h3>Connect Shopify</h3>
-            <p class="sa-muted">Enter your Shopify store address. You’ll be asked to approve access on Shopify.</p>
-            <form method="post" action="{{ url('/admin/import-data/shopify/oauth') }}">
-                @csrf
-                <div class="sa-field">
-                    <label>Shopify store URL</label>
-                    <input name="shop" placeholder="your-store.myshopify.com" required>
-                </div>
-                <button class="sa-btn sa-btn-primary" type="submit">Continue to Shopify</button>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="manualModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" style="padding:20px;border-radius:12px;">
-            <h3>Connect using API credentials</h3>
-            <p class="sa-muted">Create a custom app in Shopify Admin, then paste the Admin API access token. The token is stored encrypted and never shown again.</p>
-            <form method="post" action="{{ url('/admin/import-data/shopify/manual') }}">
-                @csrf
-                <div class="sa-field">
-                    <label>Shopify store URL</label>
-                    <input name="shop_url" placeholder="your-store.myshopify.com" value="{{ old('shop_url') }}" required>
-                </div>
-                <div class="sa-field">
-                    <label>Admin API access token</label>
-                    <input type="password" name="admin_api_token" autocomplete="new-password" required>
-                </div>
-                <button class="sa-btn sa-btn-primary" type="submit">Connect</button>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
 @push('scripts')
 <script>
 $('#selectAll').on('change', function(){ $('.type-box').prop('checked', this.checked); });
-@if(($step ?? '') === 'progress')
+$('#shopifyConnectForm').on('submit', function(){ $('#connectBtn').prop('disabled', true).text('Connecting...'); });
+$('#fetchForm').on('submit', function(){ $('#fetchBtn').prop('disabled', true).text('Fetching products...'); });
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+    'X-Requested-With': 'XMLHttpRequest',
+    'Accept': 'application/json'
+  }
+});
+function countLine(c, k){
+  if (!c[k]) return '';
+  var tot = c[k].total || 0;
+  var n = (c[k].imported||0)+(c[k].updated||0)+(c[k].done||0)+(c[k].skipped||0);
+  return '<li>'+k.charAt(0).toUpperCase()+k.slice(1)+' '+n+(tot?(' / '+tot):'')+'</li>';
+}
 function renderProgress(d){
   $('#impFill').css('width', (d.percent||0)+'%');
   $('#impPct').text((d.percent||0)+'%');
   var html = '';
   var c = d.counts || {};
-  ['products','categories','brands','images','variants','orders'].forEach(function(k){
-    if (!c[k]) return;
-    var tot = c[k].total || 0;
-    var n = (c[k].imported||0)+(c[k].updated||0)+(c[k].done||0)+(c[k].skipped||0);
-    html += '<li>'+k.charAt(0).toUpperCase()+k.slice(1)+' '+n+(tot?(' / '+tot):'')+'</li>';
+  ['products','categories','brands','images','variants','inventory','orders'].forEach(function(k){
+    html += countLine(c, k);
   });
   $('#impList').html(html || '<li>Starting…</li>');
-  if (d.status === 'completed') { window.location = '{{ url('/admin/import-data?step=done') }}'; }
-  if (d.status === 'cancelled' || d.status === 'failed') { window.location = '{{ url('/admin/import-data') }}'; }
+  if (d.status === 'completed') { window.location = '{{ $stepUrl('done') }}'; }
+  if (d.status === 'cancelled' || d.status === 'failed') { window.location = '{{ $pageUrl }}'; }
 }
-function poll(){
-  $.get('{{ url('/admin/import-data/progress') }}', renderProgress).always(function(){ setTimeout(poll, 2000); });
+@if(($step ?? '') === 'progress')
+function pollTick(){
+  $.post('{{ $tickUrl }}')
+    .done(function(d){
+      renderProgress(d);
+      if (d.status === 'completed' || d.status === 'cancelled' || d.status === 'failed') return;
+      pollTick();
+    })
+    .fail(function(){ setTimeout(pollTick, 2000); });
 }
-poll();
+pollTick();
+@endif
+@if(($step ?? '') === 'preview')
+(function(){
+  var importing = false;
+  var cancelled = false;
+  function showError(msg){
+    $('#ajaxImportError').text(msg || 'Import failed. Please try again.').show();
+  }
+  function appendBatch(batch){
+    if (!batch || !batch.length) return;
+    $('#previewEmpty').remove();
+    batch.forEach(function(row){
+      var tr = '<tr class="imp-row-'+row.status+'"><td>'+escapeHtml(row.title||'')+'</td><td></td><td>'+escapeHtml(row.sku||'')+'</td><td>'+escapeHtml(row.price||'')+'</td><td>'+escapeHtml(row.status||'')+'</td></tr>';
+      $('#previewRows').prepend(tr);
+    });
+    var extra = $('#previewRows tr').slice(40);
+    extra.remove();
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]);
+    });
+  }
+  function paint(d){
+    $('#ajaxFill').css('width', (d.percent||0)+'%');
+    $('#ajaxPct').text((d.percent||0)+'%');
+    var html = '';
+    var c = d.counts || {};
+    ['products','categories','brands','images','variants','inventory','orders'].forEach(function(k){
+      html += countLine(c, k);
+    });
+    $('#ajaxCounts').html(html || '<li>Starting…</li>');
+    if (d.stage) $('#ajaxStage').text('Stage: '+d.stage);
+    appendBatch(d.batch || []);
+  }
+  function paintDone(d){
+    var c = d.counts || {};
+    $('#ajaxDoneList').html(
+      '<li>Products imported: '+(c.products && c.products.imported || 0)+'</li>'+
+      '<li>Products updated: '+(c.products && c.products.updated || 0)+'</li>'+
+      '<li>Categories imported: '+(c.categories && c.categories.imported || 0)+'</li>'+
+      '<li>Brands imported: '+(c.brands && c.brands.imported || 0)+'</li>'+
+      '<li>Failed: '+(d.failed || 0)+'</li>'
+    );
+  }
+  function tick(){
+    if (cancelled) return;
+    $.post('{{ $tickUrl }}')
+      .done(function(d){
+        paint(d);
+        if (d.status === 'completed') {
+          importing = false;
+          $('#startImportBtn').hide();
+          $('#cancelImportBtn').hide();
+          $('#ajaxImportProgress h4').text('Import completed');
+          $('#ajaxImportDone').show();
+          paintDone(d);
+          return;
+        }
+        if (d.status === 'cancelled' || d.status === 'failed') {
+          importing = false;
+          $('#startImportBtn').prop('disabled', false).text('Start import').show();
+          $('#cancelImportBtn').hide();
+          showError(d.status === 'cancelled' ? 'Import cancelled.' : (d.error || 'Import failed.'));
+          return;
+        }
+        tick();
+      })
+      .fail(function(xhr){
+        importing = false;
+        $('#startImportBtn').prop('disabled', false).text('Start import');
+        $('#cancelImportBtn').hide();
+        var msg = (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) || 'Could not import this batch.';
+        showError(msg);
+      });
+  }
+  $('#startImportBtn').on('click', function(){
+    if (importing) return;
+    importing = true;
+    cancelled = false;
+    $('#ajaxImportError').hide();
+    $('#ajaxImportDone').hide();
+    $('#ajaxImportProgress').show();
+    $('#startImportBtn').prop('disabled', true).text('Importing…');
+    $('#cancelImportBtn').show();
+    $.post('{{ $startUrl }}')
+      .done(function(d){
+        paint(d);
+        tick();
+      })
+      .fail(function(xhr){
+        importing = false;
+        $('#startImportBtn').prop('disabled', false).text('Start import');
+        $('#cancelImportBtn').hide();
+        var msg = (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.message)) || 'Could not start import.';
+        showError(msg);
+      });
+  });
+  $('#cancelImportBtn').on('click', function(){
+    cancelled = true;
+    $.post('{{ $cancelUrl }}').always(function(){
+      importing = false;
+      $('#startImportBtn').prop('disabled', false).text('Start import').show();
+      $('#cancelImportBtn').hide();
+      showError('Import cancelled.');
+    });
+  });
+})();
 @endif
 </script>
 @endpush

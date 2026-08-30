@@ -64,6 +64,7 @@
             <a class="sa-nav-item @yield('news_letters')" href="{{ route('admins.news_letters') }}">Newsletters</a>
             <div class="sa-nav-label">Settings</div>
             <a class="sa-nav-item @yield('setting')" href="{{ route('admins.setting') }}">Settings</a>
+            <a class="sa-nav-item @yield('flush_data')" href="{{ url('/admin/flush-data') }}">Flush data</a>
             <a class="sa-nav-item @yield('import_data')" href="{{ url('/admin/import-data') }}">Import data</a>
             <a class="sa-nav-item @yield('theme_settings')" href="{{ route('admins.theme_settings') }}">Theme customizer</a>
             <a class="sa-nav-item @yield('media')" href="{{ route('admins.media') }}">Social</a>

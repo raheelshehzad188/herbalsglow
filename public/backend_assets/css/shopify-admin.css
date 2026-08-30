@@ -209,6 +209,28 @@ body.admin-shopify .panel, body.admin-shopify .panel-default {
   border: 1px solid var(--sa-border); border-radius: 12px; box-shadow: none;
 }
 
+.imp-source-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.imp-source-tabs a {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--sa-border);
+  color: #6d7175;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.imp-source-tabs a.on {
+  background: #e4f5ef;
+  border-color: #008060;
+  color: #0c5132;
+}
 .imp-hero h2 { margin: 0 0 6px; font-size: 22px; }
 .imp-hero p { color: var(--sa-muted); margin: 0 0 16px; }
 .imp-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -225,6 +247,13 @@ body.admin-shopify .panel, body.admin-shopify .panel-default {
 .imp-bar span { display: block; height: 100%; background: var(--sa-primary); }
 .imp-progress { list-style: none; padding: 0; }
 .imp-progress li { padding: 6px 0; border-bottom: 1px solid var(--sa-border); font-size: 14px; }
+.imp-row-imported td:last-child, .imp-row-updated td:last-child { color: #0c5132; font-weight: 600; text-transform: capitalize; }
+.imp-row-skipped td:last-child { color: #6d7175; text-transform: capitalize; }
+.imp-row-failed td:last-child { color: #d72c0d; font-weight: 600; text-transform: capitalize; }
+.imp-howto { margin: 12px 0 0; padding-left: 22px; color: #202223; font-size: 14px; line-height: 1.55; }
+.imp-howto li { margin: 0 0 10px; }
+.imp-howto ul { margin: 8px 0 0; padding-left: 18px; }
+.imp-howto code { background: #f1f2f3; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
 @media (max-width: 800px) {
   .imp-meta, .imp-checks { grid-template-columns: 1fr; }
 }
